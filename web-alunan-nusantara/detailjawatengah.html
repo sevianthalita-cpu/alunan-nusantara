@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <!-- Supabase SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = "https://paowtmytttinwndebftm.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_2-SfXv7pLRiDhTOJyAzDdg_SDZnj7ji";
+    var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  
+  </script>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Detail Alat Musik - Jawa Tengah | Alunan Nusantara</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Lily+Script+One&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <script>tailwind.config={theme:{extend:{fontFamily:{sans:['Poppins','sans-serif'],lily:['Lily Script One','cursive']},colors:{'brand-dark':'#2c1408','brand-brown':'#260701','secondary':'#815525','surface-variant':'#f2dfcf'}}}}</script>
+  <style>
+    .navbar-pill{background:white;border-radius:9999px;box-shadow:0 4px 20px rgba(44,20,8,0.12);height:52px;display:flex;align-items:center;}
+    .navbar-wrapper{transition:padding 0.3s ease;}
+    @keyframes fadeSlideUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes popIn{0%{opacity:0;transform:scale(0.88)}70%{transform:scale(1.03)}100%{opacity:1;transform:scale(1)}}
+    .anim-fade-up{opacity:0;animation:fadeSlideUp 0.6s ease forwards}
+    .anim-pop-in{opacity:0;animation:popIn 0.55s cubic-bezier(.34,1.56,.64,1) forwards}
+    .delay-100{animation-delay:0.1s}.delay-200{animation-delay:0.2s}.delay-300{animation-delay:0.3s}
+    .reveal{opacity:0;transform:translateY(24px);transition:opacity 0.6s ease,transform 0.6s ease}
+    .reveal.visible{opacity:1;transform:translateY(0)}
+    .breadcrumb{display:flex;align-items:center;gap:6px;font-size:13px;color:#815525}
+    .breadcrumb a{color:#815525;text-decoration:none;opacity:0.7;transition:opacity .2s}
+    .breadcrumb a:hover{opacity:1}
+    .breadcrumb .sep{opacity:0.5}
+    .info-badge{display:inline-flex;align-items:center;gap:6px;background:#fff1e6;color:#815525;padding:6px 14px;border-radius:999px;font-size:12px;font-weight:600}
+    .related-card{transition:transform 0.3s cubic-bezier(.34,1.56,.64,1),box-shadow 0.3s ease;cursor:pointer}
+    .related-card:hover{transform:translateY(-6px) scale(1.02);box-shadow:0 12px 30px rgba(44,20,8,0.14)}
+    .user-dropdown{display:none;position:absolute;top:calc(100% + 10px);right:0;background:white;border-radius:16px;box-shadow:0 8px 32px rgba(44,20,8,0.14);min-width:180px;z-index:100;overflow:hidden}
+    .user-dropdown.open{display:block}
+    .user-dropdown a,.user-dropdown button{display:flex;align-items:center;gap:10px;width:100%;padding:11px 18px;font-size:13px;color:#2c1408;text-decoration:none;background:none;border:none;cursor:pointer;transition:background .15s;text-align:left}
+    .user-dropdown a:hover,.user-dropdown button:hover{background:#fff1e6}
+    .star-rating{display:flex;gap:4px;cursor:pointer}
+    .star-rating span{font-size:1.4rem;color:#d4c3be;transition:color 0.15s}
+    .star-rating span.active,.star-rating span.hover{color:#f59e0b}
+    .comment-card{background:white;border-radius:16px;padding:18px;box-shadow:0 2px 12px rgba(44,20,8,0.06);border:1px solid #f2dfcf;box-sizing:border-box;min-width:0;overflow:hidden;word-break:break-word;overflow-wrap:break-word;}
+    .comment-card p{word-break:break-word;overflow-wrap:break-word;white-space:normal;}
+    .comments-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;width:100%;box-sizing:border-box;}
+    @media(max-width:900px){.comments-grid{grid-template-columns:repeat(2,1fr);}}
+    @media(max-width:600px){.comments-grid{grid-template-columns:1fr;}}
+  </style>
+</head>
+<body class="font-sans antialiased bg-[#fff8f4] text-[#2c1408] overflow-x-hidden">
+
+  <nav class="w-full sticky top-0 z-50 py-4 navbar-wrapper" id="main-nav">
+    <div class="max-w-7xl mx-auto px-8">
+      <div class="navbar-pill anim-pop-in" style="justify-content:space-between;width:100%;padding:0 24px 0 20px;">
+        <img alt="Alunan Nusantara Logo" class="h-10" src="assets/images/logo/logoweb.png"/>
+        <div class="flex items-center gap-8">
+          <a href="index.html" class="text-sm hover:opacity-60 transition-opacity" style="color:#260701;">Beranda</a>
+          <a href="provinsi.html" class="text-sm hover:opacity-60 transition-opacity" style="color:#260701;">Jelajahi</a>
+          <a href="hubungi.html" class="text-sm hover:opacity-60 transition-opacity" style="color:#260701;">Hubungi kami</a>
+          <a href="login.html" onclick="cekLogin()" class="nav-login text-sm hover:opacity-60 transition-opacity" style="color:#260701;">Masuk</a>
+          <div class="nav-user hidden relative" id="nav-user-btn" style="cursor:pointer;">
+            <div class="w-9 h-9 rounded-full bg-[#f2dfcf] flex items-center justify-center overflow-hidden border-2 border-[#815525]">
+              <span class="nav-avatar-icon material-symbols-outlined text-[#815525]" style="font-size:1.3rem;">person</span>
+              <img class="nav-avatar-img hidden w-full h-full object-cover" src="" alt=""/>
+            </div>
+            <div class="user-dropdown" id="nav-dropdown">
+              <a href="profileuser.html"><span class="material-symbols-outlined" style="font-size:1rem;">person</span><span class="nav-user-name">Pengguna</span></a>
+              <a href="editprofile.html"><span class="material-symbols-outlined" style="font-size:1rem;">edit</span> Edit Profil</a>
+              <button onclick="logout()"><span class="material-symbols-outlined" style="font-size:1rem;">logout</span> Keluar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main id="main-content" class="max-w-7xl mx-auto px-8 py-10">
+    <div class="text-center py-32 text-gray-400">
+      <span class="material-symbols-outlined" style="font-size:3rem;">hourglass_empty</span>
+      <p class="mt-3 text-sm">Memuat data...</p>
+    </div>
+  </main>
+
+  <footer class="bg-[#2e150c] text-white mt-10 w-full">
+    <div class="max-w-7xl mx-auto px-8 py-10 grid grid-cols-1 md:grid-cols-3 gap-10">
+      <div class="flex flex-col gap-6">
+        <div class="flex items-center gap-4"><div class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-[#2e150c]"><span class="material-symbols-outlined">location_on</span></div><div><h4 class="font-semibold text-sm">Alamat</h4><p class="text-sm opacity-80">Jl. Tanimbar No.22, Kota Malang</p></div></div>
+        <div class="flex items-center gap-4"><div class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-[#2e150c]"><span class="material-symbols-outlined">email</span></div><div><h4 class="font-semibold text-sm">Email</h4><p class="text-sm opacity-80">sevianthalita@gmail.com</p></div></div>
+        <div class="flex items-center gap-4"><div class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-[#2e150c]"><span class="material-symbols-outlined">phone</span></div><div><h4 class="font-semibold text-sm">Telepon</h4><p class="text-sm opacity-80">+62 822-2813-7721</p></div></div>
+      </div>
+      <div class="flex flex-col gap-6">
+        <h4 class="font-semibold text-lg">Ikuti sosial media kita</h4>
+        <div class="flex items-center gap-4"><div class="w-10 h-10 bg-white rounded-full flex items-center justify-center flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2e150c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="#2e150c" stroke="none"/></svg></div><p class="text-sm opacity-80">@alunannusantara</p></div>
+        <div class="flex items-center gap-4"><div class="w-10 h-10 bg-white rounded-full flex items-center justify-center flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#2e150c"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></div><p class="text-sm opacity-80">@alunannusantara</p></div>
+        <div class="flex items-center gap-4"><div class="w-10 h-10 bg-white rounded-full flex items-center justify-center flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#2e150c"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></div><p class="text-sm opacity-80">@alunannusantara</p></div>
+      </div>
+      <div class="flex items-center justify-center md:justify-end">
+        <div class="text-right flex flex-col items-end gap-3">
+          <img src="assets/images/logo/logoweb2.png" alt="Alunan Nusantara" class="h-16 object-contain brightness-0 invert"/>
+          <p class="text-sm opacity-60">© 2024 Alunan Nusantara.<br/>Dedikasi untuk Pelestarian Warisan Budaya Indonesia.</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+  const alatMusik = {
+    kendang: {
+      label:'Kendang', img:'assets/images/alat musik/kendang.png', asal:'Jawa Tengah',
+      jenis:'Perkusi', bahan:'Kayu & Kulit', cara:'Dipukul dengan tangan',
+      ringkasan:'Kendang adalah instrumen perkusi inti gamelan Jawa yang berfungsi sebagai pengatur tempo dan dinamika seluruh ansambel.',
+      sejarah:'Kendang telah menjadi bagian dari tradisi musik Jawa sejak masa Kerajaan Mataram Kuno. Tercatat dalam relief Candi Borobudur (abad ke-9), instrumen ini terus berkembang dan menjadi elemen tak terpisahkan dari pertunjukan gamelan hingga kini.',
+      pengertian:'Kendang adalah instrumen perkusi membranofon yang dimainkan dengan tangan. Terbuat dari kayu nangka atau kelapa yang dilubangi dan diregangkan kulit pada kedua sisinya. Perannya vital sebagai pengatur tempo, dinamika, dan perpindahan bagian dalam komposisi gamelan.',
+      ciriCiri:['Badan terbuat dari kayu nangka atau kelapa yang dilubangi','Membran dari kulit kambing atau sapi di kedua sisi','Hadir dalam berbagai ukuran: Kendang Ageng, Ciblon, Ketipung','Dimainkan dengan tepukan telapak tangan','Sisi kanan dan kiri menghasilkan karakter suara berbeda'],
+      fakta:['Dikenal sebagai "jantung" gamelan Jawa','Pemain kendang disebut Pengendang','Ada berbagai ukuran: Kendang Ageng, Kendang Ciblon, Ketipung','Sisi kanan & kiri menghasilkan suara berbeda']
+    },
+    slenthem: {
+      label:'Slenthem', img:'assets/images/alat musik/slenthem.png', asal:'Jawa Tengah',
+      jenis:'Idiofon', bahan:'Logam & Bambu/Logam (Resonator)', cara:'Dipukul dengan pemukul',
+      ringkasan:'Slenthem adalah instrumen gamelan Jawa berupa bilah-bilah logam di atas tabung resonator yang berfungsi memainkan melodi balungan pada oktaf terendah.',
+      sejarah:'Sejarah spesifik slenthem belum terdokumentasi secara rinci, namun instrumen ini telah menjadi bagian dari gamelan Jawa yang diperkirakan sudah ada sejak abad ke-4 Masehi.',
+      pengertian:'Slenthem adalah salah satu instrumen dalam gamelan Jawa yang berfungsi sebagai melodi dasar (balungan). Alat musik ini terbuat dari lembaran logam tipis yang direntangkan di atas tabung-tabung resonansi.',
+      ciriCiri:['Badan terbuat dari kayu yang bagian dalamnya dibuat berongga','Penutup terbuat dari kulit hewan seperti kulit sapi atau kerbau','Memiliki satu sisi bunyi rendah (bam) dan satu sisi bunyi tinggi (chang)','Cara memainkan dengan dipukul pada bagian kulitnya','Menghasilkan suara khas dari pukulan pada kulitnya'],
+      fakta:['Termasuk kelompok instrumen "balungan" dalam gamelan','Menghasilkan nada oktaf terendah di antara bilah logam','Resonator berfungsi memperpanjang bunyi (sustain)','Hadir dalam versi laras Slendro dan Pelog']
+    },
+    bonang: {
+      label:'Bonang', img:'assets/images/alat musik/bonang.png', asal:'Jawa Tengah',
+      jenis:'Idiofon', bahan:'Perunggu / Kuningan', cara:'Dipukul dengan pemukul berbandul',
+      ringkasan:'Bonang adalah instrumen gamelan berupa deretan gong kecil yang disusun mendatar, memainkan peran melodik penting dalam ansambel gamelan Jawa.',
+      sejarah:'Bonang telah ada dalam tradisi gamelan Jawa sejak era Majapahit. Nama "bonang" sendiri berasal dari kata Jawa Kuno yang merujuk pada tonjolan (knob) di tengah setiap gong kecil yang menjadi ciri khasnya.',
+      pengertian:'Bonang adalah instrumen gamelan berupa deretan gong-gong kecil berbentuk cembung yang disusun mendatar di atas rak kayu. Ada dua jenis: Bonang Barung (register tengah) dan Bonang Panerus (register tinggi).',
+      ciriCiri:['Terdiri dari deretan gong kecil berbentuk cembung (knobbed gong)','Disusun mendatar di atas rak kayu','Terbuat dari perunggu atau kuningan berkualitas tinggi','Ada dua jenis: Bonang Barung dan Bonang Panerus','Dimainkan dengan pemukul berujung kain atau karet'],
+      fakta:['Ada dua jenis: Bonang Barung dan Bonang Panerus','Teknik bermain "imbal" adalah ciri khasnya','Terbuat dari perunggu atau kuningan berkualitas tinggi','Pemain Bonang disebut Penabuh Bonang']
+    },
+    gambang: {
+      label:'Gambang', img:'assets/images/alat musik/gambang.png', asal:'Jawa Tengah',
+      jenis:'Idiofon', bahan:'Kayu (Kemuning atau Jati)', cara:'Dipukul dengan pemukul',
+      ringkasan:'Gambang adalah instrumen gamelan dengan bilah kayu yang menghasilkan suara jernih dan ringan, memberi warna unik pada tekstur musik gamelan.',
+      sejarah:'Gambang merupakan salah satu instrumen gamelan tertua. Keunikannya terletak pada materialnya yang berbahan kayu di antara mayoritas instrumen logam gamelan lainnya.',
+      pengertian:'Gambang adalah instrumen gamelan dengan 17-21 bilah kayu tersusun di atas kotak resonansi. Satu-satunya instrumen gamelan utama berbahan kayu.',
+      ciriCiri:['Satu-satunya instrumen gamelan utama berbahan kayu','Memiliki 17-21 bilah dengan jangkauan nada luas','Bilah terbuat dari kayu kemuning atau jati pilihan','Pemukul berbentuk cakram pipih dari tanduk atau kayu','Kotak resonansi berbentuk perahu memperindah suara'],
+      fakta:['Satu-satunya instrumen gamelan utama yang berbahan kayu','Memiliki 17–21 bilah dengan jangkauan nada luas','Pemukul berbentuk cakram pipih dari tanduk/kayu','Sering bermain elaborasi melodi cepat (ornamentasi)']
+    },
+    siter: {
+      label:'Siter', img:'assets/images/alat musik/siter.png', asal:'Jawa Tengah',
+      jenis:'Kordofon', bahan:'Kayu & Dawai Logam', cara:'Dipetik dengan jari',
+      ringkasan:'Siter adalah alat musik petik tradisional Jawa yang menjadi bagian dari ansambel gamelan, menghasilkan melodi halus dan lembut.',
+      sejarah:'Siter merupakan versi kecil dari Celempung dan telah lama menjadi bagian dari Gamelan Pakurmatan (gamelan upacara kerajaan Jawa).',
+      pengertian:'Siter adalah alat musik petik dengan kotak resonansi kayu dan dawai logam. Memiliki dua sisi: satu untuk laras Slendro dan satu untuk laras Pelog.',
+      ciriCiri:['Memiliki dua sisi: laras Slendro dan Pelog','Jumlah dawai 11-13 senar per sisi','Kotak resonansi dari kayu pilihan','Dimainkan sambil duduk bersila di lantai','Kerabat dekat Celempung (versi lebih besar)'],
+      fakta:['Memiliki dua sisi: laras Slendro dan Pelog','Kerabat dekat Celempung (versi lebih besar)','Dimainkan sambil duduk bersila di lantai','Suaranya yang lembut cocok mengiringi tembang Jawa']
+    },
+    suling: {
+      label:'Suling', img:'assets/images/alat musik/suling.png', asal:'Jawa Tengah',
+      jenis:'Aerofon', bahan:'Bambu', cara:'Ditiup',
+      ringkasan:'Suling adalah satu-satunya instrumen tiup dalam gamelan Jawa, menghasilkan melodi lembut dan syahdu dari bambu pilihan.',
+      sejarah:'Suling bambu merupakan instrumen tertua yang dikenal di Nusantara. Dalam konteks gamelan Jawa, suling menjadi pengisi melodi yang sangat khas.',
+      pengertian:'Suling Jawa adalah seruling bambu yang ditiup melalui lubang embouchure di samping ujung atas. Satu-satunya instrumen tiup dalam gamelan Jawa.',
+      ciriCiri:['Terbuat dari bambu Wulung (bambu hitam) pilihan','Ditiup melalui lubang di samping ujung (bukan ujung)','Suling Slendro memiliki 4 lubang nada','Suling Pelog memiliki 4-5 lubang nada','Teknik tiup berbeda dari seruling Barat'],
+      fakta:['Satu-satunya instrumen tiup dalam gamelan Jawa','Terbuat dari bambu Wulung (bambu hitam) pilihan','Teknik tiup berbeda dari seruling Barat','Suling Slendro (4 lubang) & Pelog (4-5 lubang)']
+    },
+    rebab: {
+      label:'Rebab', img:'assets/images/alat musik/rebab.png', asal:'Jawa Tengah',
+      jenis:'Kordofon', bahan:'Kayu, Kulit, & Dawai Logam/Sutra', cara:'Digesek dengan busur',
+      ringkasan:'Rebab adalah alat musik gesek berdawai dua yang menjadi pemimpin melodi (pamurba lagu) dalam ansambel gamelan Jawa.',
+      sejarah:'Rebab masuk ke Nusantara melalui pengaruh budaya Arab dan Persia, diperkirakan sekitar abad ke-9 hingga ke-13.',
+      pengertian:'Rebab adalah alat musik gesek berdawai dua yang dimainkan dengan busur (bow). Dalam gamelan, Rebab berperan sebagai "pamurba lagu" — pemimpin melodi.',
+      ciriCiri:['Berdawai dua tanpa papan fret','Badan resonansi berbentuk hati/segitiga berlapis kulit','Dimainkan dengan busur (bow) seperti biola','Instrumen dipegang tegak lurus saat dimainkan','Busur digerakkan secara horizontal'],
+      fakta:['Disebut "pamurba lagu" — pemimpin melodi gamelan','Masuk ke Jawa melalui pengaruh Arab-Persia','Berdawai dua tanpa papan fret','Dimainkan dengan busur (bow) seperti biola']
+    },
+    angklung: {
+      label:'Angklung', img:'assets/images/alat musik/angklung.png', asal:'Jawa Barat / Sunda',
+      jenis:'Idiofon', bahan:'Bambu', cara:'Digoyangkan',
+      ringkasan:'Angklung adalah instrumen musik bambu ikonik yang menghasilkan bunyi saat digoyangkan dan telah diakui UNESCO sebagai Warisan Budaya Tak Benda.',
+      sejarah:'Angklung berasal dari budaya Sunda (Jawa Barat) dan dikaitkan dengan ritual pertanian. Pada 2010, UNESCO mengakuinya sebagai Warisan Budaya Tak Benda.',
+      pengertian:'Angklung adalah instrumen musik bambu yang menghasilkan bunyi ketika digoyangkan. Setiap Angklung menghasilkan satu nada.',
+      ciriCiri:['Terbuat seluruhnya dari bambu','Setiap Angklung menghasilkan satu nada spesifik','Bunyi dihasilkan dari getaran saat digoyangkan','Diakui UNESCO sebagai Warisan Budaya Tak Benda (2010)','Dapat dimainkan untuk berbagai genre musik'],
+      fakta:['Diakui UNESCO sebagai Warisan Budaya Tak Benda (2010)','Aslinya dari budaya Sunda, Jawa Barat','Setiap Angklung hanya menghasilkan satu nada','Dikembangkan ke tangga nada diatonis oleh Daeng Soetigna']
+    }
+  };
+
+  // ============================================================
+  // HELPER: hitung statistik rating
+  // ============================================================
+  function calcRatingStats(comments) {
+    const rated = comments.filter(c => c.rating > 0);
+    const total = rated.length;
+    const avg = total > 0 ? (rated.reduce((s,c) => s + c.rating, 0) / total) : 0;
+    const dist = {5:0, 4:0, 3:0, 2:0, 1:0};
+    rated.forEach(c => { if (dist[c.rating] !== undefined) dist[c.rating]++; });
+    return { avg, total, dist };
+  }
+
+  // ============================================================
+  // HELPER: render bintang HTML
+  // ============================================================
+  function starsHTML(rating, size='text-sm') {
+    return Array.from({length:5}, (_,i) =>
+      `<span class="${size} ${i < rating ? 'text-yellow-400' : 'text-gray-300'}">★</span>`
+    ).join('');
+  }
+
+  // ============================================================
+  // HELPER: satu comment card
+  // ============================================================
+  function commentCardHTML(c) {
+    return `
+      <div class="comment-card">
+        <div class="flex items-center gap-3 mb-2">
+          <div class="w-9 h-9 rounded-full bg-[#f2dfcf] flex items-center justify-center overflow-hidden flex-shrink-0">
+            ${c.avatar ? `<img src="${c.avatar}" class="w-full h-full object-cover"/>` : `<span class="material-symbols-outlined text-[#815525]" style="font-size:1.1rem;">person</span>`}
+          </div>
+          <div>
+            <a href="profileuser.html?user=${encodeURIComponent(c.name)}" class="font-semibold text-sm text-[#2c1408] hover:text-[#815525] hover:underline transition-colors">${c.name}</a>
+            <p class="text-xs text-gray-400">${c.time}</p>
+          </div>
+        </div>
+        <div class="flex gap-0.5 mb-2">${starsHTML(c.rating)}</div>
+        <p class="text-xs text-[#504440] leading-relaxed">"${c.text}"</p>
+      </div>
+    `;
+  }
+
+  // ============================================================
+  // AMBIL KOMENTAR dari Supabase
+  // ============================================================
+  async function getAllComments(key) {
+    const { data, error } = await supabase
+      .from('reviews')
+      .select('id, user_id, alat_key, provinsi, rating, text, created_at')
+      .eq('alat_key', key)
+      .eq('provinsi', 'jateng')
+      .order('created_at', { ascending: false });
+    if (error || !data) return [];
+
+    // Ambil profile untuk setiap user_id
+    const userIds = [...new Set(data.map(r => r.user_id).filter(Boolean))];
+    let profileMap = {};
+    if (userIds.length > 0) {
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('id, full_name, username, photo_url')
+        .in('id', userIds);
+      if (profiles) profiles.forEach(p => { profileMap[p.id] = p; });
+    }
+
+    return data.map(r => {
+      const p = profileMap[r.user_id] || {};
+      return {
+        name: p.full_name || p.username || 'Pengguna',
+        avatar: p.photo_url || '',
+        rating: r.rating,
+        text: r.text,
+        time: new Date(r.created_at).toLocaleDateString('id-ID', {day:'numeric',month:'long',year:'numeric'}),
+        id: r.id,
+        user_id: r.user_id
+      };
+    });
+  }
+
+  // ============================================================
+  // RENDER PANEL RATING
+  // ============================================================
+  function ratingPanelHTML(stats, totalAll) {
+    const avgDisplay = stats.avg > 0 ? stats.avg.toFixed(1) : '0.0';
+    const bars = [5,4,3,2,1].map(star => {
+      const count = stats.dist[star] || 0;
+      const pct = stats.total > 0 ? Math.round((count / stats.total) * 100) : 0;
+      return `
+        <div class="flex items-center gap-2 text-xs">
+          <span class="text-[#815525] font-semibold w-3 text-right">${star}</span>
+          <span class="text-yellow-400 text-xs">★</span>
+          <div class="flex-1 bg-[#f2dfcf] rounded-full h-2 overflow-hidden">
+            <div class="h-2 rounded-full bg-[#815525] transition-all duration-700" style="width:${pct}%"></div>
+          </div>
+          <span class="text-gray-400 w-5 text-right">${count}</span>
+        </div>
+      `;
+    }).join('');
+    return `
+      <div class="flex flex-col sm:flex-row gap-6 items-start sm:items-center bg-white rounded-[20px] p-6 border border-[#f2dfcf] shadow-sm mb-6">
+        <div class="text-center flex-shrink-0">
+          <div class="text-5xl font-bold text-[#2c1408]">${avgDisplay}</div>
+          <div class="flex justify-center gap-0.5 my-1">${starsHTML(Math.round(stats.avg))}</div>
+          <div class="text-xs text-gray-400">${totalAll} ulasan</div>
+        </div>
+        <div class="flex-1 w-full space-y-2">${bars}</div>
+      </div>
+    `;
+  }
+
+  // ============================================================
+  // REFRESH GRID KOMENTAR (dipanggil setelah submit)
+  // ============================================================
+  async function refreshCommentsGrid(key, showAll) {
+    const grid = document.getElementById('comments-grid');
+    const showAllWrap = document.getElementById('show-all-wrap');
+    const ratingPanel = document.getElementById('rating-panel');
+    const commentCount = document.getElementById('comment-count');
+    if (!grid) return;
+
+    const all = await getAllComments(key);
+    const stats = calcRatingStats(all);
+
+    if (ratingPanel) ratingPanel.innerHTML = ratingPanelHTML(stats, all.length);
+    if (commentCount) commentCount.textContent = all.length;
+
+    const avgEl = document.getElementById('avg-rating-display');
+    if (avgEl) avgEl.textContent = stats.avg > 0 ? stats.avg.toFixed(1) : '0.0';
+
+    if (all.length === 0) {
+      grid.innerHTML = `
+        <div style="grid-column:1/-1" class="text-center py-14 text-gray-400">
+          <span class="material-symbols-outlined" style="font-size:3rem;">rate_review</span>
+          <p class="mt-3 text-sm font-medium">Belum ada ulasan.</p>
+          <p class="text-xs mt-1">Jadilah yang pertama memberikan ulasan!</p>
+        </div>`;
+      grid.className = 'comments-grid mb-4';
+      if (showAllWrap) showAllWrap.style.display = 'none';
+      return;
+    }
+
+    const toShow = showAll ? all : all.slice(0, 6);
+    grid.innerHTML = toShow.map(c => commentCardHTML(c)).join('');
+    grid.className = 'comments-grid mb-4';
+    if (showAllWrap) showAllWrap.style.display = (!showAll && all.length > 6) ? 'block' : 'none';
+  }
+
+  async function showAllComments() {
+    const params = new URLSearchParams(window.location.search);
+    const key = (params.get('alat') || '').toLowerCase();
+    await refreshCommentsGrid(key, true);
+  }
+
+  // ============================================================
+  // RENDER SECTION REVIEW — FIX UTAMA ADA DI SINI
+  // Jika belum login: seluruh section (komentar + form) tertutup overlay,
+  // bukan hanya form-nya saja.
+  // ============================================================
+  function reviewSectionHTML(u, key, data, allComments, stats, avgDisplay) {
+    if (u) {
+      // ===== USER SUDAH LOGIN: tampil semua =====
+      return `
+        <div class="reveal" id="review-section">
+          <div class="flex items-center gap-3 mb-2">
+            <span id="avg-rating-display" class="text-3xl font-bold text-[#2c1408]">${avgDisplay}</span>
+            <span class="text-yellow-400 text-2xl">★</span>
+            <span class="font-semibold text-[#2c1408]">Penilaian Produk (<span id="comment-count">${allComments.length}</span>)</span>
+          </div>
+          <hr class="border-[#f2dfcf] mb-6"/>
+
+          <div id="rating-panel">${ratingPanelHTML(stats, allComments.length)}</div>
+
+          <div id="comments-grid" class="comments-grid mb-4">
+            ${allComments.length === 0
+              ? `<div style="grid-column:1/-1" class="text-center py-14 text-gray-400">
+                  <span class="material-symbols-outlined" style="font-size:3rem;">rate_review</span>
+                  <p class="mt-3 text-sm font-medium">Belum ada ulasan.</p>
+                  <p class="text-xs mt-1">Jadilah yang pertama memberikan ulasan!</p>
+                 </div>`
+              : allComments.slice(0,6).map(c => commentCardHTML(c)).join('')
+            }
+          </div>
+          <div id="show-all-wrap" class="text-right mb-6" style="${allComments.length > 6 ? '' : 'display:none;'}">
+            <button onclick="showAllComments()" class="text-sm text-[#815525] font-semibold hover:underline">Lihat semua komentar ›</button>
+          </div>
+
+          <div class="mt-8">
+            <h3 class="text-lg font-bold text-[#2c1408] mb-4">Berikan penilaian</h3>
+            <hr class="border-[#f2dfcf] mb-6"/>
+            <div class="bg-white rounded-[20px] p-6 shadow-sm border border-[#f2dfcf]">
+              <div class="flex gap-4">
+                <div class="rounded-[16px] bg-[#fff1e6] overflow-hidden flex-shrink-0" style="width:180px;height:130px;">
+                  <img src="${data.img}" alt="${data.label}" class="w-full h-full object-contain p-3"/>
+                </div>
+                <div class="flex-1">
+                  <p class="text-sm font-semibold text-[#2c1408] mb-1">Nilai Produk</p>
+                  <div class="star-rating mb-3" id="input-stars">
+                    <span data-v="1">★</span><span data-v="2">★</span><span data-v="3">★</span><span data-v="4">★</span><span data-v="5">★</span>
+                  </div>
+                  <textarea id="input-text" rows="3" placeholder="Tulis ulasan kamu di sini..."
+                    class="w-full bg-[#f4f4f4] rounded-xl px-4 py-3 text-sm text-[#2c1408] outline-none resize-none focus:ring-2 focus:ring-[#2c1408]"></textarea>
+                  <div class="flex justify-end mt-3">
+                    <button onclick="submitComment('${key}')" class="bg-[#2c1408] text-white px-6 py-2 rounded-full text-sm font-semibold hover:bg-[#815525] transition-colors">Kirim</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    } else {
+      // ===== USER BELUM LOGIN: SELURUH section (komentar + form) diblur & ditutup overlay =====
+      // Dummy comment cards sebagai background visual
+      const dummyCards = [1,2,3].map(() => `
+        <div class="comment-card">
+          <div class="flex items-center gap-3 mb-2">
+            <div class="w-9 h-9 rounded-full bg-[#f2dfcf] flex-shrink-0"></div>
+            <div class="flex-1 space-y-1">
+              <div class="h-3 bg-[#f2dfcf] rounded w-24"></div>
+              <div class="h-2 bg-[#f2dfcf] rounded w-16"></div>
+            </div>
+          </div>
+          <div class="flex gap-0.5 mb-2 text-gray-300 text-sm">★★★★★</div>
+          <div class="space-y-1">
+            <div class="h-2 bg-[#f2dfcf] rounded w-full"></div>
+            <div class="h-2 bg-[#f2dfcf] rounded w-4/5"></div>
+            <div class="h-2 bg-[#f2dfcf] rounded w-3/5"></div>
+          </div>
+        </div>
+      `).join('');
+
+      const dummyBars = [5,4,3,2,1].map(s => `
+        <div class="flex items-center gap-2 text-xs">
+          <span class="text-gray-300 font-semibold w-3 text-right">${s}</span>
+          <span class="text-gray-300 text-xs">★</span>
+          <div class="flex-1 bg-[#f2dfcf] rounded-full h-2"></div>
+          <span class="text-gray-300 w-5 text-right">0</span>
+        </div>
+      `).join('');
+
+      return `
+        <div class="reveal" id="review-section">
+          <!-- Header selalu tampil -->
+          <div class="flex items-center gap-3 mb-2">
+            <span class="text-3xl font-bold text-[#2c1408]">—</span>
+            <span class="text-yellow-400 text-2xl">★</span>
+            <span class="font-semibold text-[#2c1408]">Penilaian Produk</span>
+          </div>
+          <hr class="border-[#f2dfcf] mb-6"/>
+
+          <!-- Seluruh konten dibungkus relatif agar overlay bisa menutup semuanya -->
+          <div class="relative">
+
+            <!-- Konten dummy yang diblur — mencakup rating panel, grid komentar, dan form -->
+            <div class="opacity-25 pointer-events-none select-none" aria-hidden="true">
+
+              <!-- Dummy rating panel -->
+              <div class="flex gap-6 items-center bg-white rounded-[20px] p-6 border border-[#f2dfcf] shadow-sm mb-6">
+                <div class="text-center flex-shrink-0">
+                  <div class="text-5xl font-bold text-[#2c1408]">—</div>
+                  <div class="flex justify-center gap-0.5 my-1 text-gray-300 text-xl">★★★★★</div>
+                  <div class="text-xs text-gray-400">0 ulasan</div>
+                </div>
+                <div class="flex-1 space-y-2">${dummyBars}</div>
+              </div>
+
+              <!-- Dummy grid komentar -->
+              <div class="comments-grid mb-4">${dummyCards}</div>
+
+              <!-- Dummy form -->
+              <div class="mt-8">
+                <h3 class="text-lg font-bold text-[#2c1408] mb-4">Berikan penilaian</h3>
+                <hr class="border-[#f2dfcf] mb-6"/>
+                <div class="bg-white rounded-[20px] p-6 shadow-sm border border-[#f2dfcf]">
+                  <div class="flex gap-4">
+                    <div class="w-[180px] h-[130px] rounded-[16px] bg-[#fff1e6] flex-shrink-0"></div>
+                    <div class="flex-1 space-y-3">
+                      <div class="h-3 bg-[#f2dfcf] rounded w-24"></div>
+                      <div class="text-gray-300 text-xl">★★★★★</div>
+                      <div class="w-full h-20 bg-[#f4f4f4] rounded-xl"></div>
+                      <div class="flex justify-end"><div class="w-16 h-8 bg-gray-200 rounded-full"></div></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div><!-- /dummy blur -->
+
+            <!-- Overlay login-gate: menutupi SELURUH section (bukan hanya form) -->
+            <div class="absolute inset-0 flex items-center justify-center"
+                 style="background:rgba(255,248,244,0.6);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);border-radius:20px;min-height:300px;">
+              <div class="bg-white rounded-[20px] px-8 py-7 shadow-xl border border-[#f2dfcf] text-center max-w-sm w-full mx-4">
+                <span class="material-symbols-outlined text-[#2c1408] mb-3 block" style="font-size:2.5rem;font-variation-settings:'FILL' 1;">lock</span>
+                <h4 class="font-bold text-[#2c1408] text-lg mb-2">Berikan Penilaian Anda</h4>
+                <p class="text-sm text-[#504440] mb-5">Masuk untuk berbagi pengalaman Anda dan membantu kami melestarikan kekayaan budaya Nusantara</p>
+                <hr class="border-[#f2dfcf] mb-5"/>
+<button onclick="window.location.href='login.html'" class="inline-block bg-[#2c1408] text-white px-8 py-2.5 rounded-full text-sm font-semibold hover:bg-[#815525] transition-colors cursor-pointer border-0">Masuk</button>              </div>
+            </div>
+
+          </div><!-- /relative -->
+        </div>
+      `;
+    }
+  }
+
+  // ============================================================
+  // RENDER HALAMAN UTAMA
+  // ============================================================
+  async function renderPage() {
+    const params = new URLSearchParams(window.location.search);
+    const key = (params.get('alat') || '').toLowerCase();
+    const data = alatMusik[key];
+    const main = document.getElementById('main-content');
+
+    if (!data) {
+      main.innerHTML = `<div class="text-center py-32"><span class="material-symbols-outlined text-gray-300" style="font-size:4rem;">music_off</span><h2 class="mt-4 text-xl font-bold">Instrumen tidak ditemukan</h2><a href="jelajahijateng.html" class="inline-block mt-6 bg-[#2c1408] text-white px-6 py-3 rounded-full text-sm font-semibold">← Kembali ke Jawa Tengah</a></div>`;
+      return;
+    }
+
+    const others = Object.entries(alatMusik).filter(([k]) => k !== key).slice(0, 4);
+    document.title = `${data.label} - Jawa Tengah | Alunan Nusantara`;
+
+    const allComments = await getAllComments(key);
+    const stats = calcRatingStats(allComments);
+    const avgDisplay = stats.avg > 0 ? stats.avg.toFixed(1) : '0.0';
+
+    // Cek login status
+    const u = JSON.parse(localStorage.getItem('an_user') || 'null');
+
+    main.innerHTML = `
+      <nav class="breadcrumb mb-8 anim-fade-up">
+        <a href="index.html">Beranda</a><span class="sep">›</span>
+        <a href="provinsi.html">Jelajahi</a><span class="sep">›</span>
+        <a href="jelajahijateng.html">Jawa Tengah</a><span class="sep">›</span>
+        <span style="opacity:1;font-weight:600;color:#2c1408;">${data.label}</span>
+      </nav>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16 anim-fade-up">
+        <div>
+          <div class="inline-block bg-[#fff1e6] text-[#815525] text-xs font-bold px-4 py-1.5 rounded-full mb-4 uppercase tracking-widest">${data.asal}</div>
+          <h1 style="font-family:'Lily Script One',cursive;font-size:3.5rem;color:#2c1408;line-height:1.1;" class="mb-4">${data.label}</h1>
+          <p class="text-sm text-[#504440] leading-relaxed mb-6">${data.ringkasan}</p>
+          <div class="flex flex-wrap gap-2 mb-6">
+            <span class="info-badge"><span class="material-symbols-outlined" style="font-size:1rem;">category</span>${data.jenis}</span>
+            <span class="info-badge"><span class="material-symbols-outlined" style="font-size:1rem;">forest</span>${data.bahan}</span>
+            <span class="info-badge"><span class="material-symbols-outlined" style="font-size:1rem;">touch_app</span>${data.cara}</span>
+          </div>
+          <div class="flex gap-3">
+            <a href="jelajahijateng.html" class="inline-flex items-center gap-2 bg-[#2c1408] text-white px-6 py-3 rounded-full text-sm font-semibold hover:bg-[#815525] transition-colors">
+              <span class="material-symbols-outlined" style="font-size:1rem;">arrow_back</span>Kembali ke Jawa Tengah
+            </a>
+            <a href="provinsi.html" class="inline-flex items-center gap-2 border-2 border-[#2c1408] text-[#2c1408] px-6 py-3 rounded-full text-sm font-semibold hover:bg-[#2c1408] hover:text-white transition-colors">
+              <span class="material-symbols-outlined" style="font-size:1rem;">map</span>Semua Provinsi
+            </a>
+          </div>
+        </div>
+        <div class="flex justify-center">
+          <div class="bg-[#fff1e6] rounded-[32px] flex items-center justify-center p-10" style="min-height:320px;width:100%;max-width:420px;">
+            <img src="${data.img}" alt="${data.label}" class="max-h-64 object-contain" style="filter:drop-shadow(0 16px 32px rgba(44,20,8,0.22));" onerror="this.style.opacity='0.2'"/>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16 reveal">
+        <div class="bg-white rounded-[24px] p-8 shadow-sm border border-[#f2dfcf]">
+          <h2 class="text-xl font-bold text-[#2c1408] mb-4">Sejarah</h2>
+          <p class="text-sm text-[#504440] leading-relaxed">${data.sejarah}</p>
+        </div>
+        <div class="bg-white rounded-[24px] p-8 shadow-sm border border-[#f2dfcf]">
+          <h2 class="text-xl font-bold text-[#2c1408] mb-4">Pengertian</h2>
+          <p class="text-sm text-[#504440] leading-relaxed">${data.pengertian}</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16 reveal">
+        <div class="flex justify-center">
+          <div class="bg-[#fff1e6] rounded-[32px] overflow-hidden" style="width:100%;max-width:420px;min-height:280px;">
+            <img src="${data.img}" alt="${data.label}" class="w-full h-full object-cover" style="min-height:280px;object-fit:contain;padding:24px;" onerror="this.style.opacity='0.2'"/>
+          </div>
+        </div>
+        <div>
+          <h2 style="font-family:'Lily Script One',cursive;font-size:2.5rem;color:#2c1408;" class="mb-6">Ciri - Ciri</h2>
+          <ul class="space-y-3">
+            ${data.ciriCiri.map(c => `
+              <li class="flex items-start gap-3 text-sm text-[#504440]">
+                <span class="w-2 h-2 rounded-full bg-[#815525] flex-shrink-0 mt-2"></span>
+                <span>${c}</span>
+              </li>
+            `).join('')}
+          </ul>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-[24px] p-8 shadow-sm border border-[#f2dfcf] mb-16 reveal">
+        <h3 class="font-bold text-[#2c1408] mb-6 flex items-center gap-2 text-lg">
+          <span class="material-symbols-outlined text-[#815525]">lightbulb</span>Fakta Menarik
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          ${data.fakta.map(f => `
+            <div class="flex items-start gap-3 text-sm text-[#504440]">
+              <span class="w-5 h-5 rounded-full bg-[#fff1e6] flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span class="material-symbols-outlined text-[#815525]" style="font-size:0.75rem;">check</span>
+              </span>${f}
+            </div>
+          `).join('')}
+        </div>
+      </div>
+
+      <div class="reveal mb-16">
+        <div class="text-center mb-8">
+          <h2 class="text-2xl font-bold text-[#2c1408]">Instrumen Lainnya dari Jawa Tengah</h2>
+          <div class="w-20 h-1 bg-[#815525] mx-auto mt-3 rounded-full"></div>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-5">
+          ${others.map(([k,d]) => `
+            <div class="related-card bg-white rounded-[20px] p-5 text-center shadow-sm border border-[#f2dfcf]"
+                 onclick="window.location.href='detailjawatengah.html?alat=${encodeURIComponent(k)}'">
+              <div class="w-full aspect-square bg-[#fff1e6] rounded-[14px] flex items-center justify-center mb-3 overflow-hidden">
+                <img src="${d.img}" alt="${d.label}" class="w-3/4 h-3/4 object-contain" style="filter:drop-shadow(0 4px 8px rgba(44,20,8,0.15));" onerror="this.style.opacity='0.2'"/>
+              </div>
+              <h3 class="font-semibold text-[#2c1408] text-sm">${d.label}</h3>
+              <p class="text-[10px] text-[#815525] mt-1 font-medium">Pelajari →</p>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+
+      <!-- ===== SECTION REVIEW — FIXED ===== -->
+      ${reviewSectionHTML(u, key, data, allComments, stats, avgDisplay)}
+    `;
+
+    // Setup star input interaction (hanya jika login)
+    if (u) {
+      let selectedRating = 0;
+      const stars = document.querySelectorAll('#input-stars span');
+      stars.forEach(s => {
+        s.addEventListener('mouseover', () => {
+          stars.forEach((x,i) => x.classList.toggle('hover', i <= parseInt(s.dataset.v)-1));
+        });
+        s.addEventListener('mouseout', () => {
+          stars.forEach((x,i) => { x.classList.remove('hover'); x.classList.toggle('active', i < selectedRating); });
+        });
+        s.addEventListener('click', () => {
+          selectedRating = parseInt(s.dataset.v);
+          stars.forEach((x,i) => x.classList.toggle('active', i < selectedRating));
+        });
+      });
+    }
+
+    // Scroll reveal
+    setTimeout(() => {
+      const obs = new IntersectionObserver(entries => {
+        entries.forEach(e => { if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);} });
+      }, {threshold:0.1});
+      document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+    }, 100);
+  }
+
+  // ============================================================
+  // SUBMIT KOMENTAR ke Supabase
+  // ============================================================
+  async function submitComment(key) {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) { window.location.href = 'login.html'; return; }
+
+    const textEl = document.getElementById('input-text');
+    const stars = document.querySelectorAll('#input-stars span.active');
+    const rating = stars.length;
+    const text = textEl ? textEl.value.trim() : '';
+
+    if (rating === 0) { alert('Pilih bintang terlebih dahulu.'); return; }
+    if (text.length < 5) { alert('Tulis ulasan terlebih dahulu (minimal 5 karakter).'); return; }
+
+    const { error } = await supabase.from('reviews').insert({
+      user_id: session.user.id,
+      alat_key: key,
+      provinsi: 'jateng',
+      rating,
+      text
+    });
+
+    if (error) { alert('Gagal kirim ulasan: ' + error.message); return; }
+
+    if (textEl) textEl.value = '';
+    document.querySelectorAll('#input-stars span').forEach(s => s.classList.remove('active','hover'));
+    await refreshCommentsGrid(key, false);
+  }
+
+  // ============================================================
+  // INIT
+  // ============================================================
+  document.addEventListener('DOMContentLoaded', renderPage);
+
+  const nav = document.getElementById('main-nav');
+  window.addEventListener('scroll', () => { nav.style.padding = window.scrollY > 20 ? '8px 0' : '16px 0'; });
+
+  // Deteksi magic link redirect (token di URL hash)
+  supabase.auth.onAuthStateChange(async (event, session) => {
+    if (event === 'SIGNED_IN' && session) {
+      const hash = window.location.hash;
+      const isMagicLink = hash.includes('access_token') && hash.includes('type=magiclink');
+
+      if (isMagicLink) {
+        history.replaceState(null, '', window.location.pathname);
+        const savedPurpose = sessionStorage.getItem('verifyPurpose');
+        sessionStorage.removeItem('verifyPurpose');
+
+        if (savedPurpose) {
+          // Tunggu DOM siap dulu sebelum manipulasi elemen
+          const run = () => {
+            document.getElementById('verify-pilih')?.classList.remove('open');
+            document.getElementById('verify-email-sent')?.classList.remove('open');
+            clearInterval(timerInterval);
+            afterVerifyShowForm(savedPurpose);
+          };
+
+          // Jika DOM belum siap, tunggu DOMContentLoaded
+          if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', run);
+          } else {
+            run();
+          }
+        }
+      }
+    }
+  });
+
+  (function(){
+    const u = JSON.parse(localStorage.getItem('an_user') || 'null');
+    const loginEl = document.querySelector('.nav-login');
+    const userEl = document.querySelector('.nav-user');
+    if (u && userEl && loginEl) {
+      loginEl.classList.add('hidden');
+      userEl.classList.remove('hidden');
+      const nameEl = userEl.querySelector('.nav-user-name');
+      if (nameEl) nameEl.textContent = u.name || u.username || 'Pengguna';
+      const avatarImg = userEl.querySelector('.nav-avatar-img');
+      const avatarIcon = userEl.querySelector('.nav-avatar-icon');
+      if (u.photo && avatarImg && avatarIcon) { avatarImg.src = u.photo; avatarImg.classList.remove('hidden'); avatarIcon.classList.add('hidden'); }
+    }
+    const btn = document.getElementById('nav-user-btn');
+    const drop = document.getElementById('nav-dropdown');
+    if (btn && drop) {
+      btn.addEventListener('click', e => { e.stopPropagation(); drop.classList.toggle('open'); });
+      document.addEventListener('click', () => drop.classList.remove('open'));
+    }
+  })();
+
+  async function logout() { await supabase.auth.signOut(); localStorage.removeItem('an_user'); window.location.href = 'index.html'; }
+  </script>
+</body>
+</html>

@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Edit Profil - Alunan Nusantara</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const SUPABASE_URL = 'https://paowtmytttinwndebftm.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_2-SfXv7pLRiDhTOJyAzDdg_SDZnj7ji';
+  var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+</script>
+
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Lily+Script+One&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --gold: #815525;
+      --gold-dark: #260701;
+      --gold-light: #f5ecd5;
+      --brown: #815525;
+      --brown-dark: #2c1408;
+      --bg: #ffffff;
+      --white: #ffffff;
+      --red: #b91c1c;
+      --red-light: #fff5f5;
+      --border: #e0d5c5;
+      --border-strong: #c9a84c;
+      --text-muted: #9ca3af;
+      --text-body: #504440;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--brown-dark); min-height: 100vh; }
+    .page-wrap { max-width: 960px; margin: 0 auto; padding: 32px 20px 48px; }
+    .back-btn { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--brown); text-decoration: none; margin-bottom: 20px; font-weight: 500; transition: opacity .2s; }
+    .back-btn:hover { opacity: .65; }
+    .back-btn .material-symbols-outlined { font-size: 1rem; }
+    .card { background: var(--white); border-radius: 16px; border: 1.5px solid var(--border); overflow: hidden; display: flex; }
+    .sidebar { width: 240px; flex-shrink: 0; padding: 28px 20px; border-right: 1.5px solid var(--border); display: flex; flex-direction: column; background: var(--white); }
+    .sidebar-user { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+    .sidebar-avatar { width: 56px; height: 56px; border-radius: 50%; background: var(--gold-light); overflow: hidden; flex-shrink: 0; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; }
+    .avatar-icon { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--gold); }
+    .avatar-icon .material-symbols-outlined { font-size: 1.6rem; }
+    .sidebar-info { flex: 1; min-width: 0; }
+    .sidebar-name { font-size: 13px; font-weight: 700; color: var(--brown-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .sidebar-edit-link { font-size: 11px; color: var(--brown); text-decoration: none; display: flex; align-items: center; gap: 3px; margin-top: 3px; }
+    .sidebar-edit-link:hover { text-decoration: underline; }
+    .sidebar-edit-link .material-symbols-outlined { font-size: .75rem; }
+    .sidebar-divider { height: 1px; background: var(--border); margin-bottom: 16px; }
+    .sidebar-nav { display: flex; flex-direction: column; gap: 2px; }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 10px; font-size: 13px; font-weight: 500; cursor: pointer; color: var(--brown-dark); transition: background .15s, color .15s; border: none; background: none; width: 100%; text-align: left; text-decoration: none; }
+    .nav-item:hover { background: var(--gold-light); }
+    .nav-item.active { background: var(--gold); color: white; }
+    .nav-item.active .nav-icon { color: white; }
+    .nav-item.nav-danger:hover { background: #fee2e2; color: var(--red); }
+    .nav-item.nav-danger:hover .nav-icon { color: var(--red); }
+    .nav-icon { color: var(--gold-dark); font-size: 1rem !important; }
+    .nav-sub { padding-left: 34px; display: flex; flex-direction: column; gap: 1px; overflow: hidden; max-height: 0; transition: max-height .25s ease; }
+    .nav-sub.open { max-height: 120px; }
+    .nav-sub-item { font-size: 12px; color: var(--brown-dark); padding: 6px 10px; border-radius: 8px; cursor: pointer; border: none; background: none; text-align: left; width: 100%; transition: color .15s, background .15s; }
+    .nav-sub-item:hover { color: var(--gold-dark); background: var(--gold-light); }
+    .nav-sub-item.active { color: var(--gold-dark); font-weight: 600; }
+    .main { flex: 1; padding: 28px 32px; min-height: 520px; position: relative; overflow: hidden; }
+    .logo-top { position: absolute; top: 20px; right: 24px; }
+    .logo-top img { height: 36px; }
+    .tab { display: none; }
+    .tab.active { display: block; }
+    .section-title { font-size: 17px; font-weight: 700; color: var(--brown-dark); border-bottom: 2.5px solid var(--gold); padding-bottom: 6px; display: inline-block; margin-bottom: 6px; }
+    .section-sub { font-size: 11px; color: var(--text-muted); margin-bottom: 22px; }
+    .form-row { display: flex; align-items: center; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--border); }
+    .form-row:last-child { border-bottom: none; }
+    .form-label-col { width: 150px; flex-shrink: 0; }
+    .form-label { font-size: 12px; color: var(--text-muted); margin-bottom: 2px; }
+    .form-value { font-size: 13px; font-weight: 500; color: var(--brown-dark); }
+    .form-action { margin-left: auto; }
+    .form-action-btn { font-size: 12px; font-weight: 600; color: var(--gold-dark); background: none; border: none; cursor: pointer; padding: 4px 8px; border-radius: 6px; transition: background .15s; }
+    .form-action-btn:hover { background: var(--gold-light); }
+    .input-field { width: 100%; border: 1.5px solid var(--border); border-radius: 10px; padding: 10px 14px; font-size: 13px; font-family: 'Poppins', sans-serif; color: var(--brown-dark); background: white; outline: none; transition: border-color .2s; }
+    .input-field:focus { border-color: var(--gold); }
+    .input-with-eye { position: relative; }
+    .input-with-eye .input-field { padding-right: 40px; }
+    .eye-btn { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; }
+    .eye-btn .material-symbols-outlined { font-size: 1.1rem; }
+    .btn-primary { background: var(--gold); color: white; border: none; border-radius: 999px; padding: 9px 28px; font-size: 13px; font-weight: 600; font-family: 'Poppins', sans-serif; cursor: pointer; transition: background .2s, transform .15s; }
+    .btn-primary:hover { background: var(--gold-dark); transform: scale(1.02); }
+    .btn-outline { background: none; color: var(--brown-dark); border: 1.5px solid var(--border); border-radius: 999px; padding: 8px 20px; font-size: 13px; font-family: 'Poppins', sans-serif; cursor: pointer; transition: border-color .2s, background .2s; }
+    .btn-outline:hover { border-color: var(--gold); background: var(--gold-light); }
+    .profile-edit-layout { display: flex; gap: 28px; align-items: flex-start; }
+    .profile-form-col { flex: 1; }
+    .profile-photo-col { width: 160px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; }
+    .photo-box { width: 120px; height: 120px; border-radius: 16px; background: var(--gold-light); overflow: hidden; display: flex; align-items: center; justify-content: center; margin-bottom: 14px; border: 1.5px solid var(--border); }
+    .photo-icon { color: var(--gold); }
+    .photo-icon .material-symbols-outlined { font-size: 3rem; }
+    .danger-zone { background: var(--red-light); border: 1.5px solid #fca5a5; border-radius: 12px; padding: 18px 20px; margin-top: 20px; }
+    .danger-title { font-size: 11px; font-weight: 700; color: var(--red); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px; }
+    .danger-desc { font-size: 12px; color: #b91c1c; margin-bottom: 14px; line-height: 1.6; }
+    .btn-danger { background: var(--red); color: white; border: none; border-radius: 999px; padding: 8px 20px; font-size: 12px; font-weight: 600; font-family: 'Poppins', sans-serif; cursor: pointer; transition: background .2s; }
+    .btn-danger:hover { background: #991b1b; }
+    .riwayat-scroll-area { max-height: 460px; overflow-y: auto; padding-right: 4px; }
+    .riwayat-scroll-area::-webkit-scrollbar { width: 5px; }
+    .riwayat-scroll-area::-webkit-scrollbar-track { background: transparent; }
+    .riwayat-scroll-area::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+    .review-card { display: flex; gap: 14px; background: white; border: 1.5px solid var(--border); border-radius: 12px; padding: 14px; margin-bottom: 10px; }
+    .review-card:hover { border-color: var(--gold); }
+    .review-img-placeholder { width: 64px; height: 64px; min-width: 64px; border-radius: 10px; overflow: hidden; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: var(--gold-light); }
+    .review-img-placeholder img { width: 100%; height: 100%; object-fit: contain; padding: 6px; }
+    .review-body { flex: 1; min-width: 0; }
+    .review-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 4px; gap: 8px; }
+    .review-name { font-size: 14px; font-weight: 700; color: var(--brown-dark); }
+    .review-stars { display: flex; gap: 2px; margin-top: 2px; }
+    .star { color: #f5a623; font-size: .85rem; }
+    .star.empty { color: #d4c3be; }
+    .review-date { font-size: 11px; color: var(--text-muted); white-space: nowrap; flex-shrink: 0; }
+    .review-text { font-size: 12px; color: var(--text-body); margin-top: 6px; line-height: 1.6; word-break: break-word; overflow-wrap: break-word; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+    .review-actions { display: flex; gap: 10px; margin-top: 10px; }
+    .review-action-btn { display: flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 500; background: none; border: none; cursor: pointer; padding: 4px 8px; border-radius: 6px; transition: background .15s, color .15s; font-family: 'Poppins', sans-serif; }
+    .review-action-btn.edit { color: var(--gold-dark); }
+    .review-action-btn.edit:hover { background: var(--gold-light); }
+    .review-action-btn.delete { color: var(--red); }
+    .review-action-btn.delete:hover { background: #fee2e2; }
+    .review-action-btn .material-symbols-outlined { font-size: .9rem; }
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 100; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(2px); }
+    .modal-overlay.open { display: flex; }
+    .modal-box { background: white; border-radius: 16px; padding: 28px; width: 100%; max-width: 420px; border: 1.5px solid var(--border); box-shadow: 0 8px 32px rgba(0,0,0,.1); animation: modalIn .25s cubic-bezier(.34,1.56,.64,1); }
+    @keyframes modalIn { from { opacity: 0; transform: scale(.9) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+    .modal-icon { width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; }
+    .modal-icon.danger { background: #fee2e2; color: var(--red); }
+    .modal-icon.danger .material-symbols-outlined { font-size: 1.8rem; }
+    .modal-title { font-size: 16px; font-weight: 700; color: var(--brown-dark); text-align: center; margin-bottom: 8px; }
+    .modal-desc { font-size: 13px; color: #6b7280; text-align: center; line-height: 1.6; margin-bottom: 20px; }
+    .modal-btns { display: flex; gap: 10px; justify-content: center; }
+    .modal-textarea { width: 100%; border: 1.5px solid var(--border); border-radius: 10px; padding: 10px 14px; font-size: 13px; font-family: 'Poppins', sans-serif; color: var(--brown-dark); outline: none; resize: none; height: 100px; margin-bottom: 16px; transition: border-color .2s; }
+    .modal-textarea:focus { border-color: var(--gold); }
+    .modal-star-row { display: flex; gap: 8px; margin-bottom: 16px; }
+    .modal-star { font-size: 1.6rem; cursor: pointer; color: #d4c3be; transition: color .15s; }
+    .modal-star.on { color: #260701; }
+    .verify-screen { display: none; position: fixed; inset: 0; background: var(--bg); z-index: 200; align-items: center; justify-content: center; }
+    .verify-screen.open { display: flex; }
+    .verify-header { position: fixed; top: 0; left: 0; right: 0; padding: 16px 28px; display: flex; align-items: center; gap: 16px; border-bottom: 1.5px solid var(--border); background: var(--white); z-index: 10; }
+    .verify-header img { height: 32px; }
+    .verify-header-title { font-size: 15px; font-weight: 600; color: var(--brown-dark); }
+    .verify-card { background: white; border-radius: 16px; padding: 36px 32px; max-width: 440px; width: 100%; border: 1.5px solid var(--border); margin-top: 70px; }
+    .verify-back-btn { background: none; border: none; color: var(--gold-dark); cursor: pointer; font-size: 1.1rem; display: flex; margin-bottom: 20px; }
+    .verify-shield { width: 72px; height: 72px; border-radius: 50%; background: var(--gold-light); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: var(--gold); }
+    .verify-shield .material-symbols-outlined { font-size: 2.2rem; }
+    .verify-card-title { font-size: 17px; font-weight: 700; text-align: center; margin-bottom: 8px; }
+    .verify-card-sub { font-size: 13px; color: #6b7280; text-align: center; line-height: 1.6; margin-bottom: 24px; }
+    .verify-email-highlight { font-weight: 600; color: var(--brown-dark); }
+    .verify-email-icon { width: 80px; height: 80px; border-radius: 50%; background: var(--gold-light); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: var(--gold); }
+    .verify-email-icon .material-symbols-outlined { font-size: 2.5rem; }
+    .verify-resend { font-size: 12px; color: #6b7280; text-align: center; margin-top: 14px; }
+    .verify-resend-link-btn { color: var(--gold-dark); font-weight: 600; cursor: pointer; }
+    .verify-resend-link-btn:hover { text-decoration: underline; }
+    .verify-timer { color: var(--gold-dark); font-weight: 600; }
+    .verify-choices { display: flex; flex-direction: column; gap: 10px; }
+    .verify-choice-btn { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border: 1.5px solid var(--border); border-radius: 12px; background: none; cursor: pointer; font-family: 'Poppins', sans-serif; font-size: 13px; color: var(--brown-dark); transition: border-color .2s, background .2s; width: 100%; text-align: left; }
+    .verify-choice-btn:hover { border-color: var(--gold); background: var(--gold-light); }
+    .verify-choice-icon { color: var(--gold); }
+    .verify-choice-icon .material-symbols-outlined { font-size: 1.2rem; }
+    .warning-box { background: #fff5f5; border: 1.5px solid #fca5a5; border-radius: 12px; padding: 20px 24px; }
+    .warning-title { font-size: 13px; font-weight: 700; color: var(--red); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+    .warning-title .material-symbols-outlined { font-size: 1rem; }
+    .warning-desc { font-size: 12px; color: #6b7280; margin-bottom: 4px; line-height: 1.6; }
+    .warning-list { margin: 8px 0 16px 16px; font-size: 12px; color: var(--text-body); line-height: 1.8; }
+    .warning-list li { list-style: disc; }
+    .empty-state { text-align: center; padding: 48px 0; }
+    .empty-state .material-symbols-outlined { font-size: 3rem; color: #d1d5db; }
+    .empty-state p { font-size: 13px; color: var(--text-muted); margin-top: 10px; }
+    #ep-toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--brown-dark); color: white; padding: 10px 24px; border-radius: 999px; font-size: 13px; font-weight: 600; opacity: 0; pointer-events: none; transition: all .3s; z-index: 300; white-space: nowrap; }
+    #ep-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  </style>
+</head>
+<body>
+<div class="page-wrap">
+  <a class="back-btn" href="javascript:history.back()">
+    <span class="material-symbols-outlined">arrow_back</span> Kembali
+  </a>
+  <div class="card">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar" id="sidebar-avatar">
+          <div class="avatar-icon" id="sidebar-avatar-icon">
+            <span class="material-symbols-outlined">person</span>
+          </div>
+          <img id="sidebar-avatar-img" src="" alt="" style="display:none;width:100%;height:100%;object-fit:cover;border-radius:50%;"/>
+        </div>
+        <div class="sidebar-info">
+          <div class="sidebar-name" id="sidebar-name">Pengguna</div>
+          <a href="#" class="sidebar-edit-link" onclick="showTab('edit-profile');return false;">
+            <span class="material-symbols-outlined">edit</span> Ubah Profile
+          </a>
+        </div>
+      </div>
+      <div class="sidebar-divider"></div>
+      <nav class="sidebar-nav">
+        <button class="nav-item active" id="nav-edit-profile" onclick="showTab('edit-profile')">
+          <span class="material-symbols-outlined nav-icon">person</span> Edit Profile
+        </button>
+        <button class="nav-item" id="nav-pengaturan" onclick="togglePengaturanSub()">
+          <span class="material-symbols-outlined nav-icon">settings</span> Pengaturan akun
+        </button>
+        <div class="nav-sub" id="nav-sub-pengaturan">
+          <button class="nav-sub-item" id="sub-ubah-email" onclick="startUbahEmail()">Ubah Email</button>
+          <button class="nav-sub-item" id="sub-ubah-password" onclick="startUbahPassword()">Ubah Password</button>
+        </div>
+        <button class="nav-item" id="nav-riwayat" onclick="showTab('riwayat')">
+          <span class="material-symbols-outlined nav-icon">history</span> Riwayat Komentar
+        </button>
+        <button class="nav-item nav-danger" onclick="confirmKeluar()">
+          <span class="material-symbols-outlined nav-icon">logout</span> Keluar
+        </button>
+      </nav>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="main">
+      <div class="logo-top">
+        <a href="index.html"><img src="assets/images/logo/logoweb.png" alt="Alunan Nusantara"/></a>
+      </div>
+
+      <!-- TAB: EDIT PROFILE -->
+      <div class="tab active" id="tab-edit-profile">
+        <div class="section-title">Edit Profile</div>
+        <div class="section-sub">Kelola informasi profil Anda untuk mengontrol, melindungi dan mengamankan akun</div>
+        <div class="profile-edit-layout">
+          <div class="profile-form-col">
+            <div class="form-row">
+              <div class="form-label-col"><div class="form-label">Username</div></div>
+              <input type="text" class="input-field" id="input-username" placeholder="Username"/>
+            </div>
+            <div class="form-row">
+              <div class="form-label-col"><div class="form-label">Nama Lengkap</div></div>
+              <input type="text" class="input-field" id="input-nama" placeholder="Nama lengkap"/>
+            </div>
+            <div class="form-row">
+              <div class="form-label-col"><div class="form-label">Email</div></div>
+              <span id="display-email" style="font-size:13px;flex:1;">-</span>
+            </div>
+            <div class="form-row" style="border-bottom:none;">
+              <button class="btn-primary" onclick="saveProfile()">Simpan</button>
+            </div>
+          </div>
+          <div class="profile-photo-col">
+            <div class="photo-box" id="photo-box">
+              <div class="photo-icon" id="photo-icon"><span class="material-symbols-outlined">person</span></div>
+              <img id="photo-preview" src="" alt="" style="display:none;width:100%;height:100%;object-fit:cover;"/>
+            </div>
+            <label for="photo-input" class="btn-outline" style="cursor:pointer;font-size:12px;">Pilih Gambar</label>
+            <input type="file" id="photo-input" accept=".jpg,.jpeg,.png" style="display:none;" onchange="uploadPhoto(this)"/>
+            <p style="font-size:11px;color:#9ca3af;text-align:center;margin-top:10px;line-height:1.6;">Ukuran gambar: maks. 1 MB<br/>Format gambar: .JPEG, .PNG</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: PENGATURAN -->
+      <div class="tab" id="tab-pengaturan">
+        <div class="section-title">Informasi Keamanan</div>
+        <div class="section-sub">Kelola keamanan akun Anda</div>
+        <div class="form-row">
+          <div>
+            <div class="form-label">Alamat Email</div>
+            <div class="form-value" id="sec-email">-</div>
+          </div>
+          <div class="form-action">
+            <button class="form-action-btn" onclick="startUbahEmail()">Ubah Email</button>
+          </div>
+        </div>
+        <div class="form-row">
+          <div>
+            <div class="form-label">Kata Sandi</div>
+            <div class="form-value" style="letter-spacing:.15em;">&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;</div>
+          </div>
+          <div class="form-action">
+            <button class="form-action-btn" onclick="startUbahPassword()">Ubah Kata sandi</button>
+          </div>
+        </div>
+        <div class="danger-zone">
+          <div class="danger-title">Zona Bahaya</div>
+          <div class="danger-desc">Menghapus akun Anda akan menghapus semua data, riwayat komentar, dan koleksi yang tersimpan secara permanen.</div>
+          <button class="btn-danger" onclick="showTab('hapus-akun')">Hapus akun saya</button>
+        </div>
+      </div>
+
+      <!-- TAB: UBAH EMAIL -->
+      <div class="tab" id="tab-ubah-email">
+        <div class="section-title">Atur Email</div>
+        <div style="height:1px;background:var(--border);margin:6px 0 24px;"></div>
+        <div style="max-width:360px;">
+          <div style="font-size:12px;color:var(--text-muted);margin-bottom:16px;">Email Baru</div>
+          <input type="email" class="input-field" id="input-email-baru" placeholder="Masukkan email baru" style="margin-bottom:16px;"/>
+          <button class="btn-primary" onclick="submitUbahEmail()">Selanjutnya</button>
+        </div>
+      </div>
+
+      <!-- TAB: UBAH PASSWORD -->
+      <div class="tab" id="tab-ubah-password">
+        <div class="section-title">Atur Password</div>
+        <div style="height:1px;background:var(--border);margin:6px 0 8px;"></div>
+        <div class="section-sub">Untuk keamanan akun Anda, mohon untuk tidak menyebarkan password Anda ke orang lain</div>
+        <div style="max-width:400px;display:flex;flex-direction:column;gap:14px;">
+          <div>
+            <div style="font-size:12px;color:var(--text-muted);margin-bottom:8px;">Kata sandi Baru</div>
+            <div class="input-with-eye">
+              <input type="password" class="input-field" id="input-pw-new" placeholder=""/>
+              <button class="eye-btn" onclick="togglePw('input-pw-new',this)"><span class="material-symbols-outlined">visibility_off</span></button>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:12px;color:var(--text-muted);margin-bottom:8px;">Konfirmasi Kata sandi</div>
+            <div class="input-with-eye">
+              <input type="password" class="input-field" id="input-pw-confirm" placeholder=""/>
+              <button class="eye-btn" onclick="togglePw('input-pw-confirm',this)"><span class="material-symbols-outlined">visibility_off</span></button>
+            </div>
+          </div>
+          <button class="btn-primary" style="align-self:center;margin-top:6px;" onclick="submitUbahPassword()">Konfirmasi</button>
+        </div>
+      </div>
+
+      <!-- TAB: HAPUS AKUN -->
+      <div class="tab" id="tab-hapus-akun">
+        <button onclick="showTab('pengaturan')" style="display:inline-flex;align-items:center;gap:4px;font-size:12px;color:var(--gold-dark);background:none;border:none;cursor:pointer;margin-bottom:16px;font-family:'Poppins',sans-serif;">
+          <span class="material-symbols-outlined" style="font-size:.9rem;">arrow_back</span> Kembali
+        </button>
+        <div class="warning-box">
+          <div class="warning-title">
+            <span class="material-symbols-outlined">warning</span> Penting
+          </div>
+          <div class="warning-desc">Dengan klik 'Proses', kamu setuju bahwa:</div>
+          <ul class="warning-list">
+            <li>Setelah akun dihapus, kamu tidak dapat log in kembali dan melihat riwayat akun.</li>
+            <li>Semua data, riwayat komentar, dan koleksi yang tersimpan akan dihapus secara permanen.</li>
+            <li>Penghapusan akun tidak dapat dilakukan jika kamu memiliki hal yang belum selesai.</li>
+            <li>Alunan Nusantara mungkin masih menyimpan data tertentu sesuai kebijakan privasi yang berlaku.</li>
+            <li>Penghapusan akun tidak membebaskanmu dari kewajiban yang masih berjalan.</li>
+          </ul>
+          <button class="btn-danger" onclick="startHapusAkunVerify()">Proses</button>
+        </div>
+      </div>
+
+      <!-- TAB: RIWAYAT KOMENTAR -->
+      <div class="tab" id="tab-riwayat">
+        <div class="section-title">Riwayat Komentar</div>
+        <div class="section-sub">Komentar yang telah kamu tulis di berbagai alat musik</div>
+        <div class="riwayat-scroll-area" id="riwayat-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: EDIT KOMENTAR -->
+<div class="modal-overlay" id="modal-edit">
+  <div class="modal-box">
+    <div class="modal-title">Edit Komentar</div>
+    <div class="modal-desc">Ubah rating dan isi komentar kamu</div>
+    <div class="modal-star-row" id="modal-edit-stars">
+      <span class="modal-star" data-v="1">&#9733;</span>
+      <span class="modal-star" data-v="2">&#9733;</span>
+      <span class="modal-star" data-v="3">&#9733;</span>
+      <span class="modal-star" data-v="4">&#9733;</span>
+      <span class="modal-star" data-v="5">&#9733;</span>
+    </div>
+    <textarea class="modal-textarea" id="modal-edit-text" placeholder="Tulis komentar..."></textarea>
+    <div class="modal-btns">
+      <button class="btn-outline" onclick="closeModal('modal-edit')">Batal</button>
+      <button class="btn-primary" onclick="saveEditKomentar()">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: HAPUS KOMENTAR -->
+<div class="modal-overlay" id="modal-hapus-komen">
+  <div class="modal-box">
+    <div class="modal-icon danger"><span class="material-symbols-outlined">delete_forever</span></div>
+    <div class="modal-title">Hapus Komentar?</div>
+    <div class="modal-desc">Komentar ini akan dihapus permanen dan tidak bisa dikembalikan.</div>
+    <div class="modal-btns">
+      <button class="btn-outline" onclick="closeModal('modal-hapus-komen')">Batal</button>
+      <button class="btn-danger" onclick="confirmDeleteKomentar()">Ya, Hapus</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: KELUAR -->
+<div class="modal-overlay" id="modal-keluar">
+  <div class="modal-box">
+    <div class="modal-icon danger"><span class="material-symbols-outlined">logout</span></div>
+    <div class="modal-title">Apakah Anda yakin Keluar?</div>
+    <div class="modal-desc">Anda akan keluar dari akun ini.</div>
+    <div class="modal-btns">
+      <button class="btn-outline" onclick="closeModal('modal-keluar')">Tidak</button>
+      <button class="btn-danger" onclick="doLogout()">Ya</button>
+    </div>
+  </div>
+</div>
+
+<!-- VERIFY: PILIH METODE -->
+<div class="verify-screen" id="verify-pilih">
+  <div class="verify-header">
+    <img src="assets/images/logo/logoweb.png" alt="Alunan Nusantara"/>
+    <div class="verify-header-title">Pemeriksaan keamanan</div>
+  </div>
+  <div class="verify-card">
+    <button class="verify-back-btn" onclick="closeVerify('verify-pilih')">
+      <span class="material-symbols-outlined" style="color:var(--gold-dark);">arrow_back</span>
+    </button>
+    <div class="verify-shield"><span class="material-symbols-outlined">lock</span></div>
+    <div class="verify-card-title">Verifikasi Identitas</div>
+    <div class="verify-card-sub">Untuk keamanan akun, mohon verifikasi identitas kamu.</div>
+    <div class="verify-choices">
+      <button class="verify-choice-btn" onclick="showVerifyEmail()">
+        <div class="verify-choice-icon"><span class="material-symbols-outlined">mail</span></div>
+        Verifikasi dengan link email
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- VERIFY: TUNGGU EMAIL -->
+<div class="verify-screen" id="verify-email-sent">
+  <div class="verify-header">
+    <img src="assets/images/logo/logoweb.png" alt="Alunan Nusantara"/>
+    <div class="verify-header-title">Link Email</div>
+  </div>
+  <div class="verify-card">
+    <button class="verify-back-btn" onclick="goBackVerify()">
+      <span class="material-symbols-outlined" style="color:var(--gold-dark);">arrow_back</span>
+    </button>
+    <div class="verify-card-title">Tanggapi di Email</div>
+    <div class="verify-card-sub">Mohon tanggapi notifikasi yang dikirim ke <span class="verify-email-highlight" id="verify-email-display"></span></div>
+    <div class="verify-email-icon"><span class="material-symbols-outlined">mail</span></div>
+    <div class="verify-resend" id="verify-resend-area">
+      Mohon menunggu <span class="verify-timer" id="timer-val">60</span> detik sebelum mengirim ulang
+    </div>
+    <div class="verify-resend" id="verify-resend-link" style="display:none;">
+      Belum mendapat link? <span class="verify-resend-link-btn" onclick="startVerifyTimer()">Kirim ulang</span>
+    </div>
+    <div style="text-align:center;margin-top:20px;font-size:12px;color:#6b7280;line-height:1.7;">
+      Setelah klik link di email, kamu akan otomatis diarahkan ke halaman selanjutnya.<br/>
+      <span style="font-size:11px;color:#9ca3af;">Tutup tab verifikasi dan kembali ke sini.</span>
+      <br/><br/>
+    </div>
+  </div>
+</div>
+
+<div id="ep-toast"></div>
+
+<script>
+// ============================================================
+// HELPER: ambil user dari localStorage (cache)
+// ============================================================
+function getUser() { return JSON.parse(localStorage.getItem('an_user') || 'null'); }
+function saveUser(updated) { localStorage.setItem('an_user', JSON.stringify(updated)); }
+
+// ============================================================
+// MAGIC LINK REDIRECT HANDLER
+// Dipasang SEBELUM auth check agar tidak terlewat
+// ============================================================
+supabase.auth.onAuthStateChange(async (event, session) => {
+  if (event === 'SIGNED_IN' && session) {
+    const savedPurpose = sessionStorage.getItem('verifyPurpose');
+
+    if (savedPurpose) {
+      // Ini adalah redirect dari magic link verifikasi kita
+      sessionStorage.removeItem('verifyPurpose');
+      history.replaceState(null, '', window.location.pathname);
+
+      // Update user di localStorage dengan session terbaru
+      currentUserId = session.user.id;
+      saveUser({ ...getUser(), id: session.user.id, email: session.user.email });
+
+      const run = () => {
+        document.getElementById('verify-pilih')?.classList.remove('open');
+        document.getElementById('verify-email-sent')?.classList.remove('open');
+        clearInterval(timerInterval);
+        afterVerifyShowForm(savedPurpose);
+      };
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', run);
+      } else {
+        run();
+      }
+    }
+    // Jika tidak ada savedPurpose = login biasa, biarkan auth check di bawah yang handle
+  }
+});
+
+// ============================================================
+// AUTH CHECK
+// ============================================================
+let currentUserId = null;
+
+supabase.auth.getSession().then(({ data: { session } }) => {
+  if (!session) {
+    localStorage.removeItem('an_user');
+    window.location.href = 'login.html';
+    return;
+  }
+  currentUserId = session.user.id;
+  const cached = getUser();
+  if (cached && cached.id !== currentUserId) {
+    saveUser({ ...cached, id: currentUserId });
+  } else if (!cached) {
+    saveUser({ id: currentUserId, email: session.user.email });
+  }
+  loadUserData();
+});
+
+// ============================================================
+// TOAST
+// ============================================================
+function showToast(msg) {
+  const t = document.getElementById('ep-toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ============================================================
+// LOAD USER DATA ke UI
+// ============================================================
+function loadUserData() {
+  const user = getUser();
+  if (!user) return;
+  document.getElementById('sidebar-name').textContent = user.name || 'Pengguna';
+  document.getElementById('input-username').value = user.username || '';
+  document.getElementById('input-nama').value = user.name || '';
+  const email = user.email || '';
+  if (email) {
+    const masked = email.slice(0,2) + '**********' + email.slice(email.indexOf('@'));
+    document.getElementById('display-email').textContent = masked;
+    document.getElementById('sec-email').textContent = masked;
+    document.getElementById('verify-email-display').textContent = masked;
+  }
+  if (user.photo) {
+    document.getElementById('sidebar-avatar-icon').style.display = 'none';
+    const sImg = document.getElementById('sidebar-avatar-img');
+    sImg.src = user.photo; sImg.style.display = 'block';
+    document.getElementById('photo-icon').style.display = 'none';
+    const prev = document.getElementById('photo-preview');
+    prev.src = user.photo; prev.style.display = 'block';
+  } else {
+    document.getElementById('sidebar-avatar-icon').style.display = 'flex';
+    document.getElementById('sidebar-avatar-img').style.display = 'none';
+    document.getElementById('photo-icon').style.display = 'flex';
+    document.getElementById('photo-preview').style.display = 'none';
+  }
+}
+
+// ============================================================
+// UPLOAD FOTO ke Supabase Storage
+// ============================================================
+async function uploadPhoto(input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 1024*1024) { showToast('Ukuran gambar maks 1MB!'); return; }
+  if (!file.type.match('image/(jpeg|png)')) { showToast('Format harus .JPEG atau .PNG!'); return; }
+
+  const reader = new FileReader();
+  reader.onload = e => {
+    document.getElementById('photo-icon').style.display = 'none';
+    document.getElementById('photo-preview').src = e.target.result;
+    document.getElementById('photo-preview').style.display = 'block';
+    document.getElementById('sidebar-avatar-icon').style.display = 'none';
+    document.getElementById('sidebar-avatar-img').src = e.target.result;
+    document.getElementById('sidebar-avatar-img').style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+
+  showToast('Mengupload foto...');
+
+  const uid = currentUserId || getUser()?.id;
+  if (!uid) { showToast('Gagal: belum login'); return; }
+  const ext = file.name.split('.').pop();
+  const filePath = `${uid}/avatar.${ext}`;
+
+  const { error: upErr } = await supabase.storage
+    .from('avatars')
+    .upload(filePath, file, { upsert: true, contentType: file.type });
+
+  if (upErr) { showToast('Upload gagal: ' + upErr.message); return; }
+
+  const { data: urlData } = supabase.storage.from('avatars').getPublicUrl(filePath);
+  const photoUrl = urlData.publicUrl + '?t=' + Date.now();
+
+  await supabase.from('profiles').upsert({ id: uid, photo_url: photoUrl }, { onConflict: 'id' });
+  saveUser({ ...getUser(), photo: photoUrl });
+  document.getElementById('photo-preview').src = photoUrl;
+  document.getElementById('sidebar-avatar-img').src = photoUrl;
+  showToast('Foto profil berhasil disimpan!');
+}
+
+// ============================================================
+// TAB NAVIGATION
+// ============================================================
+const allTabs = ['edit-profile','pengaturan','ubah-email','ubah-password','hapus-akun','riwayat'];
+const navMap  = {'edit-profile':'nav-edit-profile','pengaturan':'nav-pengaturan','ubah-email':'nav-pengaturan','ubah-password':'nav-pengaturan','hapus-akun':'nav-pengaturan','riwayat':'nav-riwayat'};
+const subMap  = {'ubah-email':'sub-ubah-email','ubah-password':'sub-ubah-password'};
+
+function showTab(tab) {
+  allTabs.forEach(t => { const el = document.getElementById('tab-'+t); if(el) el.classList.remove('active'); });
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.querySelectorAll('.nav-sub-item').forEach(n => n.classList.remove('active'));
+  const tabEl = document.getElementById('tab-'+tab);
+  if (tabEl) tabEl.classList.add('active');
+  const navId = navMap[tab];
+  if (navId) document.getElementById(navId)?.classList.add('active');
+  const subId = subMap[tab];
+  if (subId) document.getElementById(subId)?.classList.add('active');
+  if (['ubah-email','ubah-password','pengaturan','hapus-akun'].includes(tab)) {
+    document.getElementById('nav-sub-pengaturan').classList.add('open');
+  }
+  if (tab === 'riwayat') buildRiwayat();
+}
+
+function togglePengaturanSub() {
+  const sub = document.getElementById('nav-sub-pengaturan');
+  sub.classList.toggle('open');
+  if (sub.classList.contains('open')) showTab('pengaturan');
+}
+
+if (window.location.hash === '#pengaturan') showTab('pengaturan');
+
+// ============================================================
+// SAVE PROFILE
+// ============================================================
+async function saveProfile() {
+  const username = document.getElementById('input-username').value.trim();
+  const nama = document.getElementById('input-nama').value.trim();
+  if (!username || !nama) { showToast('Username dan nama tidak boleh kosong!'); return; }
+
+  const uid = currentUserId || getUser()?.id;
+  if (!uid) { showToast('Sesi tidak ditemukan, coba login ulang.'); return; }
+
+  const { error } = await supabase.from('profiles').upsert(
+    { id: uid, username, full_name: nama },
+    { onConflict: 'id' }
+  );
+
+  if (error) { showToast('Gagal simpan: ' + error.message); return; }
+
+  saveUser({ ...getUser(), username, name: nama });
+  document.getElementById('sidebar-name').textContent = nama;
+  showToast('Profil berhasil disimpan!');
+}
+
+// ============================================================
+// VERIFY FLOW
+// ============================================================
+function startUbahEmail()    { openVerify('ubah-email'); }
+function startUbahPassword() { openVerify('ubah-password'); }
+
+function afterVerifyShowForm(purpose) {
+  if (purpose === 'ubah-email')         showTab('ubah-email');
+  else if (purpose === 'ubah-password') showTab('ubah-password');
+  else if (purpose === 'hapus-akun')    hapusAkunFinal();
+}
+
+// ============================================================
+// UBAH EMAIL
+// ============================================================
+async function submitUbahEmail() {
+  const val = document.getElementById('input-email-baru').value.trim();
+  if (!val || !val.includes('@')) { showToast('Email tidak valid!'); return; }
+
+  const { error } = await supabase.auth.updateUser({ email: val });
+  if (error) { showToast('Gagal ubah email: ' + error.message); return; }
+
+  const masked = val.slice(0,2) + '**********' + val.slice(val.indexOf('@'));
+  document.getElementById('display-email').textContent = masked;
+  document.getElementById('sec-email').textContent = masked;
+  saveUser({ ...getUser(), email: val });
+  showToast('Email berhasil diubah! Cek inbox untuk konfirmasi.');
+  showTab('pengaturan');
+}
+
+// ============================================================
+// UBAH PASSWORD
+// ============================================================
+async function submitUbahPassword() {
+  const pw  = document.getElementById('input-pw-new').value;
+  const pw2 = document.getElementById('input-pw-confirm').value;
+  if (!pw) { showToast('Kata sandi tidak boleh kosong!'); return; }
+  if (pw.length < 6) { showToast('Kata sandi minimal 6 karakter!'); return; }
+  if (pw !== pw2) { showToast('Konfirmasi kata sandi tidak sama!'); return; }
+
+  const { error } = await supabase.auth.updateUser({ password: pw });
+  if (error) { showToast('Gagal ubah password: ' + error.message); return; }
+
+  showToast('Kata sandi berhasil diubah!');
+  showTab('pengaturan');
+}
+
+function togglePw(id, btn) {
+  const inp = document.getElementById(id);
+  if (inp.type === 'password') {
+    inp.type = 'text';
+    btn.querySelector('.material-symbols-outlined').textContent = 'visibility';
+  } else {
+    inp.type = 'password';
+    btn.querySelector('.material-symbols-outlined').textContent = 'visibility_off';
+  }
+}
+
+function startHapusAkunVerify() { openVerify('hapus-akun'); }
+function hapusAkunFinal() {
+  localStorage.removeItem('an_user');
+  window.location.href = 'index.html';
+}
+
+let verifyPurpose = '';
+function openVerify(purpose) { verifyPurpose = purpose; document.getElementById('verify-pilih').classList.add('open'); }
+function closeVerify(id) {
+  document.getElementById(id).classList.remove('open');
+  if (verifyPurpose === 'hapus-akun') showTab('hapus-akun');
+}
+
+async function showVerifyEmail() {
+  document.getElementById('verify-pilih').classList.remove('open');
+  document.getElementById('verify-email-sent').classList.add('open');
+  startVerifyTimer();
+
+  // Simpan purpose ke sessionStorage SEBELUM kirim OTP (agar tersedia setelah redirect)
+  sessionStorage.setItem('verifyPurpose', verifyPurpose);
+
+  const { error } = await supabase.auth.signInWithOtp({
+    email: getUser()?.email,
+    options: {
+      shouldCreateUser: false,
+      redirectTo: 'https://stately-manatee-220ef9.netlify.app/edit-profil.html'
+    }
+  });
+
+  if (error) {
+    showToast('Gagal mengirim email verifikasi: ' + error.message);
+  }
+}
+
+function goBackVerify() {
+  document.getElementById('verify-email-sent').classList.remove('open');
+  document.getElementById('verify-pilih').classList.add('open');
+}
+
+let timerInterval = null;
+function startVerifyTimer() {
+  clearInterval(timerInterval);
+  let sec = 60;
+  document.getElementById('timer-val').textContent = sec;
+  document.getElementById('verify-resend-area').style.display = 'block';
+  document.getElementById('verify-resend-link').style.display = 'none';
+  timerInterval = setInterval(() => {
+    sec--;
+    document.getElementById('timer-val').textContent = sec;
+    if (sec <= 0) {
+      clearInterval(timerInterval);
+      document.getElementById('verify-resend-area').style.display = 'none';
+      document.getElementById('verify-resend-link').style.display = 'block';
+    }
+  }, 1000);
+}
+
+function openModal(id)  { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function confirmKeluar() { openModal('modal-keluar'); }
+
+async function doLogout() {
+  await supabase.auth.signOut();
+  localStorage.removeItem('an_user');
+  window.location.href = 'index.html';
+}
+
+// ============================================================
+// ALAT MUSIK IMAGE MAP
+// ============================================================
+const ALAT_IMGS = {
+  kendang:  'assets/images/alat musik/kendang.png',
+  slenthem: 'assets/images/alat musik/slenthem.png',
+  bonang:   'assets/images/alat musik/bonang.png',
+  gambang:  'assets/images/alat musik/gambang.png',
+  siter:    'assets/images/alat musik/siter.png',
+  suling:   'assets/images/alat musik/suling.png',
+  rebab:    'assets/images/alat musik/rebab.png',
+  angklung: 'assets/images/alat musik/angklung.png',
+};
+
+// ============================================================
+// RIWAYAT KOMENTAR
+// ============================================================
+let cachedComments   = [];
+let editIndex        = -1;
+let editModalRating  = 0;
+let deleteIndexKomen = -1;
+
+async function getAllUserComments() {
+  let uid = currentUserId;
+  if (!uid) {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) return [];
+    uid = session.user.id;
+    currentUserId = uid;
+    saveUser({ ...getUser(), id: uid });
+  }
+
+  const { data, error } = await supabase
+    .from('reviews')
+    .select('id, alat_key, provinsi, rating, text, created_at')
+    .eq('user_id', uid)
+    .order('created_at', { ascending: false });
+
+  if (error) { console.error('Error fetch reviews:', error); return []; }
+
+  return (data || []).map(r => ({
+    id:       r.id,
+    _alatKey: r.alat_key,
+    provinsi: r.provinsi,
+    rating:   r.rating,
+    text:     r.text,
+    time:     new Date(r.created_at).toLocaleDateString('id-ID', { day:'numeric', month:'long', year:'numeric' }),
+  }));
+}
+
+async function buildRiwayat() {
+  const list = document.getElementById('riwayat-list');
+  list.innerHTML = `<div class="empty-state"><span class="material-symbols-outlined">hourglass_empty</span><p>Memuat...</p></div>`;
+  const comments = await getAllUserComments();
+  cachedComments = comments;
+  list.innerHTML = '';
+  if (comments.length === 0) {
+    list.innerHTML = `<div class="empty-state"><span class="material-symbols-outlined">rate_review</span><p>Belum ada komentar yang ditulis</p></div>`;
+    return;
+  }
+  comments.forEach((r, i) => {
+    const starsHtml = Array.from({length:5}, (_,j) =>
+      `<span class="star${j < r.rating ? '' : ' empty'} material-symbols-outlined" style="font-size:.9rem;">star</span>`
+    ).join('');
+    const alatName = r._alatKey ? (r._alatKey.charAt(0).toUpperCase() + r._alatKey.slice(1)) : 'Alat Musik';
+    const imgSrc   = ALAT_IMGS[r._alatKey] || '';
+    const card = document.createElement('div');
+    card.className = 'review-card';
+    card.innerHTML = `
+      <div class="review-img-placeholder">
+        ${imgSrc
+          ? `<img src="${imgSrc}" alt="${alatName}" onerror="this.style.opacity='0.2'"/>`
+          : '<span class="material-symbols-outlined" style="font-size:1.8rem;color:#c9a84c;">music_note</span>'}
+      </div>
+      <div class="review-body">
+        <div class="review-top">
+          <div>
+            <div class="review-name">${alatName}</div>
+            <div class="review-stars">${starsHtml}</div>
+          </div>
+          <div class="review-date">${r.time || ''}</div>
+        </div>
+        <div class="review-text">"${r.text}"</div>
+        <div class="review-actions">
+          <button class="review-action-btn edit" onclick="openEditModal(${i})">
+            <span class="material-symbols-outlined">edit</span> Edit
+          </button>
+          <button class="review-action-btn delete" onclick="openHapusKomenModal(${i})">
+            <span class="material-symbols-outlined">delete</span> Hapus
+          </button>
+        </div>
+      </div>`;
+    list.appendChild(card);
+  });
+}
+
+// ============================================================
+// EDIT & DELETE KOMENTAR
+// ============================================================
+document.querySelectorAll('#modal-edit-stars .modal-star').forEach(s => {
+  s.addEventListener('click',     () => { editModalRating = parseInt(s.dataset.v); updateModalStars(editModalRating); });
+  s.addEventListener('mouseover', () => updateModalStars(parseInt(s.dataset.v)));
+  s.addEventListener('mouseout',  () => updateModalStars(editModalRating));
+});
+
+function updateModalStars(val) {
+  document.querySelectorAll('#modal-edit-stars .modal-star').forEach((s,i) => s.classList.toggle('on', i < val));
+}
+
+function openEditModal(i) {
+  editIndex = i;
+  editModalRating = cachedComments[i].rating || 0;
+  document.getElementById('modal-edit-text').value = cachedComments[i].text;
+  updateModalStars(editModalRating);
+  openModal('modal-edit');
+}
+
+async function saveEditKomentar() {
+  if (editIndex < 0) return;
+  if (editModalRating === 0) { showToast('Pilih bintang dulu!'); return; }
+  const newText = document.getElementById('modal-edit-text').value.trim();
+  if (newText.length < 3) { showToast('Komentar terlalu pendek!'); return; }
+  const c = cachedComments[editIndex];
+  const { error } = await supabase.from('reviews')
+    .update({ text: newText, rating: editModalRating })
+    .eq('id', c.id);
+  if (error) { showToast('Gagal update: ' + error.message); return; }
+  closeModal('modal-edit');
+  await buildRiwayat();
+  showToast('Komentar berhasil diperbarui!');
+}
+
+function openHapusKomenModal(i) { deleteIndexKomen = i; openModal('modal-hapus-komen'); }
+
+async function confirmDeleteKomentar() {
+  if (deleteIndexKomen < 0) return;
+  const c = cachedComments[deleteIndexKomen];
+  const { error } = await supabase.from('reviews').delete().eq('id', c.id);
+  if (error) { showToast('Gagal hapus: ' + error.message); return; }
+  closeModal('modal-hapus-komen');
+  deleteIndexKomen = -1;
+  await buildRiwayat();
+  showToast('Komentar dihapus.');
+}
+</script>
+</body>
+</html>

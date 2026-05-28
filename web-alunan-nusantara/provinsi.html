@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <!-- Supabase SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = "https://paowtmytttinwndebftm.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_2-SfXv7pLRiDhTOJyAzDdg_SDZnj7ji";
+    var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    async function cekLogin() {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        window.location.href = session ? "profileuser.html" : "login.html";
+      } catch(e) {
+        window.location.href = "login.html";
+      }
+    } } = await supabase.auth.getSession();
+      window.location.href = session ? "profileuser.html" : "login.html";
+    }
+  </script>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Jelajah Provinsi - Alunan Nusantara</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Lily+Script+One&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Poppins', 'sans-serif'], lily: ['Lily Script One', 'cursive'] },
+          colors: { 'brand-dark': '#2c1408', 'brand-brown': '#260701', 'secondary': '#815525', 'surface-variant': '#f2dfcf' }
+        }
+      }
+    }
+  </script>
+  <style>
+    .navbar-pill { background:white; border-radius:9999px; box-shadow:0 4px 20px rgba(44,20,8,0.12); height:52px; display:flex; align-items:center; }
+    .navbar-wrapper { transition:padding 0.3s ease; }
+    @keyframes fadeSlideUp { from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);} }
+    @keyframes popIn { 0%{opacity:0;transform:scale(0.88);}70%{transform:scale(1.03);}100%{opacity:1;transform:scale(1);} }
+    .anim-fade-up { opacity:0; animation:fadeSlideUp 0.6s ease forwards; }
+    .anim-pop-in  { opacity:0; animation:popIn 0.55s cubic-bezier(.34,1.56,.64,1) forwards; }
+    .delay-100{animation-delay:.1s} .delay-200{animation-delay:.2s} .delay-300{animation-delay:.3s}
+    .reveal { opacity:0; transform:translateY(24px); transition:opacity .6s ease,transform .6s ease; }
+    .reveal.visible { opacity:1; transform:translateY(0); }
+
+    /* === PROVINCE CARD === */
+    .province-card {
+      transition: transform 0.3s cubic-bezier(.34,1.56,.64,1), box-shadow 0.3s ease;
+      cursor: pointer;
+      position: relative;
+    }
+    .province-card:hover {
+      transform: translateY(-8px) scale(1.04);
+      box-shadow: 0 16px 40px rgba(44,20,8,0.18);
+    }
+    .province-card:hover .prov-island-img {
+      filter: drop-shadow(0 4px 10px rgba(44,20,8,0.35)) brightness(0.88);
+    }
+    .province-card::after {
+      content: '👆 Klik!';
+      position: absolute; top: -10px; right: -8px;
+      background: #815525; color: white;
+      font-size: 9px; font-weight: 600; font-family: 'Poppins', sans-serif;
+      padding: 3px 8px; border-radius: 20px;
+      opacity: 0; transform: scale(0.7);
+      transition: opacity 0.2s, transform 0.2s;
+      white-space: nowrap; pointer-events: none;
+    }
+    .province-card:hover::after { opacity: 1; transform: scale(1); }
+
+    .province-item.hidden-search { display:none !important; }
+    .user-dropdown { display:none; }
+    .user-dropdown.open { display:block; }
+
+    /* === POPUP OVERLAY === */
+    .popup-overlay {
+      position: fixed; inset: 0;
+      background: rgba(44, 20, 8, 0.5);
+      z-index: 9999;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.25s ease;
+      padding: 16px;
+    }
+    .popup-overlay.active { opacity: 1; pointer-events: all; }
+
+    .popup-box {
+      background: white;
+      border-radius: 28px;
+      width: 360px;
+      max-width: 100%;
+      overflow: hidden;
+      transform: scale(0.82) translateY(32px);
+      transition: transform 0.38s cubic-bezier(.34,1.56,.64,1);
+      position: relative;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .popup-overlay.active .popup-box { transform: scale(1) translateY(0); }
+
+    /* Header gradient */
+    .popup-header {
+      background: linear-gradient(135deg, #2c1408 0%, #6b3f1a 60%, #815525 100%);
+      padding: 32px 24px 24px;
+      text-align: center;
+      position: relative;
+    }
+
+    /* Floating island image */
+    .popup-island-img {
+      width: 110px; height: 88px;
+      object-fit: contain;
+      filter: brightness(0) invert(1) drop-shadow(0 6px 14px rgba(0,0,0,0.4));
+      margin: 0 auto 12px;
+      display: block;
+      animation: floatIsland 3s ease-in-out infinite;
+    }
+    @keyframes floatIsland {
+      0%, 100% { transform: translateY(0px) rotate(-1deg); }
+      50%       { transform: translateY(-7px) rotate(1deg); }
+    }
+
+    .popup-prov-name {
+      color: white;
+      font-size: 21px; font-weight: 700;
+      font-family: 'Poppins', sans-serif;
+      letter-spacing: 0.2px;
+    }
+    .popup-prov-tagline {
+      color: rgba(255,255,255,0.72);
+      font-size: 11px; margin-top: 5px;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    /* Decorative dots on header */
+    .popup-header::before {
+      content: '';
+      position: absolute; bottom: -1px; left: 0; right: 0;
+      height: 20px;
+      background: white;
+      border-radius: 20px 20px 0 0;
+    }
+
+    .popup-close {
+      position: absolute; top: 14px; right: 16px;
+      background: rgba(255,255,255,0.18);
+      border: 1.5px solid rgba(255,255,255,0.3);
+      color: white; width: 32px; height: 32px;
+      border-radius: 50%; font-size: 15px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s, transform 0.2s;
+      font-family: 'Poppins', sans-serif;
+      line-height: 1;
+    }
+    .popup-close:hover { background: rgba(255,255,255,0.32); transform: rotate(90deg); }
+
+    /* Body */
+    .popup-body { padding: 4px 22px 24px; }
+
+    .popup-info-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 10px; margin-bottom: 16px;
+    }
+    .info-chip {
+      background: #fff8f4;
+      border: 1px solid #f2dfcf;
+      border-radius: 14px;
+      padding: 10px 12px; text-align: center;
+    }
+    .chip-label {
+      font-size: 9px; color: #aaa;
+      text-transform: uppercase; letter-spacing: 0.7px;
+      font-weight: 600; font-family: 'Poppins', sans-serif;
+    }
+    .chip-val {
+      font-size: 13px; font-weight: 700;
+      color: #2c1408; margin-top: 3px;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .popup-desc {
+      font-size: 12px; color: #666;
+      line-height: 1.65;
+      background: #fff8f4;
+      border-radius: 14px;
+      padding: 12px 14px;
+      margin-bottom: 14px;
+      border-left: 3px solid #815525;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .popup-music-label {
+      font-size: 10px; font-weight: 700;
+      color: #aaa; text-transform: uppercase;
+      letter-spacing: 0.6px; margin-bottom: 8px;
+      font-family: 'Poppins', sans-serif;
+    }
+    .popup-music-tags {
+      display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 18px;
+    }
+    .music-tag {
+      background: #f2dfcf; color: #2c1408;
+      font-size: 10px; font-weight: 600;
+      padding: 5px 11px; border-radius: 20px;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .popup-btn {
+      display: block; width: 100%; padding: 13px;
+      border-radius: 16px; border: none;
+      font-size: 13px; font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+      font-family: 'Poppins', sans-serif;
+      letter-spacing: 0.3px;
+    }
+    .popup-btn.available {
+      background: #2c1408; color: white;
+    }
+    .popup-btn.available:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(44,20,8,0.28);
+      background: #3e1d0c;
+    }
+    .popup-btn.unavailable {
+      background: #f2dfcf; color: #b0998a;
+      cursor: default;
+    }
+
+    /* === CONFETTI === */
+    .confetti-dot {
+      position: fixed;
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      pointer-events: none; z-index: 99999;
+      animation: confettiFly 0.85s ease-out forwards;
+    }
+    @keyframes confettiFly {
+      from { opacity: 1; transform: scale(1) translate(0, 0); }
+      to   { opacity: 0; transform: scale(0.2) translate(var(--tx), var(--ty)); }
+    }
+  </style>
+</head>
+<body class="font-sans antialiased bg-[#fff8f4] text-[#2c1408] overflow-x-hidden">
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="w-full sticky top-0 z-50 py-4 navbar-wrapper" id="main-nav">
+    <div class="max-w-7xl mx-auto px-8">
+      <div class="navbar-pill anim-pop-in" style="justify-content:space-between;width:100%;padding:0 24px 0 20px;">
+        <img alt="Alunan Nusantara Logo" class="h-10" src="assets/images/logo/logoweb.png"/>
+        <div class="flex items-center gap-8">
+          <a href="index.html"    class="text-sm hover:opacity-60 transition-opacity" style="color:#260701;">Beranda</a>
+          <a href="provinsi.html" class="text-sm font-semibold" style="color:#260701;border-bottom:2px solid #260701;padding-bottom:2px;">Jelajahi</a>
+          <a href="hubungi.html"  class="text-sm hover:opacity-60 transition-opacity" style="color:#260701;">Hubungi kami</a>
+          <a href="login.html" class="nav-login text-sm hover:opacity-60 transition-opacity" style="color:#260701;">Masuk</a>
+
+          <!-- Avatar -->
+          <div class="nav-user hidden relative" id="nav-user-btn" style="cursor:pointer;">
+            <div class="w-9 h-9 rounded-full bg-[#f2dfcf] flex items-center justify-center overflow-hidden border-2 border-[#815525]">
+              <span class="nav-avatar-icon material-symbols-outlined text-[#815525]" style="font-size:1.3rem;">person</span>
+              <img class="nav-avatar-img hidden w-full h-full object-cover" src="" alt=""/>
+            </div>
+            <div class="user-dropdown absolute right-0 top-12 bg-white rounded-2xl shadow-xl border border-[#f2dfcf] min-w-[180px] z-50 overflow-hidden" id="nav-dropdown">
+              <div class="px-4 pt-3 pb-2 text-xs font-bold text-white bg-[#815525]">Akun Saya</div>
+              <a href="profileuser.html" class="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-[#f2dfcf] transition-colors" style="color:#260701;">
+                <span class="material-symbols-outlined text-[#815525]" style="font-size:1rem;">person</span>
+                <span class="nav-user-name font-semibold">Pengguna</span>
+              </a>
+              <a href="editprofile.html#pengaturan" class="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-[#f2dfcf] transition-colors" style="color:#260701;">
+                <span class="material-symbols-outlined text-[#815525]" style="font-size:1rem;">settings</span> Pengaturan akun
+              </a>
+              <button onclick="logout()" class="flex items-center gap-2 w-full px-4 py-2.5 text-sm hover:bg-[#f2dfcf] transition-colors text-left border-t border-[#f2dfcf]" style="color:#260701;">
+                <span class="material-symbols-outlined text-[#815525]" style="font-size:1rem;">logout</span> Keluar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ===== HERO ===== -->
+  <section class="max-w-7xl mx-auto px-8 mt-2">
+    <div class="relative w-full rounded-[40px] overflow-hidden flex items-center justify-center shadow-lg"
+         style="background-image:url('assets/images/background/jelajahi2bg.png');background-size:cover;background-position:center;min-height:420px;">
+      <div class="absolute inset-0 bg-gradient-to-b from-white/40 via-black/15 to-black/50"></div>
+      <div class="relative z-10 text-center px-4">
+        <h1 class="anim-fade-up delay-100" style="font-family:'Lily Script One',cursive;font-size:4rem;line-height:1.05;color:white;text-shadow:0 4px 24px rgb(0,0,0);">
+          Jelajah Provinsi
+        </h1>
+        <p class="mt-3 text-white/90 text-sm max-w-md mx-auto leading-relaxed anim-fade-up delay-200"
+           style="text-shadow:0 2px 8px rgba(0,0,0,0.35);">
+          Jelajahi dan temukan alat musik tradisional dari setiap provinsi di Indonesia
+        </p>
+        <div class="mt-6 max-w-sm mx-auto anim-fade-up delay-300">
+          <div class="bg-white/95 rounded-full px-5 py-3 flex items-center gap-3 shadow-xl">
+            <span class="material-symbols-outlined text-[#815525]" style="font-size:1.1rem;">search</span>
+            <input id="province-search" type="text" placeholder="Cari Provinsi..."
+                   class="flex-1 text-sm text-[#2c1408] bg-transparent placeholder-gray-400 outline-none"/>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PROVINCE GRID ===== -->
+  <main>
+    <section class="max-w-7xl mx-auto px-8 py-16 reveal">
+      <div class="text-center mb-12">
+        <h2 class="text-2xl font-bold text-[#2c1408]">Pilih provinsi yang ingin kamu jelajahi!</h2>
+        <div class="w-24 h-1 bg-[#815525] mx-auto mt-3 rounded-full"></div>
+      </div>
+      <div id="province-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5"></div>
+      <div id="no-result" class="text-center py-16 hidden">
+        <span class="material-symbols-outlined text-gray-300" style="font-size:3rem;">search_off</span>
+        <p class="mt-3 text-gray-400 text-sm">Provinsi tidak ditemukan</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="bg-[#2e150c] text-white mt-10 w-full">
+    <div class="max-w-7xl mx-auto px-8 py-10 grid grid-cols-1 md:grid-cols-3 gap-10">
+      <div class="flex flex-col gap-6">
+        <div class="flex items-center gap-4"><div class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-[#2e150c]"><span class="material-symbols-outlined">location_on</span></div><div><h4 class="font-semibold text-sm">Alamat</h4><p class="text-sm opacity-80">Jl. Tanimbar No.22, Kota Malang</p></div></div>
+        <div class="flex items-center gap-4"><div class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-[#2e150c]"><span class="material-symbols-outlined">email</span></div><div><h4 class="font-semibold text-sm">Email</h4><p class="text-sm opacity-80">sevianthalita@gmail.com</p></div></div>
+        <div class="flex items-center gap-4"><div class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-[#2e150c]"><span class="material-symbols-outlined">phone</span></div><div><h4 class="font-semibold text-sm">Telepon</h4><p class="text-sm opacity-80">+62 822-2813-7721</p></div></div>
+      </div>
+      <div class="flex flex-col gap-6">
+        <h4 class="font-semibold text-lg">Ikuti sosial media kita</h4>
+        <div class="flex items-center gap-4"><div class="w-10 h-10 bg-white rounded-full flex items-center justify-center flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2e150c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="#2e150c" stroke="none"/></svg></div><p class="text-sm opacity-80">@alunannusantara</p></div>
+        <div class="flex items-center gap-4"><div class="w-10 h-10 bg-white rounded-full flex items-center justify-center flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#2e150c"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></div><p class="text-sm opacity-80">@alunannusantara</p></div>
+        <div class="flex items-center gap-4"><div class="w-10 h-10 bg-white rounded-full flex items-center justify-center flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#2e150c"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></div><p class="text-sm opacity-80">@alunannusantara</p></div>
+      </div>
+      <div class="flex items-center justify-center md:justify-end">
+        <div class="text-right flex flex-col items-end gap-3">
+          <img src="assets/images/logo/logoweb2.png" alt="Alunan Nusantara" class="h-16 object-contain brightness-0 invert"/>
+          <p class="text-sm opacity-60">© 2024 Alunan Nusantara.<br/>Dedikasi untuk Pelestarian Warisan Budaya Indonesia.</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===== POPUP ===== -->
+  <div class="popup-overlay" id="popupOverlay">
+    <div class="popup-box" id="popupBox">
+      <div class="popup-header">
+        <button class="popup-close" id="popupClose" aria-label="Tutup">✕</button>
+        <img src="" alt="" class="popup-island-img" id="popupImg"/>
+        <div class="popup-prov-name" id="popupName"></div>
+        <div class="popup-prov-tagline" id="popupTagline"></div>
+      </div>
+      <div class="popup-body">
+        <div class="popup-info-grid">
+          <div class="info-chip">
+            <div class="chip-label">Ibukota</div>
+            <div class="chip-val" id="popupCapital"></div>
+          </div>
+          <div class="info-chip">
+            <div class="chip-label">Alat Musik</div>
+            <div class="chip-val" id="popupCount"></div>
+          </div>
+        </div>
+        <div class="popup-desc" id="popupDesc"></div>
+        <div class="popup-music-label">Alat Musik Tradisional</div>
+        <div class="popup-music-tags" id="popupTags"></div>
+        <button class="popup-btn" id="popupBtn"></button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ===== DATA PROVINSI ===== */
+    const provinces = [
+      {
+        name: 'Jawa Barat',
+        img: 'assets/images/peta/jabar.png',
+        link: null,
+        capital: 'Bandung',
+        count: '18 jenis',
+        tagline: 'Tanah Pasundan',
+        desc: 'Bumi Pasundan dikenal dengan angklung dan kacapi yang merdu, mencerminkan keanggunan dan kehalusan budaya Sunda yang kaya.',
+        music: ['🎵 Angklung', '🪗 Kacapi', '🥁 Kendang', '🎼 Suling', '🎶 Rebab']
+      },
+      {
+        name: 'Jawa Tengah',
+        img: 'assets/images/peta/jateng.png',
+        link: 'jelajahijateng.html',
+        capital: 'Semarang',
+        count: '12 jenis',
+        tagline: 'Jantung Budaya Jawa',
+        desc: 'Pusat kebudayaan Jawa dengan gamelan yang telah mendunia. Setiap nada mencerminkan kedalaman filosofi dan keindahan budaya Jawa.',
+        music: ['🎵 Gamelan', '🥁 Kendang', '🎼 Saron', '🎶 Bonang', '🎵 Gong']
+      },
+      {
+        name: 'Jawa Timur',
+        img: 'assets/images/peta/jatim.png',
+        link: null,
+        capital: 'Surabaya',
+        count: '15 jenis',
+        tagline: 'Arek-arek Suroboyo',
+        desc: 'Jawa Timur menyimpan kekayaan alat musik dari tradisi Osing, Madura, hingga suku Tengger di lereng Bromo.',
+        music: ['🎵 Saronen', '🥁 Tong-tong', '🎶 Glundheng', '🎼 Bonang']
+      },
+      {
+        name: 'Bali',
+        img: 'assets/images/peta/bali.png',
+        link: null,
+        capital: 'Denpasar',
+        count: '20 jenis',
+        tagline: 'Pulau Dewata',
+        desc: 'Bali adalah surga seni dan budaya. Gamelan Bali yang dinamis menjadi jiwa setiap upacara adat dan pertunjukan seni.',
+        music: ['🎵 Gamelan Bali', '🥁 Kendang Bali', '🎼 Gangsa', '🎶 Reyong', '🎵 Ceng-ceng']
+      },
+      {
+        name: 'Papua',
+        img: 'assets/images/peta/papua.png',
+        link: null,
+        capital: 'Jayapura',
+        count: '22 jenis',
+        tagline: 'Bumi Cendrawasih',
+        desc: 'Tanah Papua menyimpan kekayaan budaya yang tak ternilai. Tifa menjadi simbol semangat, persatuan, dan kegembiraan masyarakat Papua.',
+        music: ['🥁 Tifa', '🎵 Yi', '🎶 Fuu', '🎼 Paar', '🪘 Triton']
+      },
+      {
+        name: 'DKI Jakarta',
+        img: 'assets/images/peta/jkt.png',
+        link: null,
+        capital: 'Jakarta',
+        count: '10 jenis',
+        tagline: 'Kota Betawi Metropolitan',
+        desc: 'Ibukota Indonesia yang kaya akan budaya Betawi dengan tanjidor dan gambang kromong yang ikonik dan penuh semangat.',
+        music: ['🎺 Tanjidor', '🎵 Gambang Kromong', '🥁 Rebana Ketimpring', '🎶 Tehyan']
+      },
+      {
+        name: 'Kalimantan Timur',
+        img: 'assets/images/peta/kaltim.png',
+        link: null,
+        capital: 'Samarinda',
+        count: '14 jenis',
+        tagline: 'Bumi Etam Dayak',
+        desc: 'Tanah Dayak menyimpan sape dan berbagai alat musik tradisional yang kaya akan nilai spiritual dan kearifan lokal.',
+        music: ['🎸 Sape', '🥁 Gendang Pampat', '🎵 Keluri', '🎶 Tuma']
+      },
+      {
+        name: 'Sumatera Utara',
+        img: 'assets/images/peta/sumut.png',
+        link: null,
+        capital: 'Medan',
+        count: '16 jenis',
+        tagline: 'Negeri Batak Nan Indah',
+        desc: 'Gondang Batak yang sakral dan merdu menjadi warisan budaya Sumatera Utara yang diakui dan dijaga dengan bangga.',
+        music: ['🥁 Gondang', '🎵 Hasapi', '🎶 Sordam', '🎼 Ogung', '🎵 Arbab']
+      },
+      {
+        name: 'Sulawesi Selatan',
+        img: 'assets/images/peta/sulsel.png',
+        link: null,
+        capital: 'Makassar',
+        count: '13 jenis',
+        tagline: 'Tanah Bugis Makassar',
+        desc: 'Kecapi Bugis dan berbagai alat musik tradisional mencerminkan keagungan dan kehalusan budaya masyarakat Sulawesi Selatan.',
+        music: ['🎵 Kecapi Bugis', '🥁 Gendang', '🎶 Alosu', '🎼 Suling Lembang']
+      },
+      {
+        name: 'Sulawesi Barat',
+        img: 'assets/images/peta/sulsel.png',
+        link: null,
+        capital: 'Mamuju',
+        count: '8 jenis',
+        tagline: 'Ranah Mandar',
+        desc: 'Sulawesi Barat menyimpan kekayaan budaya Mandar dengan alat musik tradisional yang unik dan penuh makna.',
+        music: ['🎵 Kecapi Mandar', '🥁 Rebana', '🎶 Basi-basi']
+      },
+      {
+        name: 'Kalimantan Barat',
+        img: 'assets/images/peta/kaltim.png',
+        link: null,
+        capital: 'Pontianak',
+        count: '11 jenis',
+        tagline: 'Kota Khatulistiwa',
+        desc: 'Di tanah khatulistiwa, alat musik Dayak dan Melayu berpadu harmonis menciptakan kekayaan budaya yang indah.',
+        music: ['🎸 Sape', '🎵 Tuma', '🥁 Agukng', '🎶 Garantung']
+      },
+      {
+        name: 'Sulawesi Tengah',
+        img: 'assets/images/peta/sulsel.png',
+        link: null,
+        capital: 'Palu',
+        count: '9 jenis',
+        tagline: 'Tanah Tadulako',
+        desc: 'Sulawesi Tengah menyimpan kekayaan alat musik tradisional dari berbagai suku yang mendiami bumi Tadulako.',
+        music: ['🥁 Ganda', '🎵 Geso-geso', '🎶 Lalove', '🎼 Gimba']
+      },
+      {
+        name: 'Nusa Tenggara Timur',
+        img: 'assets/images/peta/bali.png',
+        link: null,
+        capital: 'Kupang',
+        count: '17 jenis',
+        tagline: 'Flobamora Tercinta',
+        desc: 'NTT kaya akan musik tradisional dari Flores, Sumba, dan Timor yang penuh nilai budaya dan spiritualitas tinggi.',
+        music: ['🎵 Sasando', '🥁 Gong', '🎶 Foy Doa', '🎼 Knobe Oh']
+      },
+      {
+        name: 'Maluku',
+        img: 'assets/images/peta/papua.png',
+        link: null,
+        capital: 'Ambon',
+        count: '19 jenis',
+        tagline: 'Jazirah Rempah Berdendang',
+        desc: 'Maluku dikenal sebagai negeri penyanyi. Totobuang dan kolintang mengalun merdu di kepulauan rempah yang indah.',
+        music: ['🎵 Totobuang', '🎶 Kolintang', '🥁 Tifa', '🎼 Rebab', '🎵 Arababu']
+      },
+      {
+        name: 'Sulawesi Utara',
+        img: 'assets/images/peta/sulsel.png',
+        link: null,
+        capital: 'Manado',
+        count: '12 jenis',
+        tagline: 'Nyiur Melambai Indah',
+        desc: 'Kolintang dari Sulawesi Utara telah mendunia, membuktikan betapa kaya dan indahnya budaya tanah Minahasa.',
+        music: ['🎵 Kolintang', '🥁 Gong', '🎶 Salude', '🎼 Bansi']
+      },
+    ];
+
+    /* ===== RENDER CARDS ===== */
+    const grid = document.getElementById('province-grid');
+
+    provinces.forEach(p => {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'province-item';
+      wrapper.dataset.name = p.name.toLowerCase();
+
+      const card = document.createElement('div');
+      card.className = 'province-card bg-white rounded-[20px] p-5 text-center shadow-sm border border-[#f2dfcf]';
+      card.innerHTML = `
+        <div class="w-20 h-16 mx-auto mb-3 flex items-center justify-center">
+          <img src="${p.img}" alt="${p.name}"
+               class="prov-island-img w-full h-full object-contain transition-all duration-300"
+               style="filter: drop-shadow(0 2px 4px rgba(44,20,8,0.18));"/>
+        </div>
+        <h3 class="font-semibold text-[#2c1408] text-sm leading-snug">${p.name}</h3>
+        ${p.link
+          ? '<p class="text-[10px] text-[#815525] mt-1 font-medium">Jelajahi →</p>'
+          : '<p class="text-[10px] text-gray-400 mt-1">Segera Hadir</p>'}
+      `;
+
+      card.addEventListener('click', () => openPopup(p, card));
+      wrapper.appendChild(card);
+      grid.appendChild(wrapper);
+    });
+
+    /* ===== CONFETTI ===== */
+    function spawnConfetti(el) {
+      const rect = el.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      const colors = ['#815525', '#f2dfcf', '#2c1408', '#e8a87c', '#d4845a', '#fff8f4'];
+      for (let i = 0; i < 14; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'confetti-dot';
+        const angle = (i / 14) * 360;
+        const dist = 45 + Math.random() * 35;
+        const tx = Math.cos(angle * Math.PI / 180) * dist + 'px';
+        const ty = (Math.sin(angle * Math.PI / 180) * dist - 25) + 'px';
+        dot.style.cssText = `left:${cx}px;top:${cy}px;background:${colors[i % colors.length]};--tx:${tx};--ty:${ty};`;
+        document.body.appendChild(dot);
+        setTimeout(() => dot.remove(), 900);
+      }
+    }
+
+    /* ===== OPEN POPUP ===== */
+    function openPopup(p, cardEl) {
+      spawnConfetti(cardEl);
+
+      document.getElementById('popupImg').src = p.img;
+      document.getElementById('popupImg').alt = p.name;
+      document.getElementById('popupName').textContent = p.name;
+      document.getElementById('popupTagline').textContent = p.tagline;
+      document.getElementById('popupCapital').textContent = p.capital;
+      document.getElementById('popupCount').textContent = p.count;
+      document.getElementById('popupDesc').textContent = p.desc;
+
+      const tagsEl = document.getElementById('popupTags');
+      tagsEl.innerHTML = p.music.map(m => `<span class="music-tag">${m}</span>`).join('');
+
+      const btn = document.getElementById('popupBtn');
+      if (p.link) {
+        btn.className = 'popup-btn available';
+        btn.textContent = 'Jelajahi Provinsi →';
+        btn.onclick = () => { window.location.href = p.link; };
+      } else {
+        btn.className = 'popup-btn unavailable';
+        btn.textContent = '🔒 Konten Segera Hadir';
+        btn.onclick = null;
+      }
+
+      document.getElementById('popupOverlay').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    /* ===== CLOSE POPUP ===== */
+    function closePopup() {
+      document.getElementById('popupOverlay').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    document.getElementById('popupClose').addEventListener('click', closePopup);
+    document.getElementById('popupOverlay').addEventListener('click', function(e) {
+      if (e.target === this) closePopup();
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closePopup(); });
+
+    /* ===== SEARCH ===== */
+    document.getElementById('province-search').addEventListener('input', function() {
+      const q = this.value.toLowerCase().trim();
+      let visible = 0;
+      document.querySelectorAll('.province-item').forEach(item => {
+        const match = item.dataset.name.includes(q);
+        item.classList.toggle('hidden-search', !match);
+        if (match) visible++;
+      });
+      document.getElementById('no-result').classList.toggle('hidden', visible > 0);
+    });
+
+    /* ===== SCROLL REVEAL ===== */
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+    /* ===== NAVBAR SCROLL ===== */
+    const nav = document.getElementById('main-nav');
+    window.addEventListener('scroll', () => {
+      nav.style.padding = window.scrollY > 20 ? '8px 0' : '16px 0';
+    });
+
+    /* ===== AUTH STATE ===== */
+    (function () {
+      const u = JSON.parse(localStorage.getItem('an_user') || 'null');
+      const loginEl = document.querySelector('.nav-login');
+      const userEl  = document.querySelector('.nav-user');
+      if (u && userEl && loginEl) {
+        loginEl.classList.add('hidden');
+        userEl.classList.remove('hidden');
+        const nameEl = userEl.querySelector('.nav-user-name');
+        if (nameEl) nameEl.textContent = u.name || u.username || 'Pengguna';
+        const avatarImg  = userEl.querySelector('.nav-avatar-img');
+        const avatarIcon = userEl.querySelector('.nav-avatar-icon');
+        if (u.photo && avatarImg && avatarIcon) {
+          avatarImg.src = u.photo;
+          avatarImg.classList.remove('hidden');
+          avatarIcon.classList.add('hidden');
+        }
+      }
+      const btn  = document.getElementById('nav-user-btn');
+      const drop = document.getElementById('nav-dropdown');
+      if (btn && drop) {
+        btn.addEventListener('click', e => { e.stopPropagation(); drop.classList.toggle('open'); });
+        document.addEventListener('click', () => drop.classList.remove('open'));
+      }
+    })();
+
+    function logout() { localStorage.removeItem('an_user'); window.location.href = 'index.html'; }
+  </script>
+</body>
+</html>

@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Profil - Alunan Nusantara</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const SUPABASE_URL = "https://paowtmytttinwndebftm.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_2-SfXv7pLRiDhTOJyAzDdg_SDZnj7ji";
+  var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+</script>
+
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Lily+Script+One&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Poppins', 'sans-serif'], lily: ['Lily Script One', 'cursive'] },
+          colors: { 'brand-dark': '#2c1408', 'brand-brown': '#260701', 'secondary': '#815525', 'surface-variant': '#f2dfcf' }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root { --brand: #2c1408; --brown: #815525; --cream: #f2dfcf; --light: #fff8f4; --warm: #fff1e6; }
+    .navbar-pill { background: white; border-radius: 9999px; box-shadow: 0 4px 20px rgba(44,20,8,0.12); height: 52px; display: flex; align-items: center; }
+    .navbar-wrapper { transition: padding 0.3s ease; }
+    .user-dropdown { display: none; }
+    .user-dropdown.open { display: block; }
+    @keyframes fadeSlideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes popIn { 0% { opacity:0; transform:scale(0.88); } 70% { transform:scale(1.03); } 100% { opacity:1; transform:scale(1); } }
+    .anim-fade-up { opacity:0; animation:fadeSlideUp .6s ease forwards; }
+    .anim-pop-in  { opacity:0; animation:popIn .55s cubic-bezier(.34,1.56,.64,1) forwards; }
+    .reveal { opacity:0; transform:translateY(20px); transition: opacity .6s ease, transform .6s ease; }
+    .reveal.visible { opacity:1; transform:translateY(0); }
+    .profile-card { background: white; border-radius: 28px; padding: 36px; box-shadow: 0 4px 24px rgba(44,20,8,0.08); border: 1px solid var(--cream); }
+    .avatar-ring { width: 112px; height: 112px; border-radius: 50%; background: var(--warm); border: 4px solid var(--cream); box-shadow: 0 0 0 3px white, 0 4px 20px rgba(44,20,8,0.15); display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; }
+    .stat-box { background: var(--light); border: 2px solid var(--cream); border-radius: 20px; padding: 18px 28px; text-align: center; transition: transform .2s, box-shadow .2s; }
+    .stat-box:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(44,20,8,0.1); }
+    .profile-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+    .btn-action { display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; border-radius: 999px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all .2s; border: none; text-decoration: none; }
+    .btn-primary { background: var(--brand); color: white; }
+    .btn-primary:hover { background: var(--brown); }
+    .btn-secondary { background: var(--warm); color: var(--brand); border: 2px solid var(--cream); }
+    .btn-secondary:hover { background: var(--cream); }
+    .btn-back { display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; border-radius: 999px; font-size: 13px; font-weight: 600; color: var(--brand); background: white; border: 2px solid var(--cream); cursor: pointer; transition: all .2s; text-decoration: none; box-shadow: 0 2px 10px rgba(44,20,8,0.07); }
+    .btn-back:hover { background: var(--warm); border-color: var(--brown); transform: translateX(-3px); }
+    .review-card { background: white; border-radius: 20px; box-shadow: 0 2px 16px rgba(44,20,8,0.06); border: 1px solid var(--cream); overflow: hidden; cursor: pointer; transition: transform .3s cubic-bezier(.34,1.56,.64,1), box-shadow .3s; display: flex; flex-direction: column; }
+    .review-card:hover { transform: translateY(-5px); box-shadow: 0 12px 32px rgba(44,20,8,0.14); }
+    .review-card-img { width: 100%; height: 140px; background: var(--warm); display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
+    .review-card-img img { max-height: 110px; object-fit: contain; padding: 12px; transition: transform .3s; filter: drop-shadow(0 4px 8px rgba(44,20,8,0.18)); }
+    .review-card:hover .review-card-img img { transform: scale(1.08); }
+    .review-card-body { padding: 16px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
+    .instrument-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--brown); background: var(--warm); border-radius: 999px; padding: 3px 10px; display: inline-block; }
+    .card-actions { display: flex; gap: 6px; margin-top: auto; padding-top: 10px; }
+    .btn-card-edit, .btn-card-delete { flex: 1; padding: 7px 0; border-radius: 10px; font-size: 12px; font-weight: 600; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; transition: all .2s; }
+    .btn-card-edit { background: var(--warm); color: var(--brand); }
+    .btn-card-edit:hover { background: var(--cream); }
+    .btn-card-delete { background: #fff0f0; color: #c0392b; }
+    .btn-card-delete:hover { background: #ffd6d6; }
+    .modal-backdrop { position: fixed; inset: 0; z-index: 100; background: rgba(44,20,8,0.45); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity .25s; }
+    .modal-backdrop.open { opacity: 1; pointer-events: all; }
+    .modal-box { background: white; border-radius: 28px; max-width: 520px; width: 100%; box-shadow: 0 24px 64px rgba(44,20,8,0.25); transform: scale(0.92) translateY(20px); transition: transform .3s cubic-bezier(.34,1.56,.64,1); overflow: hidden; max-height: 90vh; overflow-y: auto; }
+    .modal-backdrop.open .modal-box { transform: scale(1) translateY(0); }
+    .modal-img-wrap { background: var(--warm); height: 200px; display: flex; align-items: center; justify-content: center; }
+    .modal-img-wrap img { max-height: 160px; object-fit: contain; filter: drop-shadow(0 8px 20px rgba(44,20,8,0.2)); }
+    .modal-body { padding: 28px; }
+    .star-edit { font-size: 1.6rem; cursor: pointer; color: #d4c3be; transition: color .15s; }
+    .star-edit.on { color: #f5a623; }
+    .share-modal-box { background: white; border-radius: 24px; max-width: 400px; width: 100%; padding: 32px; box-shadow: 0 24px 64px rgba(44,20,8,0.25); transform: scale(0.92); transition: transform .3s cubic-bezier(.34,1.56,.64,1); }
+    .modal-backdrop.open .share-modal-box { transform: scale(1); }
+    .share-link-box { background: var(--light); border: 2px solid var(--cream); border-radius: 14px; padding: 12px 16px; font-size: 13px; color: var(--brand); word-break: break-all; margin: 16px 0; font-family: monospace; }
+    .confirm-box { background: white; border-radius: 24px; max-width: 360px; width: 100%; padding: 32px; text-align: center; box-shadow: 0 24px 64px rgba(44,20,8,0.25); transform: scale(0.92); transition: transform .3s cubic-bezier(.34,1.56,.64,1); }
+    .modal-backdrop.open .confirm-box { transform: scale(1); }
+    .empty-state { text-align: center; padding: 60px 20px; color: #aaa; }
+    #toast { position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--brand); color: white; padding: 12px 24px; border-radius: 999px; font-size: 13px; font-weight: 600; opacity: 0; pointer-events: none; transition: all .3s; z-index: 200; white-space: nowrap; }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  </style>
+</head>
+
+<body class="font-sans antialiased bg-[#fff8f4] text-[#2c1408] overflow-x-hidden">
+
+  <!-- NAVBAR -->
+  <nav class="w-full sticky top-0 z-50 py-4 navbar-wrapper" id="main-nav">
+    <div class="max-w-7xl mx-auto px-8">
+      <div class="navbar-pill anim-pop-in" style="justify-content:space-between; width:100%; padding:0 24px 0 20px;">
+        <img alt="Alunan Nusantara Logo" class="h-10" src="assets/images/logo/logoweb.png"/>
+        <div class="flex items-center gap-8">
+          <a href="index.html"    class="text-sm hover:opacity-60 transition-opacity" style="color:#260701;">Beranda</a>
+          <a href="provinsi.html" class="text-sm hover:opacity-60 transition-opacity" style="color:#260701;">Jelajahi</a>
+          <a href="hubungi.html"  class="text-sm hover:opacity-60 transition-opacity" style="color:#260701;">Hubungi kami</a>
+          <a href="javascript:void(0)" onclick="cekLogin()" class="text-sm hover:opacity-60 transition-opacity nav-login" style="color:#260701;">Masuk</a>
+          <div class="relative nav-user hidden">
+            <button id="user-avatar-btn" class="w-9 h-9 rounded-full bg-[#f2dfcf] flex items-center justify-center overflow-hidden border-2 border-[#815525] focus:outline-none">
+              <span class="nav-avatar-icon material-symbols-outlined text-[#815525]" style="font-size:1.2rem;">person</span>
+              <img class="nav-avatar-img hidden w-full h-full object-cover" src="" alt=""/>
+            </button>
+            <div id="user-dropdown" class="user-dropdown absolute right-0 top-12 bg-white rounded-2xl shadow-xl border border-[#f2dfcf] py-2 min-w-[180px] z-50">
+              <a href="profileuser.html" class="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-[#f2dfcf] transition-colors" style="color:#260701;">
+                <span class="material-symbols-outlined text-[#815525]" style="font-size:1rem;">person</span>
+                <span class="nav-user-name font-semibold">Pengguna</span>
+              </a>
+              <a href="editprofile.html#pengaturan" class="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-[#f2dfcf] transition-colors" style="color:#260701;">
+                <span class="material-symbols-outlined text-[#815525]" style="font-size:1rem;">settings</span> Pengaturan akun
+              </a>
+              <button onclick="logout()" class="flex items-center gap-2 w-full px-4 py-2.5 text-sm hover:bg-[#f2dfcf] transition-colors text-left border-t border-[#f2dfcf]" style="color:#260701;">
+                <span class="material-symbols-outlined text-[#815525]" style="font-size:1rem;">logout</span> Keluar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="max-w-5xl mx-auto px-6 py-10">
+    <div class="mb-5 anim-fade-up">
+      <button onclick="goBack()" class="btn-back">
+        <span class="material-symbols-outlined" style="font-size:1.1rem;">arrow_back</span>
+        Kembali
+      </button>
+    </div>
+
+    <!-- Profile Header Card -->
+    <div class="profile-card anim-fade-up" id="profile-header" style="animation-delay:.1s;">
+      <div class="flex flex-col sm:flex-row items-center sm:items-start gap-8">
+        <div class="flex-shrink-0">
+          <div class="avatar-ring" id="avatar-circle">
+            <span class="material-symbols-outlined text-[#815525]" style="font-size:3.5rem;" id="avatar-icon">person</span>
+            <img id="avatar-img" src="" alt="" style="display:none;" class="w-full h-full object-cover"/>
+          </div>
+        </div>
+        <div class="flex-1 text-center sm:text-left">
+          <h1 id="user-name" class="text-2xl font-bold text-[#2c1408]">Pengguna</h1>
+          <p id="user-username" class="text-sm text-[#815525] mt-1">@pengguna</p>
+          <div class="profile-actions" id="own-profile-actions" style="display:none;">
+            <a href="editprofile.html" class="btn-action btn-primary">
+              <span class="material-symbols-outlined" style="font-size:1rem;">edit</span> Edit Profil
+            </a>
+            <button onclick="openShareModal()" class="btn-action btn-secondary">
+              <span class="material-symbols-outlined" style="font-size:1rem;">share</span> Bagikan Akun
+            </button>
+            <a href="editprofile.html#pengaturan" class="btn-action btn-secondary">
+              <span class="material-symbols-outlined" style="font-size:1rem;">settings</span> Pengaturan
+            </a>
+          </div>
+        </div>
+        <div class="flex gap-4 flex-shrink-0">
+          <div class="stat-box">
+            <div id="stat-ulasan" class="text-3xl font-bold text-[#2c1408]">0</div>
+            <div class="text-xs text-gray-400 mt-1 font-medium uppercase tracking-wide">Total Ulasan</div>
+          </div>
+          <div class="stat-box">
+            <div id="stat-joined" class="text-base font-bold text-[#2c1408]">-</div>
+            <div class="text-xs text-gray-400 mt-1 font-medium uppercase tracking-wide">Bergabung</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reviews Section -->
+    <div class="mt-12 reveal" id="reviews-section">
+      <div class="flex items-center gap-3 mb-6">
+        <h2 class="text-xl font-bold text-[#2c1408]">
+          Riwayat Komentar
+          <span id="review-count-label" class="text-sm font-normal text-gray-400"></span>
+        </h2>
+      </div>
+      <div class="w-full h-px bg-[#f2dfcf] mb-8"></div>
+      <div id="reviews-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+    </div>
+  </main>
+
+  <!-- MODAL: Detail Review -->
+  <div class="modal-backdrop" id="detail-modal">
+    <div class="modal-box">
+      <div class="modal-img-wrap">
+        <img id="modal-img" src="" alt=""/>
+      </div>
+      <div class="modal-body">
+        <div class="flex items-center justify-between mb-2">
+          <span id="modal-instrument-label" class="instrument-label"></span>
+          <button onclick="closeDetailModal()" class="text-gray-400 hover:text-[#2c1408] transition-colors">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+        <h3 id="modal-instrument-name" class="text-xl font-bold text-[#2c1408] mt-2 mb-1"></h3>
+        <div id="modal-stars" class="flex gap-1 mb-4"></div>
+        <p id="modal-date" class="text-xs text-gray-400 mb-3"></p>
+        <p id="modal-text" class="text-sm text-[#504440] leading-relaxed bg-[#fff8f4] rounded-xl p-4 border border-[#f2dfcf]"></p>
+        <div id="modal-actions" class="flex gap-3 mt-6" style="display:none!important;">
+          <button id="modal-edit-btn" class="btn-action btn-secondary flex-1" style="justify-content:center;">
+            <span class="material-symbols-outlined" style="font-size:1rem;">edit</span> Edit
+          </button>
+          <button id="modal-delete-btn" class="btn-action flex-1" style="background:#fff0f0;color:#c0392b;justify-content:center;">
+            <span class="material-symbols-outlined" style="font-size:1rem;">delete</span> Hapus
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Edit Review -->
+  <div class="modal-backdrop" id="edit-modal">
+    <div class="modal-box">
+      <div class="modal-body">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-lg font-bold text-[#2c1408]">Edit Komentar</h3>
+          <button onclick="closeEditModal()" class="text-gray-400 hover:text-[#2c1408] transition-colors">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+        <div id="edit-instrument-info" class="flex items-center gap-3 bg-[#fff8f4] rounded-xl p-3 mb-5 border border-[#f2dfcf]">
+          <img id="edit-modal-img" src="" alt="" class="w-12 h-12 object-contain"/>
+          <div>
+            <p id="edit-modal-name" class="font-semibold text-sm text-[#2c1408]"></p>
+            <p id="edit-modal-asal" class="text-xs text-[#815525]"></p>
+          </div>
+        </div>
+        <p class="text-sm font-semibold text-[#2c1408] mb-2">Rating</p>
+        <div class="flex gap-2 mb-4" id="edit-stars">
+          <span class="star-edit" data-v="1">★</span>
+          <span class="star-edit" data-v="2">★</span>
+          <span class="star-edit" data-v="3">★</span>
+          <span class="star-edit" data-v="4">★</span>
+          <span class="star-edit" data-v="5">★</span>
+        </div>
+        <p class="text-sm font-semibold text-[#2c1408] mb-2">Komentar</p>
+        <textarea id="edit-text" rows="4" placeholder="Tulis ulasan kamu..."
+          class="w-full bg-[#f4f4f4] rounded-xl px-4 py-3 text-sm text-[#2c1408] outline-none resize-none focus:ring-2 focus:ring-[#2c1408] mb-4"></textarea>
+        <div class="flex gap-3">
+          <button onclick="closeEditModal()" class="btn-action btn-secondary flex-1" style="justify-content:center;">Batal</button>
+          <button onclick="saveEdit()" class="btn-action btn-primary flex-1" style="justify-content:center;">Simpan</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Confirm Delete -->
+  <div class="modal-backdrop" id="confirm-modal">
+    <div class="confirm-box">
+      <span class="material-symbols-outlined text-red-400 mb-3 block" style="font-size:3rem;">delete_forever</span>
+      <h3 class="text-lg font-bold text-[#2c1408] mb-2">Hapus Komentar?</h3>
+      <p class="text-sm text-gray-500 mb-6">Komentar ini akan dihapus permanen dan tidak bisa dikembalikan.</p>
+      <div class="flex gap-3">
+        <button onclick="closeConfirmModal()" class="btn-action btn-secondary flex-1" style="justify-content:center;">Batal</button>
+        <button onclick="doDelete()" class="btn-action flex-1" style="background:#c0392b;color:white;justify-content:center;">Hapus</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Share -->
+  <div class="modal-backdrop" id="share-modal">
+    <div class="share-modal-box">
+      <div class="flex items-center justify-between mb-2">
+        <h3 class="text-lg font-bold text-[#2c1408]">Bagikan Profil</h3>
+        <button onclick="closeShareModal()" class="text-gray-400 hover:text-[#2c1408] transition-colors">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <p class="text-sm text-gray-500 mb-2">Salin link berikut untuk berbagi profilmu:</p>
+      <div class="share-link-box" id="share-link-text"></div>
+      <button onclick="copyShareLink()" class="btn-action btn-primary w-full mt-2" style="justify-content:center;width:100%;">
+        <span class="material-symbols-outlined" style="font-size:1rem;">content_copy</span> Salin Link
+      </button>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
+  <script>
+  // ============================================================
+  // DATA ALAT MUSIK
+  // ============================================================
+  const ALAT_MUSIK = {
+    kendang:  { label:'Kendang',  img:'assets/images/alat musik/kendang.png',  asal:'Jawa Tengah' },
+    slenthem: { label:'Slenthem', img:'assets/images/alat musik/slenthem.png', asal:'Jawa Tengah' },
+    bonang:   { label:'Bonang',   img:'assets/images/alat musik/bonang.png',   asal:'Jawa Tengah' },
+    gambang:  { label:'Gambang',  img:'assets/images/alat musik/gambang.png',  asal:'Jawa Tengah' },
+    siter:    { label:'Siter',    img:'assets/images/alat musik/siter.png',    asal:'Jawa Tengah' },
+    suling:   { label:'Suling',   img:'assets/images/alat musik/suling.png',   asal:'Jawa Tengah' },
+    rebab:    { label:'Rebab',    img:'assets/images/alat musik/rebab.png',    asal:'Jawa Tengah' },
+    angklung: { label:'Angklung', img:'assets/images/alat musik/angklung.png', asal:'Jawa Barat / Sunda' },
+  };
+
+  // ============================================================
+  // STATE
+  // ============================================================
+  const loggedInUser = JSON.parse(localStorage.getItem('an_user') || 'null');
+  const params       = new URLSearchParams(window.location.search);
+  const viewUser     = params.get('user'); // null = profil sendiri
+
+  let currentUserId  = null;
+  let currentReviews = [];
+  let activeReview   = null;
+  let editRating     = 0;
+  let deleteTarget   = null;
+  let isOwnProfile   = false;
+
+  // ============================================================
+  // INIT
+  // ============================================================
+  async function init() {
+    const { data: { session } } = await supabase.auth.getSession();
+
+    if (session) {
+      currentUserId = session.user.id;
+      if (loggedInUser && loggedInUser.id !== currentUserId) {
+        localStorage.setItem('an_user', JSON.stringify({ ...loggedInUser, id: currentUserId }));
+      }
+      isOwnProfile = !viewUser;
+    } else {
+      isOwnProfile = false;
+    }
+
+    setupNavbar();
+    await renderProfile();
+    await renderReviews();
+  }
+
+  // ============================================================
+  // NAVBAR
+  // ============================================================
+  function setupNavbar() {
+    const user = JSON.parse(localStorage.getItem('an_user') || 'null');
+    if (user) {
+      document.querySelectorAll('.nav-login').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.nav-user').forEach(el => el.classList.remove('hidden'));
+      document.querySelectorAll('.nav-user-name').forEach(el => el.textContent = user.name || 'Pengguna');
+      if (user.photo) {
+        const avatarImg  = document.querySelector('.nav-avatar-img');
+        const avatarIcon = document.querySelector('.nav-avatar-icon');
+        if (avatarImg && avatarIcon) { avatarImg.src = user.photo; avatarImg.classList.remove('hidden'); avatarIcon.classList.add('hidden'); }
+      }
+    }
+    const avatarBtn    = document.getElementById('user-avatar-btn');
+    const userDropdown = document.getElementById('user-dropdown');
+    if (avatarBtn) {
+      avatarBtn.addEventListener('click', e => { e.stopPropagation(); userDropdown.classList.toggle('open'); });
+      document.addEventListener('click', () => userDropdown.classList.remove('open'));
+    }
+  }
+
+  async function logout() {
+    await supabase.auth.signOut();
+    localStorage.removeItem('an_user');
+    window.location.href = 'index.html';
+  }
+
+  function goBack() {
+    if (document.referrer && document.referrer !== window.location.href) history.back();
+    else window.location.href = 'index.html';
+  }
+
+  function formatJoinedDate(isoString) {
+    if (!isoString) return '-';
+    try {
+      const d = new Date(isoString);
+      if (isNaN(d.getTime())) return '-';
+      return d.toLocaleDateString('id-ID', { day:'numeric', month:'long', year:'numeric' });
+    } catch(e) { return '-'; }
+  }
+
+  function starsHTML(rating, size = '1rem') {
+    return Array.from({length:5}, (_,i) =>
+      `<span class="material-symbols-outlined" style="font-size:${size};color:${i < rating ? '#f5a623' : '#d4c3be'};">star</span>`
+    ).join('');
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+  }
+
+  // ============================================================
+  // HELPER: tampilkan avatar di profile header
+  // ============================================================
+  function setAvatar(photoUrl) {
+    if (photoUrl) {
+      document.getElementById('avatar-icon').style.display = 'none';
+      const img = document.getElementById('avatar-img');
+      img.src = photoUrl;
+      img.style.display = 'block';
+    } else {
+      document.getElementById('avatar-icon').style.display = '';
+      document.getElementById('avatar-img').style.display = 'none';
+    }
+  }
+
+  // ============================================================
+  // RENDER PROFIL
+  // ============================================================
+  async function renderProfile() {
+    const user = JSON.parse(localStorage.getItem('an_user') || 'null');
+
+    if (isOwnProfile && currentUserId) {
+      // --- Profil sendiri: ambil dari Supabase ---
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('full_name, username, photo_url, joined_at')
+        .eq('id', currentUserId)
+        .single();
+
+      const displayName = profile?.full_name || user?.name     || 'Pengguna';
+      const username    = profile?.username   || user?.username || displayName.toLowerCase().replace(/\s+/g,'');
+      const photoUrl    = profile?.photo_url  || user?.photo   || null;
+      const joinedAt    = profile?.joined_at  || user?.joined  || null;
+
+      document.getElementById('user-name').textContent     = displayName;
+      document.getElementById('user-username').textContent = '@' + username;
+      document.getElementById('stat-joined').textContent   = formatJoinedDate(joinedAt);
+      document.getElementById('own-profile-actions').style.display = 'flex';
+      document.title = 'Profil Saya - Alunan Nusantara';
+      setAvatar(photoUrl);
+
+    } else if (viewUser) {
+      // ============================================================
+      // FIX: Profil orang lain — query Supabase by username atau full_name
+      // ============================================================
+      document.getElementById('own-profile-actions').style.display = 'none';
+
+      // Coba cari di tabel profiles (by username dulu, lalu full_name)
+      let profile = null;
+
+      const { data: byUsername } = await supabase
+        .from('profiles')
+        .select('full_name, username, photo_url, joined_at')
+        .ilike('username', viewUser)
+        .limit(1);
+
+      if (byUsername && byUsername.length > 0) {
+        profile = byUsername[0];
+      } else {
+        // Fallback: cari by full_name
+        const { data: byName } = await supabase
+          .from('profiles')
+          .select('full_name, username, photo_url, joined_at')
+          .ilike('full_name', viewUser)
+          .limit(1);
+        if (byName && byName.length > 0) profile = byName[0];
+      }
+
+      // Tampilkan data yang ditemukan (atau fallback ke nama dari URL)
+      const displayName = profile?.full_name || viewUser;
+      const username    = profile?.username  || viewUser.toLowerCase().replace(/\s+/g,'');
+      const photoUrl    = profile?.photo_url || null;   // FIX: ambil foto dari Supabase
+      const joinedAt    = profile?.joined_at || null;   // FIX: ambil tanggal bergabung dari Supabase
+
+      document.getElementById('user-name').textContent     = displayName;
+      document.getElementById('user-username').textContent = '@' + username;
+      document.getElementById('stat-joined').textContent   = formatJoinedDate(joinedAt);  // FIX: tampilkan tanggal
+      document.title = 'Profil ' + displayName + ' - Alunan Nusantara';
+      setAvatar(photoUrl);  // FIX: tampilkan foto
+    }
+  }
+
+  // ============================================================
+  // RENDER REVIEWS
+  // ============================================================
+  async function renderReviews() {
+    const grid = document.getElementById('reviews-grid');
+    grid.innerHTML = `<div class="col-span-3 empty-state"><span class="material-symbols-outlined" style="font-size:3rem;color:#d4c3be;">hourglass_empty</span><p class="mt-3">Memuat ulasan...</p></div>`;
+
+    let uid = null;
+
+    if (isOwnProfile && currentUserId) {
+      uid = currentUserId;
+    } else if (viewUser) {
+      // Cari user_id berdasarkan username atau full_name di profiles
+      const { data: byUsername } = await supabase
+        .from('profiles')
+        .select('id')
+        .ilike('username', viewUser)
+        .limit(1);
+
+      if (byUsername && byUsername.length > 0) {
+        uid = byUsername[0].id;
+      } else {
+        const { data: byName } = await supabase
+          .from('profiles')
+          .select('id')
+          .ilike('full_name', viewUser)
+          .limit(1);
+        if (byName && byName.length > 0) uid = byName[0].id;
+      }
+    }
+
+    if (!uid) {
+      document.getElementById('stat-ulasan').textContent        = '0';
+      document.getElementById('review-count-label').textContent = '(0 ulasan)';
+      grid.innerHTML = emptyStateHTML();
+      return;
+    }
+
+    const { data: reviews, error } = await supabase
+      .from('reviews')
+      .select('id, alat_key, provinsi, rating, text, created_at')
+      .eq('user_id', uid)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetch reviews:', error);
+      grid.innerHTML = `<div class="col-span-3 empty-state"><p>Gagal memuat ulasan.</p></div>`;
+      return;
+    }
+
+    currentReviews = (reviews || []).map(r => {
+      const info = ALAT_MUSIK[r.alat_key] || {};
+      return {
+        id:             r.id,
+        alatKey:        r.alat_key,
+        provinsi:       r.provinsi,
+        rating:         r.rating,
+        text:           r.text,
+        time:           new Date(r.created_at).toLocaleDateString('id-ID', { day:'numeric', month:'long', year:'numeric' }),
+        instrumentLabel: info.label || (r.alat_key ? r.alat_key.charAt(0).toUpperCase() + r.alat_key.slice(1) : 'Alat Musik'),
+        instrumentImg:   info.img   || '',
+        instrumentAsal:  info.asal  || (r.provinsi || ''),
+      };
+    });
+
+    document.getElementById('stat-ulasan').textContent        = currentReviews.length;
+    document.getElementById('review-count-label').textContent = `(${currentReviews.length} ulasan terpublikasi)`;
+
+    if (currentReviews.length === 0) {
+      grid.innerHTML = emptyStateHTML();
+      return;
+    }
+
+    grid.innerHTML = currentReviews.map((r, i) => `
+      <div class="review-card" onclick="openDetailModal(${i})">
+        <div class="review-card-img">
+          <img src="${r.instrumentImg}" alt="${r.instrumentLabel}" onerror="this.style.opacity='0.2'"/>
+        </div>
+        <div class="review-card-body">
+          <span class="instrument-label">${r.instrumentLabel}</span>
+          <div class="text-xs text-[#815525] font-medium">${r.instrumentAsal}</div>
+          <div class="flex gap-0.5">${starsHTML(r.rating, '.85rem')}</div>
+          <p class="text-xs text-[#504440] leading-relaxed line-clamp-3">"${r.text}"</p>
+          <p class="text-xs text-gray-400">${r.time}</p>
+          ${isOwnProfile ? `
+          <div class="card-actions">
+            <button class="btn-card-edit" onclick="event.stopPropagation(); openEditModal(${i})">
+              <span class="material-symbols-outlined" style="font-size:.9rem;">edit</span> Edit
+            </button>
+            <button class="btn-card-delete" onclick="event.stopPropagation(); openConfirmModal(${i})">
+              <span class="material-symbols-outlined" style="font-size:.9rem;">delete</span> Hapus
+            </button>
+          </div>` : ''}
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function emptyStateHTML() {
+    return `<div class="col-span-3"><div class="empty-state">
+      <span class="material-symbols-outlined" style="font-size:3.5rem;color:#d4c3be;">rate_review</span>
+      <p class="mt-4 font-semibold text-[#2c1408]">Belum ada ulasan</p>
+      <p class="text-sm mt-1">Belum ada komentar yang ditulis.</p>
+    </div></div>`;
+  }
+
+  // ============================================================
+  // MODAL: Detail
+  // ============================================================
+  function openDetailModal(i) {
+    activeReview = currentReviews[i];
+    document.getElementById('modal-img').src                      = activeReview.instrumentImg;
+    document.getElementById('modal-instrument-label').textContent = activeReview.instrumentAsal;
+    document.getElementById('modal-instrument-name').textContent  = activeReview.instrumentLabel;
+    document.getElementById('modal-stars').innerHTML              = starsHTML(activeReview.rating, '1.3rem');
+    document.getElementById('modal-date').textContent             = activeReview.time;
+    document.getElementById('modal-text').textContent             = activeReview.text;
+    const modalActions = document.getElementById('modal-actions');
+    if (isOwnProfile) {
+      modalActions.style.cssText = 'display:flex;gap:12px;margin-top:24px;';
+      document.getElementById('modal-edit-btn').onclick   = () => { closeDetailModal(); openEditModal(i); };
+      document.getElementById('modal-delete-btn').onclick = () => { closeDetailModal(); openConfirmModal(i); };
+    } else {
+      modalActions.style.cssText = 'display:none!important;';
+    }
+    document.getElementById('detail-modal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeDetailModal() {
+    document.getElementById('detail-modal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  // ============================================================
+  // MODAL: Edit
+  // ============================================================
+  function openEditModal(i) {
+    activeReview = currentReviews[i];
+    document.getElementById('edit-modal-img').src           = activeReview.instrumentImg;
+    document.getElementById('edit-modal-name').textContent  = activeReview.instrumentLabel;
+    document.getElementById('edit-modal-asal').textContent  = activeReview.instrumentAsal;
+    document.getElementById('edit-text').value              = activeReview.text;
+    editRating = activeReview.rating;
+    updateEditStars(editRating);
+    document.getElementById('edit-modal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeEditModal() {
+    document.getElementById('edit-modal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  function updateEditStars(val) {
+    document.querySelectorAll('#edit-stars .star-edit').forEach((s,i) => s.classList.toggle('on', i < val));
+  }
+  document.querySelectorAll('#edit-stars .star-edit').forEach(s => {
+    s.addEventListener('click',     () => { editRating = parseInt(s.dataset.v); updateEditStars(editRating); });
+    s.addEventListener('mouseover', () => updateEditStars(parseInt(s.dataset.v)));
+    s.addEventListener('mouseout',  () => updateEditStars(editRating));
+  });
+
+  async function saveEdit() {
+    if (editRating === 0) { showToast('Pilih bintang dulu ya!'); return; }
+    const newText = document.getElementById('edit-text').value.trim();
+    if (newText.length < 5) { showToast('Komentar terlalu pendek.'); return; }
+    const { error } = await supabase.from('reviews')
+      .update({ text: newText, rating: editRating })
+      .eq('id', activeReview.id);
+    if (error) { showToast('Gagal update: ' + error.message); return; }
+    closeEditModal();
+    await renderReviews();
+    showToast('Komentar berhasil diperbarui!');
+  }
+
+  // ============================================================
+  // MODAL: Confirm Delete
+  // ============================================================
+  function openConfirmModal(i) {
+    deleteTarget = currentReviews[i];
+    document.getElementById('confirm-modal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeConfirmModal() {
+    document.getElementById('confirm-modal').classList.remove('open');
+    document.body.style.overflow = '';
+    deleteTarget = null;
+  }
+  async function doDelete() {
+    if (!deleteTarget) return;
+    const { error } = await supabase.from('reviews').delete().eq('id', deleteTarget.id);
+    if (error) { showToast('Gagal hapus: ' + error.message); return; }
+    closeConfirmModal();
+    await renderReviews();
+    showToast('Komentar dihapus.');
+  }
+
+  // ============================================================
+  // MODAL: Share
+  // ============================================================
+  function openShareModal() {
+    const user = JSON.parse(localStorage.getItem('an_user') || 'null');
+    const name = user ? (user.username || user.name || 'Pengguna') : 'Pengguna';
+    const link = `${location.origin}${location.pathname}?user=${encodeURIComponent(name)}`;
+    document.getElementById('share-link-text').textContent = link;
+    document.getElementById('share-modal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeShareModal() {
+    document.getElementById('share-modal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  function copyShareLink() {
+    const txt = document.getElementById('share-link-text').textContent;
+    navigator.clipboard.writeText(txt)
+      .then(() => showToast('Link disalin!'))
+      .catch(() => {
+        const ta = document.createElement('textarea');
+        ta.value = txt; document.body.appendChild(ta); ta.select();
+        document.execCommand('copy'); document.body.removeChild(ta);
+        showToast('Link disalin!');
+      });
+  }
+
+  // Close modal on backdrop click
+  ['detail-modal','edit-modal','confirm-modal','share-modal'].forEach(id => {
+    document.getElementById(id).addEventListener('click', function(e) {
+      if (e.target === this) { this.classList.remove('open'); document.body.style.overflow = ''; }
+    });
+  });
+
+  // Scroll reveal
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+  // Navbar shrink
+  const nav = document.getElementById('main-nav');
+  window.addEventListener('scroll', () => { nav.style.padding = window.scrollY > 20 ? '8px 0' : '16px 0'; });
+
+  init();
+  </script>
+</body>
+</html>
