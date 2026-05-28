@@ -422,25 +422,22 @@
 <div class="verify-screen" id="verify-email-sent">
   <div class="verify-header">
     <img src="assets/images/logo/logoweb.png" alt="Alunan Nusantara"/>
-    <div class="verify-header-title">Link Email</div>
+    <div class="verify-header-title">Verifikasi Kode</div>
   </div>
   <div class="verify-card">
     <button class="verify-back-btn" onclick="goBackVerify()">
       <span class="material-symbols-outlined" style="color:var(--gold-dark);">arrow_back</span>
     </button>
-    <div class="verify-card-title">Tanggapi di Email</div>
-    <div class="verify-card-sub">Mohon tanggapi notifikasi yang dikirim ke <span class="verify-email-highlight" id="verify-email-display"></span></div>
     <div class="verify-email-icon"><span class="material-symbols-outlined">mail</span></div>
-    <div class="verify-resend" id="verify-resend-area">
-      Mohon menunggu <span class="verify-timer" id="timer-val">60</span> detik sebelum mengirim ulang
+    <div class="verify-card-title">Masukkan Kode OTP</div>
+    <div class="verify-card-sub">Kami telah mengirim kode 6 digit ke <span class="verify-email-highlight" id="verify-email-display"></span></div>
+    <input type="text" id="input-otp" class="input-field" maxlength="6" placeholder="------" style="text-align:center;font-size:24px;font-weight:700;letter-spacing:12px;margin-bottom:16px;"/>
+    <button class="btn-primary" style="width:100%;" onclick="submitOtp()">Verifikasi</button>
+    <div class="verify-resend" id="verify-resend-area" style="margin-top:14px;">
+      Kirim ulang dalam <span class="verify-timer" id="timer-val">60</span> detik
     </div>
-    <div class="verify-resend" id="verify-resend-link" style="display:none;">
-      Belum mendapat link? <span class="verify-resend-link-btn" onclick="startVerifyTimer()">Kirim ulang</span>
-    </div>
-    <div style="text-align:center;margin-top:20px;font-size:12px;color:#6b7280;line-height:1.7;">
-      Setelah klik link di email, kamu akan otomatis diarahkan ke halaman selanjutnya.<br/>
-      <span style="font-size:11px;color:#9ca3af;">Tutup tab verifikasi dan kembali ke sini.</span>
-      <br/><br/>
+    <div class="verify-resend" id="verify-resend-link" style="display:none;margin-top:14px;">
+      Belum dapat kode? <span class="verify-resend-link-btn" onclick="resendOtp()">Kirim ulang</span>
     </div>
   </div>
 </div>
@@ -729,19 +726,16 @@ async function showVerifyEmail() {
   document.getElementById('verify-pilih').classList.remove('open');
   document.getElementById('verify-email-sent').classList.add('open');
   startVerifyTimer();
+  localStorage.setItem('verifyPurpose', verifyPurpose);
 
-  // Simpan purpose ke sessionStorage SEBELUM kirim OTP (agar tersedia setelah redirect)
-localStorage.setItem('verifyPurpose', verifyPurpose);
   const { error } = await supabase.auth.signInWithOtp({
     email: getUser()?.email,
     options: {
       shouldCreateUser: false,
-redirectTo: 'https://alunan-nusantara-a1e8.vercel.app/editprofile.html'    }
+    }
   });
 
-  if (error) {
-    showToast('Gagal mengirim email verifikasi: ' + error.message);
-  }
+  if (error) showToast('Gagal mengirim kode: ' + error.message);
 }
 
 function goBackVerify() {
@@ -765,6 +759,36 @@ function startVerifyTimer() {
       document.getElementById('verify-resend-link').style.display = 'block';
     }
   }, 1000);
+}
+
+async function submitOtp() {
+  const otp = document.getElementById('input-otp').value.trim();
+  if (otp.length !== 6) { showToast('Masukkan 6 digit kode!'); return; }
+
+  const { error } = await supabase.auth.verifyOtp({
+    email: getUser()?.email,
+    token: otp,
+    type: 'magiclink'
+  });
+
+  if (error) { showToast('Kode salah atau kedaluwarsa!'); return; }
+
+  const savedPurpose = localStorage.getItem('verifyPurpose');
+  localStorage.removeItem('verifyPurpose');
+  document.getElementById('verify-email-sent').classList.remove('open');
+  clearInterval(timerInterval);
+  afterVerifyShowForm(savedPurpose);
+}
+
+async function resendOtp() {
+  localStorage.setItem('verifyPurpose', verifyPurpose);
+  const { error } = await supabase.auth.signInWithOtp({
+    email: getUser()?.email,
+    options: { shouldCreateUser: false }
+  });
+  if (error) { showToast('Gagal kirim ulang: ' + error.message); return; }
+  showToast('Kode baru telah dikirim!');
+  startVerifyTimer();
 }
 
 function openModal(id)  { document.getElementById(id).classList.add('open'); }
