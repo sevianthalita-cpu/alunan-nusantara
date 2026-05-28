@@ -460,7 +460,8 @@ function saveUser(updated) { localStorage.setItem('an_user', JSON.stringify(upda
 // ============================================================
 supabase.auth.onAuthStateChange(async (event, session) => {
   if (event === 'SIGNED_IN' && session) {
-    const savedPurpose = sessionStorage.getItem('verifyPurpose');
+const savedPurpose = localStorage.getItem('verifyPurpose');
+localStorage.removeItem('verifyPurpose');
 
     if (savedPurpose) {
       // Ini adalah redirect dari magic link verifikasi kita
@@ -724,14 +725,12 @@ async function showVerifyEmail() {
   startVerifyTimer();
 
   // Simpan purpose ke sessionStorage SEBELUM kirim OTP (agar tersedia setelah redirect)
-  sessionStorage.setItem('verifyPurpose', verifyPurpose);
-
+localStorage.setItem('verifyPurpose', verifyPurpose);
   const { error } = await supabase.auth.signInWithOtp({
     email: getUser()?.email,
     options: {
       shouldCreateUser: false,
 redirectTo: 'https://alunan-nusantara-a1e8.vercel.app/editprofile.html'    }
-    }
   });
 
   if (error) {
