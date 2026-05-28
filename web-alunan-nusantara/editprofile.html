@@ -456,36 +456,12 @@ function saveUser(updated) { localStorage.setItem('an_user', JSON.stringify(upda
 // Dipasang SEBELUM auth check agar tidak terlewat
 // ============================================================
 supabase.auth.onAuthStateChange(async (event, session) => {
+  // Hanya update session, jangan auto-redirect
   if (event === 'SIGNED_IN' && session) {
-const savedPurpose = localStorage.getItem('verifyPurpose');
-localStorage.removeItem('verifyPurpose');
-
-    if (savedPurpose) {
-      // Ini adalah redirect dari magic link verifikasi kita
-      sessionStorage.removeItem('verifyPurpose');
-      history.replaceState(null, '', window.location.pathname);
-
-      // Update user di localStorage dengan session terbaru
-      currentUserId = session.user.id;
-      saveUser({ ...getUser(), id: session.user.id, email: session.user.email });
-
-      const run = () => {
-        document.getElementById('verify-pilih')?.classList.remove('open');
-        document.getElementById('verify-email-sent')?.classList.remove('open');
-        clearInterval(timerInterval);
-        afterVerifyShowForm(savedPurpose);
-      };
-
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', run);
-      } else {
-        run();
-      }
-    }
-    // Jika tidak ada savedPurpose = login biasa, biarkan auth check di bawah yang handle
+    currentUserId = session.user.id;
+    saveUser({ ...getUser(), id: session.user.id, email: session.user.email });
   }
 });
-
 // ============================================================
 // AUTH CHECK
 // ============================================================
@@ -765,18 +741,19 @@ async function submitOtp() {
   const otp = document.getElementById('input-otp').value.trim();
   if (otp.length !== 6) { showToast('Masukkan 6 digit kode!'); return; }
 
-  const { error } = await supabase.auth.verifyOtp({
+  const { data, error } = await supabase.auth.verifyOtp({
     email: getUser()?.email,
     token: otp,
-    type: 'magiclink'
+    type: 'email'  // ← ganti dari 'magiclink' ke 'email'
   });
 
-  if (error) { showToast('Kode salah atau kedaluwarsa!'); return; }
+  if (error) { showToast('❌ Kode salah atau kedaluwarsa!'); return; }
 
   const savedPurpose = localStorage.getItem('verifyPurpose');
   localStorage.removeItem('verifyPurpose');
   document.getElementById('verify-email-sent').classList.remove('open');
   clearInterval(timerInterval);
+  showToast('✅ Verifikasi berhasil!');
   afterVerifyShowForm(savedPurpose);
 }
 
