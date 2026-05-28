@@ -496,6 +496,12 @@ let currentUserId = null;
 
 supabase.auth.getSession().then(({ data: { session } }) => {
   if (!session) {
+    // Jangan langsung redirect — tunggu dulu kalau ada token di URL
+    const hash = window.location.hash;
+    if (hash.includes('access_token')) {
+      // Ada token, tunggu onAuthStateChange yang handle
+      return;
+    }
     localStorage.removeItem('an_user');
     window.location.href = 'login.html';
     return;
