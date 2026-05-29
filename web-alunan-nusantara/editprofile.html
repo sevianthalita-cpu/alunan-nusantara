@@ -874,24 +874,22 @@ function togglePw(id, btn) {
 // BARU
 async function hapusAkunFinal() {
   const uid = currentUserId || getUser()?.id;
-  console.log('UID:', uid);
+  await supabase.from('reviews').delete().eq('user_id', uid);
+  await supabase.from('profiles').delete().eq('id', uid);
   
-  const r1 = await supabase.from('reviews').delete().eq('user_id', uid);
-  console.log('hapus reviews:', r1);
+  // Gunakan admin delete via supabase auth admin
+  const { error } = await supabase.auth.admin.deleteUser(uid);
   
-  const r2 = await supabase.from('profiles').delete().eq('id', uid);
-  console.log('hapus profiles:', r2);
-  
-  const { data, error } = await supabase.rpc('delete_user');
-  console.log('delete_user result:', data, error);
-  
-  if (error) { showToast('Gagal hapus akun: ' + error.message, 'error-toast'); return; }
+  if (error) {
+    console.log('error:', error);
+    showToast('Gagal hapus akun: ' + error.message, 'error-toast');
+    return;
+  }
   
   await supabase.auth.signOut();
   localStorage.removeItem('an_user');
   window.location.href = 'index.html';
 }
-
 
 function openModal(id)  { document.getElementById(id).classList.add('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
