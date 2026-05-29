@@ -129,10 +129,150 @@
     /* User dropdown */
     .user-dropdown { display:none; }
     .user-dropdown.open { display:block; }
-  </style>
+  
+    /* =============================================
+       RESPONSIVE & SCALE FIX — injected
+       ============================================= */
+
+    /* — PC: sedikit scale down supaya ga terlalu besar — */
+    @media (min-width: 1024px) {
+      html { font-size: 93.75%; }
+    }
+
+    /* ——— MOBILE HAMBURGER MENU ——— */
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #260701;
+      padding: 4px;
+    }
+    .mobile-nav-links {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(255,248,244,0.97);
+      backdrop-filter: blur(8px);
+      z-index: 9999;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+    }
+    .mobile-nav-links.open { display: flex; }
+    .mobile-nav-links a, .mobile-nav-links button {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #260701;
+      text-decoration: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: 'Poppins', sans-serif;
+    }
+    .mobile-nav-close {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #260701;
+    }
+    /* Nav desktop links — sembunyikan di mobile */
+    .nav-desktop-links { display: flex; align-items: center; gap: 2rem; }
+
+    @media (max-width: 767px) {
+      /* Navbar */
+      .nav-desktop-links { display: none !important; }
+      .mobile-menu-btn { display: flex !important; }
+      .navbar-pill { padding: 0 16px !important; gap: 0 !important; }
+
+      /* Container padding */
+      .max-w-7xl { padding-left: 1rem !important; padding-right: 1rem !important; }
+      section.max-w-7xl, section { padding-left: 1rem; padding-right: 1rem; }
+
+      /* Hero section */
+      .hero-title-alunan  { font-size: 2.6rem !important; }
+      .hero-title-nusantara { font-size: 1.7rem !important; }
+      .center-slide-img { width: 180px !important; }
+
+      /* Sembunyikan floating instrument cards di hero (makan tempat di mobile) */
+      .instrument-card { display: none !important; }
+
+      /* Hero container height */
+      .relative.w-full.rounded-\[40px\] { min-height: 340px !important; }
+
+      /* Hero left content */
+      .absolute.z-20.flex.flex-col { left: 20px !important; top: 40px !important; width: 200px !important; }
+
+      /* Hero nav buttons */
+      div[style*="bottom:100px"] { bottom: 24px !important; }
+
+      /* Grid jadi 1 kolom */
+      .grid-cols-2 { grid-template-columns: 1fr !important; }
+      .md\:grid-cols-2, .md\:grid-cols-3 { grid-template-columns: 1fr !important; }
+
+      /* Feature cards padding */
+      .feature-card { padding: 1.5rem !important; }
+
+      /* CTA section */
+      .cta-btn { width: 100%; text-align: center; }
+
+      /* Footer */
+      footer .grid { grid-template-columns: 1fr !important; gap: 2rem !important; }
+      footer .text-right { text-align: left !important; align-items: flex-start !important; }
+
+      /* Carousel card */
+      .bg-white.rounded-\[40px\] { max-width: 100% !important; }
+
+      /* Province hero */
+      h1[style*="font-size:4rem"] { font-size: 2.2rem !important; }
+      div[style*="padding-top: 100px"] { padding-top: 60px !important; padding-bottom: 24px !important; }
+
+      /* Login/Register split layout */
+      .flex-col.md\:flex-row { flex-direction: column !important; }
+      .md\:w-1\/2 { width: 100% !important; }
+      section.md\:w-1\/2.flex.items-center { display: none !important; } /* hide ilustrasi di mobile */
+
+      /* Profile page */
+      .max-w-5xl { padding-left: 1rem; padding-right: 1rem; }
+
+      /* General px-8 override */
+      .px-8 { padding-left: 1rem !important; padding-right: 1rem !important; }
+      .px-6 { padding-left: 0.75rem !important; padding-right: 0.75rem !important; }
+
+      /* py adjustments */
+      .py-20 { padding-top: 3rem !important; padding-bottom: 3rem !important; }
+      .py-16 { padding-top: 2.5rem !important; padding-bottom: 2.5rem !important; }
+    }
+
+    @media (min-width: 768px) and (max-width: 1023px) {
+      /* Tablet */
+      html { font-size: 90%; }
+      .hero-title-alunan  { font-size: 3.2rem !important; }
+      .hero-title-nusantara { font-size: 2rem !important; }
+      .center-slide-img { width: 220px !important; }
+      .px-8 { padding-left: 1.5rem !important; padding-right: 1.5rem !important; }
+    }
+</style>
 </head>
 
 <body class="font-sans text-brand-dark antialiased overflow-x-hidden bg-[#fff8f4]">
+  <!-- Mobile nav overlay -->
+  <div class="mobile-nav-links" id="mobile-nav-overlay">
+    <button class="mobile-nav-close" id="mobile-nav-close" aria-label="Tutup">
+      <span class="material-symbols-outlined" style="font-size:1.8rem;">close</span>
+    </button>
+    <a href="index.html">Beranda</a>
+    <a href="provinsi.html">Jelajahi</a>
+    <a href="hubungi.html">Hubungi Kami</a>
+    <a href="login.html" class="nav-mobile-login">Masuk</a>
+    <a href="profileuser.html" class="nav-mobile-profile hidden">Profil</a>
+    <button onclick="typeof logout==='function'&&logout()" class="nav-mobile-logout hidden" style="font-size:1.3rem;font-weight:600;color:#260701;">Keluar</button>
+  </div>
+
 
   <!-- ===== NAVBAR ===== -->
   <nav class="w-full sticky top-0 z-50 py-4 navbar-wrapper" id="main-nav">
@@ -561,5 +701,29 @@
       window.location.href = 'index.html';
     }
   </script>
+
+    // ===== Mobile hamburger =====
+    (function() {
+      var btn   = document.getElementById('mobile-menu-btn');
+      var overlay = document.getElementById('mobile-nav-overlay');
+      var closeBtn = document.getElementById('mobile-nav-close');
+      if (!btn || !overlay) return;
+      btn.addEventListener('click', function() { overlay.classList.add('open'); });
+      if (closeBtn) closeBtn.addEventListener('click', function() { overlay.classList.remove('open'); });
+      overlay.addEventListener('click', function(e) { if (e.target === overlay) overlay.classList.remove('open'); });
+
+      // Update mobile nav links based on auth
+      var u = null;
+      try { u = JSON.parse(localStorage.getItem('an_user') || 'null'); } catch(e) {}
+      if (u) {
+        var loginLink = overlay.querySelector('.nav-mobile-login');
+        var profileLink = overlay.querySelector('.nav-mobile-profile');
+        var logoutBtn = overlay.querySelector('.nav-mobile-logout');
+        if (loginLink)  loginLink.classList.add('hidden');
+        if (profileLink) profileLink.classList.remove('hidden');
+        if (logoutBtn)  logoutBtn.classList.remove('hidden');
+      }
+    })();
+
 </body>
 </html>
