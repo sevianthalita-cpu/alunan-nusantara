@@ -779,6 +779,8 @@ function startVerifyTimer() {
 // ============================================================
 // SUBMIT OTP
 // ============================================================
+let savedSession = null; // tambah variabel ini di atas
+
 async function submitOtp() {
   const otp = getOtpValue();
   if (otp.length < 8) { showToast('Masukkan 8 digit kode!'); return; }
@@ -803,6 +805,7 @@ async function submitOtp() {
     return;
   }
 
+  savedSession = data.session; // SIMPAN SESSION DI SINI
   isVerifyingOtp = false;
   const savedPurpose = localStorage.getItem('verifyPurpose') || verifyPurpose;
   localStorage.removeItem('verifyPurpose');
@@ -812,76 +815,18 @@ async function submitOtp() {
   afterVerifyShowForm(savedPurpose);
 }
 
-function afterVerifyShowForm(purpose) {
-  if (purpose === 'ubah-email')         showTab('ubah-email');
-  else if (purpose === 'ubah-password') showTab('ubah-password');
-  else if (purpose === 'hapus-akun')    hapusAkunFinal();
-}
-
-async function resendOtp() {
-  isVerifyingOtp = true;
-  const userEmail = getUser()?.email;
-  const { error } = await supabase.auth.signInWithOtp({
-    email: userEmail,
-    options: { shouldCreateUser: false }
-  });
-  if (error) {
-    showToast('Gagal kirim ulang: ' + error.message, 'error-toast');
-    isVerifyingOtp = false;
-    return;
-  }
-  showToast('Kode baru telah dikirim!', 'success');
-  clearOtpBoxes();
-  startVerifyTimer();
-}
-
-async function submitUbahEmail() {
-  const val = document.getElementById('input-email-baru').value.trim();
-  if (!val || !val.includes('@')) { showToast('Email tidak valid!'); return; }
-  const { error } = await supabase.auth.updateUser({ email: val });
-  if (error) { showToast('Gagal ubah email: ' + error.message); return; }
-  const masked = val.slice(0,2) + '**********' + val.slice(val.indexOf('@'));
-  document.getElementById('display-email').textContent = masked;
-  document.getElementById('sec-email').textContent = masked;
-  saveUser({ ...getUser(), email: val });
-  showToast('Email berhasil diubah! Cek inbox untuk konfirmasi.', 'success');
-  showTab('pengaturan');
-}
-
-async function submitUbahPassword() {
-  const pw  = document.getElementById('input-pw-new').value;
-  const pw2 = document.getElementById('input-pw-confirm').value;
-  if (!pw) { showToast('Kata sandi tidak boleh kosong!'); return; }
-  if (pw.length < 6) { showToast('Kata sandi minimal 6 karakter!'); return; }
-  if (pw !== pw2) { showToast('Konfirmasi kata sandi tidak sama!'); return; }
-  const { error } = await supabase.auth.updateUser({ password: pw });
-  if (error) { showToast('Gagal ubah password: ' + error.message); return; }
-  showToast('Kata sandi berhasil diubah!', 'success');
-  showTab('pengaturan');
-}
-
-function togglePw(id, btn) {
-  const inp = document.getElementById(id);
-  if (inp.type === 'password') {
-    inp.type = 'text';
-    btn.querySelector('.material-symbols-outlined').textContent = 'visibility';
-  } else {
-    inp.type = 'password';
-    btn.querySelector('.material-symbols-outlined').textContent = 'visibility_off';
-  }
-}
-
-// BARU
 async function hapusAkunFinal() {
-  const { data: { session } } = await supabase.auth.getSession()
+  const session = savedSession || (await supabase.auth.getSession()).data.session;
+  if (!session) { showToast('Sesi tidak ditemukan!', 'error-toast'); return; }
+  
   const res = await fetch('https://paowtmytttinwndebftm.supabase.co/functions/v1/delete-user', {
     method: 'POST',
     headers: { Authorization: 'Bearer ' + session.access_token }
-  })
+  });
   if (!res.ok) { showToast('Gagal hapus akun!', 'error-toast'); return; }
-  await supabase.auth.signOut()
-  localStorage.removeItem('an_user')
-  window.location.href = 'index.html'
+  await supabase.auth.signOut();
+  localStorage.removeItem('an_user');
+  window.location.href = 'index.html';
 }
 
 function openModal(id)  { document.getElementById(id).classList.add('open'); }
