@@ -136,16 +136,12 @@
     .modal-star-row { display: flex; gap: 8px; margin-bottom: 16px; }
     .modal-star { font-size: 1.6rem; cursor: pointer; color: #d4c3be; transition: color .15s; }
     .modal-star.on { color: #260701; }
-
-    /* ============================================================
-       VERIFY SCREEN — FULL PAGE OVERLAY
-       ============================================================ */
     .verify-screen { display: none; position: fixed; inset: 0; background: var(--bg); z-index: 200; align-items: center; justify-content: center; }
     .verify-screen.open { display: flex; }
     .verify-header { position: fixed; top: 0; left: 0; right: 0; padding: 16px 28px; display: flex; align-items: center; gap: 16px; border-bottom: 1.5px solid var(--border); background: var(--white); z-index: 10; }
     .verify-header img { height: 32px; }
     .verify-header-title { font-size: 15px; font-weight: 600; color: var(--brown-dark); }
-    .verify-card { background: white; border-radius: 16px; padding: 36px 32px; max-width: 520px; width: 100%; border: 1.5px solid var(--border); margin-top: 70px; box-shadow: 0 4px 20px rgba(0,0,0,.06); }
+    .verify-card { background: white; border-radius: 16px; padding: 36px 32px; max-width: 440px; width: 100%; border: 1.5px solid var(--border); margin-top: 70px; }
     .verify-back-btn { background: none; border: none; color: var(--gold-dark); cursor: pointer; font-size: 1.1rem; display: flex; margin-bottom: 20px; }
     .verify-shield { width: 72px; height: 72px; border-radius: 50%; background: var(--gold-light); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: var(--gold); }
     .verify-shield .material-symbols-outlined { font-size: 2.2rem; }
@@ -163,28 +159,6 @@
     .verify-choice-btn:hover { border-color: var(--gold); background: var(--gold-light); }
     .verify-choice-icon { color: var(--gold); }
     .verify-choice-icon .material-symbols-outlined { font-size: 1.2rem; }
-
-    /* ============================================================
-       OTP INPUT — 6 kotak terpisah (sesuai desain foto)
-       ============================================================ */
-    .otp-container { display: flex; gap: 10px; justify-content: center; margin-bottom: 24px; }
-    .otp-box {
-      width: 52px; height: 60px;
-      border: 2px solid var(--border);
-      border-radius: 12px;
-      background: var(--gold-light);
-      font-size: 22px; font-weight: 700;
-      font-family: 'Poppins', sans-serif;
-      color: var(--brown-dark);
-      text-align: center;
-      outline: none;
-      transition: border-color .2s, box-shadow .2s;
-      caret-color: var(--gold);
-    }
-    .otp-box:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(129,85,37,.15); }
-    .otp-box.filled { border-color: var(--gold); }
-    .otp-box.error { border-color: var(--red); background: #fff5f5; }
-
     .warning-box { background: #fff5f5; border: 1.5px solid #fca5a5; border-radius: 12px; padding: 20px 24px; }
     .warning-title { font-size: 13px; font-weight: 700; color: var(--red); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
     .warning-title .material-symbols-outlined { font-size: 1rem; }
@@ -196,151 +170,142 @@
     .empty-state p { font-size: 13px; color: var(--text-muted); margin-top: 10px; }
     #ep-toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--brown-dark); color: white; padding: 10px 24px; border-radius: 999px; font-size: 13px; font-weight: 600; opacity: 0; pointer-events: none; transition: all .3s; z-index: 300; white-space: nowrap; }
     #ep-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-    #ep-toast.success { background: #166534; }
-    #ep-toast.error-toast { background: #991b1b; }
   
-    /* =============================================
-       RESPONSIVE & SCALE FIX — injected
-       ============================================= */
+    /* ══════════════════════════════════════════
+       RESPONSIVE — Alunan Nusantara
+       ══════════════════════════════════════════ */
 
-    /* — PC: sedikit scale down supaya ga terlalu besar — */
-    @media (min-width: 1024px) {
-      html { font-size: 93.75%; }
+    /* PC: scale down sedikit biar ga terlalu besar */
+    @media (min-width: 1024px) { html { font-size: 93.75%; } }
+    @media (min-width: 768px) and (max-width: 1023px) { html { font-size: 90%; } }
+
+    /* ── Hamburger button ── */
+    #mob-menu-btn {
+      display: none !important;
+      background: none; border: none; cursor: pointer;
+      color: #260701; padding: 4px;
+      align-items: center; justify-content: center;
+      flex-shrink: 0; line-height: 1;
     }
 
-    /* ——— MOBILE HAMBURGER MENU ——— */
-    .mobile-menu-btn {
+    /* ── Dropdown card mobile ── */
+    #mob-nav-card {
       display: none;
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: #260701;
-      padding: 4px;
-    }
-    .mobile-nav-links {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(255,248,244,0.97);
-      backdrop-filter: blur(8px);
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 0; right: 0;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(44,20,8,0.15);
+      padding: 8px 0;
       z-index: 9999;
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 2rem;
     }
-    .mobile-nav-links.open { display: flex; }
-    .mobile-nav-links a, .mobile-nav-links button {
-      font-size: 1.3rem;
-      font-weight: 600;
-      color: #260701;
-      text-decoration: none;
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-family: 'Poppins', sans-serif;
+    #mob-nav-card.open { display: flex; }
+    #mob-nav-card a, #mob-nav-card button.mn-logout {
+      display: block; width: 100%;
+      padding: 13px 24px;
+      font-size: 0.95rem; font-weight: 500;
+      color: #260701; text-decoration: none;
+      background: none; border: none; text-align: left;
+      cursor: pointer; font-family: 'Poppins', sans-serif;
+      box-sizing: border-box;
+      border-left: 3px solid transparent;
+      transition: background 0.15s;
     }
-    .mobile-nav-close {
-      position: absolute;
-      top: 1.5rem;
-      right: 1.5rem;
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: #260701;
+    #mob-nav-card a:hover, #mob-nav-card button.mn-logout:hover { background: #fff8f4; }
+    #mob-nav-card a.mob-active {
+      font-weight: 700;
+      border-left: 3px solid #260701;
     }
-    /* Nav desktop links — sembunyikan di mobile */
-    .nav-desktop-links { display: flex; align-items: center; gap: 2rem; }
 
+    /* ── Hero index mobile fix ── */
     @media (max-width: 767px) {
       /* Navbar */
-      .nav-desktop-links { display: none !important; }
-      .mobile-menu-btn { display: flex !important; }
-      .navbar-pill { padding: 0 16px !important; gap: 0 !important; }
+      .desk-nav { display: none !important; }
+      #mob-menu-btn { display: flex !important; }
+      .navbar-pill { position: relative !important; overflow: visible !important; }
 
-      /* Container padding */
+      /* Spacing */
       .max-w-7xl { padding-left: 1rem !important; padding-right: 1rem !important; }
-      section.max-w-7xl, section { padding-left: 1rem; padding-right: 1rem; }
+      .px-8 { padding-left: 1rem !important; padding-right: 1rem !important; }
+      .px-6 { padding-left: 0.75rem !important; padding-right: 0.75rem !important; }
+      .py-20 { padding-top: 3rem !important; padding-bottom: 3rem !important; }
+      .py-16 { padding-top: 2.5rem !important; padding-bottom: 2.5rem !important; }
+      body { overflow-x: hidden !important; }
 
-      /* Hero section */
-      .hero-title-alunan  { font-size: 2.6rem !important; }
-      .hero-title-nusantara { font-size: 1.7rem !important; }
-      .center-slide-img { width: 180px !important; }
-
-      /* Sembunyikan floating instrument cards di hero (makan tempat di mobile) */
+      /* ── Hero beranda: flex column supaya ga nabrak ── */
+      .hero-rsp-wrap {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        justify-content: flex-start !important;
+        min-height: 400px !important;
+        padding: 28px 20px 90px !important;
+      }
+      .hero-rsp-left {
+        position: relative !important;
+        left: auto !important; top: auto !important;
+        width: 100% !important;
+        z-index: 20 !important;
+      }
+      .hero-rsp-center {
+        position: relative !important;
+        left: auto !important; top: auto !important;
+        transform: none !important;
+        z-index: 20 !important;
+        width: 100% !important;
+        display: flex !important;
+        justify-content: center !important;
+        margin-top: 12px !important;
+        pointer-events: none;
+      }
+      .center-slide-img { width: 150px !important; }
+      .hero-rsp-nav {
+        position: absolute !important;
+        bottom: 20px !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+      }
+      .hero-title-alunan   { font-size: 2.2rem !important; }
+      .hero-title-nusantara { font-size: 1.5rem !important; }
       .instrument-card { display: none !important; }
-
-      /* Hero container height */
-      .relative.w-full.rounded-\[40px\] { min-height: 340px !important; }
-
-      /* Hero left content */
-      .absolute.z-20.flex.flex-col { left: 20px !important; top: 40px !important; width: 200px !important; }
-
-      /* Hero nav buttons */
-      div[style*="bottom:100px"] { bottom: 24px !important; }
-
-      /* Grid jadi 1 kolom */
-      .grid-cols-2 { grid-template-columns: 1fr !important; }
-      .md\:grid-cols-2, .md\:grid-cols-3 { grid-template-columns: 1fr !important; }
-
-      /* Feature cards padding */
-      .feature-card { padding: 1.5rem !important; }
-
-      /* CTA section */
-      .cta-btn { width: 100%; text-align: center; }
 
       /* Footer */
       footer .grid { grid-template-columns: 1fr !important; gap: 2rem !important; }
-      footer .text-right { text-align: left !important; align-items: flex-start !important; }
+      footer .text-right { text-align: left !important; }
+      footer .flex.flex-col.items-end { align-items: flex-start !important; }
 
-      /* Carousel card */
-      .bg-white.rounded-\[40px\] { max-width: 100% !important; }
+      /* Province grid */
+      #province-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 10px !important; }
 
-      /* Province hero */
-      h1[style*="font-size:4rem"] { font-size: 2.2rem !important; }
-      div[style*="padding-top: 100px"] { padding-top: 60px !important; padding-bottom: 24px !important; }
-
-      /* Login/Register split layout */
-      .flex-col.md\:flex-row { flex-direction: column !important; }
-      .md\:w-1\/2 { width: 100% !important; }
-      section.md\:w-1\/2.flex.items-center { display: none !important; } /* hide ilustrasi di mobile */
-
-      /* Profile page */
-      .max-w-5xl { padding-left: 1rem; padding-right: 1rem; }
-
-      /* General px-8 override */
-      .px-8 { padding-left: 1rem !important; padding-right: 1rem !important; }
-      .px-6 { padding-left: 0.75rem !important; padding-right: 0.75rem !important; }
-
-      /* py adjustments */
-      .py-20 { padding-top: 3rem !important; padding-bottom: 3rem !important; }
-      .py-16 { padding-top: 2.5rem !important; padding-bottom: 2.5rem !important; }
+      /* Login / Register */
+      .auth-split-left  { display: none !important; }
+      .auth-split-right { width: 100% !important; min-height: 100vh; }
     }
 
-    @media (min-width: 768px) and (max-width: 1023px) {
-      /* Tablet */
-      html { font-size: 90%; }
-      .hero-title-alunan  { font-size: 3.2rem !important; }
-      .hero-title-nusantara { font-size: 2rem !important; }
-      .center-slide-img { width: 220px !important; }
-      .px-8 { padding-left: 1.5rem !important; padding-right: 1.5rem !important; }
+    /* ── Edit profile sidebar ── */
+    @media (max-width: 767px) {
+      .card { flex-direction: column !important; }
+      .sidebar {
+        width: 100% !important;
+        border-right: none !important;
+        border-bottom: 1.5px solid #f2dfcf !important;
+        padding: 20px 16px !important;
+      }
+      .main { padding: 20px 16px !important; }
+      .page-wrap { padding: 16px 12px 32px !important; }
+      .form-row { flex-direction: column !important; gap: 6px !important; }
+      .form-label-col { width: 100% !important; }
+      .input-field, .textarea-field { width: 100% !important; box-sizing: border-box; }
+      .profile-edit-layout { flex-direction: column !important; }
+      .profile-photo-col { width: 100% !important; align-items: center !important; }
     }
+
 </style>
+  <link rel="stylesheet" href="assets/responsive.css"/>
 </head>
 <body>
-  <!-- Mobile nav overlay -->
-  <div class="mobile-nav-links" id="mobile-nav-overlay">
-    <button class="mobile-nav-close" id="mobile-nav-close" aria-label="Tutup">
-      <span class="material-symbols-outlined" style="font-size:1.8rem;">close</span>
-    </button>
-    <a href="index.html">Beranda</a>
-    <a href="provinsi.html">Jelajahi</a>
-    <a href="hubungi.html">Hubungi Kami</a>
-    <a href="login.html" class="nav-mobile-login">Masuk</a>
-    <a href="profileuser.html" class="nav-mobile-profile hidden">Profil</a>
-    <button onclick="typeof logout==='function'&&logout()" class="nav-mobile-logout hidden" style="font-size:1.3rem;font-weight:600;color:#260701;">Keluar</button>
-  </div>
-
 <div class="page-wrap">
   <a class="back-btn" href="javascript:history.back()">
     <span class="material-symbols-outlined">arrow_back</span> Kembali
@@ -564,9 +529,7 @@
   </div>
 </div>
 
-<!-- ============================================================
-     VERIFY: PILIH METODE
-     ============================================================ -->
+<!-- VERIFY: PILIH METODE -->
 <div class="verify-screen" id="verify-pilih">
   <div class="verify-header">
     <img src="assets/images/logo/logoweb.png" alt="Alunan Nusantara"/>
@@ -582,51 +545,31 @@
     <div class="verify-choices">
       <button class="verify-choice-btn" onclick="showVerifyEmail()">
         <div class="verify-choice-icon"><span class="material-symbols-outlined">mail</span></div>
-        Verifikasi dengan kode OTP via email
+        Verifikasi dengan link email
       </button>
     </div>
   </div>
 </div>
 
-<!-- ============================================================
-     VERIFY: INPUT OTP — 6 kotak terpisah
-     ============================================================ -->
+<!-- VERIFY: TUNGGU EMAIL -->
 <div class="verify-screen" id="verify-email-sent">
   <div class="verify-header">
     <img src="assets/images/logo/logoweb.png" alt="Alunan Nusantara"/>
-    <div class="verify-header-title">Masukan Token</div>
+    <div class="verify-header-title">Verifikasi Kode</div>
   </div>
   <div class="verify-card">
     <button class="verify-back-btn" onclick="goBackVerify()">
       <span class="material-symbols-outlined" style="color:var(--gold-dark);">arrow_back</span>
     </button>
-
-    <div class="verify-card-title">Tanggapi di Email</div>
-    <div class="verify-card-sub">
-      Mohon Masukan kode 8 digit yang dikirim melalui email ke<br/>
-      <span class="verify-email-highlight" id="verify-email-display"></span>
+    <div class="verify-email-icon"><span class="material-symbols-outlined">mail</span></div>
+    <div class="verify-card-title">Masukkan Kode OTP</div>
+    <div class="verify-card-sub">Kami telah mengirim kode 6 digit ke <span class="verify-email-highlight" id="verify-email-display"></span></div>
+    <input type="text" id="input-otp" class="input-field" maxlength="6" placeholder="------" style="text-align:center;font-size:24px;font-weight:700;letter-spacing:12px;margin-bottom:16px;"/>
+    <button class="btn-primary" style="width:100%;" onclick="submitOtp()">Verifikasi</button>
+    <div class="verify-resend" id="verify-resend-area" style="margin-top:14px;">
+      Kirim ulang dalam <span class="verify-timer" id="timer-val">60</span> detik
     </div>
-
-    <!-- 8 kotak OTP terpisah -->
-    <div class="otp-container" id="otp-container">
-      <input class="otp-box" type="text" inputmode="numeric" maxlength="1" id="otp-0" autocomplete="off"/>
-<input class="otp-box" type="text" inputmode="numeric" maxlength="1" id="otp-1" autocomplete="off"/>
-<input class="otp-box" type="text" inputmode="numeric" maxlength="1" id="otp-2" autocomplete="off"/>
-<input class="otp-box" type="text" inputmode="numeric" maxlength="1" id="otp-3" autocomplete="off"/>
-<input class="otp-box" type="text" inputmode="numeric" maxlength="1" id="otp-4" autocomplete="off"/>
-<input class="otp-box" type="text" inputmode="numeric" maxlength="1" id="otp-5" autocomplete="off"/>
-<input class="otp-box" type="text" inputmode="numeric" maxlength="1" id="otp-6" autocomplete="off"/>
-<input class="otp-box" type="text" inputmode="numeric" maxlength="1" id="otp-7" autocomplete="off"/>
-    </div>
-
-    <button class="btn-primary" style="width:100%;padding:12px;" onclick="submitOtp()" id="btn-verifikasi-token">
-      Verifikasi Token
-    </button>
-
-    <div class="verify-resend" id="verify-resend-area" style="margin-top:16px;">
-      Mohon menunggu <span class="verify-timer" id="timer-val">60</span> detik sebelum mengirim ulang
-    </div>
-    <div class="verify-resend" id="verify-resend-link" style="display:none;margin-top:16px;">
+    <div class="verify-resend" id="verify-resend-link" style="display:none;margin-top:14px;">
       Belum dapat kode? <span class="verify-resend-link-btn" onclick="resendOtp()">Kirim ulang</span>
     </div>
   </div>
@@ -636,27 +579,35 @@
 
 <script>
 // ============================================================
-// FLAG PENTING: Cegah onAuthStateChange dari auto-redirect
+// HELPER: ambil user dari localStorage (cache)
 // ============================================================
-let isVerifyingOtp = false;
-
 function getUser() { return JSON.parse(localStorage.getItem('an_user') || 'null'); }
 function saveUser(updated) { localStorage.setItem('an_user', JSON.stringify(updated)); }
 
+// ============================================================
+// MAGIC LINK REDIRECT HANDLER
+// Dipasang SEBELUM auth check agar tidak terlewat
+// ============================================================
 supabase.auth.onAuthStateChange(async (event, session) => {
-  if (isVerifyingOtp) return;
+  // Hanya update session, jangan auto-redirect
   if (event === 'SIGNED_IN' && session) {
     currentUserId = session.user.id;
     saveUser({ ...getUser(), id: session.user.id, email: session.user.email });
   }
 });
-
+// ============================================================
+// AUTH CHECK
+// ============================================================
 let currentUserId = null;
 
 supabase.auth.getSession().then(({ data: { session } }) => {
   if (!session) {
+    // Jangan langsung redirect — tunggu dulu kalau ada token di URL
     const hash = window.location.hash;
-    if (hash.includes('access_token')) return;
+    if (hash.includes('access_token')) {
+      // Ada token, tunggu onAuthStateChange yang handle
+      return;
+    }
     localStorage.removeItem('an_user');
     window.location.href = 'login.html';
     return;
@@ -671,14 +622,19 @@ supabase.auth.getSession().then(({ data: { session } }) => {
   loadUserData();
 });
 
-function showToast(msg, type='') {
+// ============================================================
+// TOAST
+// ============================================================
+function showToast(msg) {
   const t = document.getElementById('ep-toast');
   t.textContent = msg;
-  t.className = 'show' + (type ? ' '+type : '');
-  clearTimeout(t._timer);
-  t._timer = setTimeout(() => t.className = '', 2800);
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
 }
 
+// ============================================================
+// LOAD USER DATA ke UI
+// ============================================================
 function loadUserData() {
   const user = getUser();
   if (!user) return;
@@ -707,11 +663,15 @@ function loadUserData() {
   }
 }
 
+// ============================================================
+// UPLOAD FOTO ke Supabase Storage
+// ============================================================
 async function uploadPhoto(input) {
   const file = input.files[0];
   if (!file) return;
   if (file.size > 1024*1024) { showToast('Ukuran gambar maks 1MB!'); return; }
   if (!file.type.match('image/(jpeg|png)')) { showToast('Format harus .JPEG atau .PNG!'); return; }
+
   const reader = new FileReader();
   reader.onload = e => {
     document.getElementById('photo-icon').style.display = 'none';
@@ -722,23 +682,33 @@ async function uploadPhoto(input) {
     document.getElementById('sidebar-avatar-img').style.display = 'block';
   };
   reader.readAsDataURL(file);
+
   showToast('Mengupload foto...');
+
   const uid = currentUserId || getUser()?.id;
   if (!uid) { showToast('Gagal: belum login'); return; }
   const ext = file.name.split('.').pop();
   const filePath = `${uid}/avatar.${ext}`;
+
   const { error: upErr } = await supabase.storage
-    .from('avatars').upload(filePath, file, { upsert: true, contentType: file.type });
+    .from('avatars')
+    .upload(filePath, file, { upsert: true, contentType: file.type });
+
   if (upErr) { showToast('Upload gagal: ' + upErr.message); return; }
+
   const { data: urlData } = supabase.storage.from('avatars').getPublicUrl(filePath);
   const photoUrl = urlData.publicUrl + '?t=' + Date.now();
+
   await supabase.from('profiles').upsert({ id: uid, photo_url: photoUrl }, { onConflict: 'id' });
   saveUser({ ...getUser(), photo: photoUrl });
   document.getElementById('photo-preview').src = photoUrl;
   document.getElementById('sidebar-avatar-img').src = photoUrl;
-  showToast('Foto profil berhasil disimpan!', 'success');
+  showToast('Foto profil berhasil disimpan!');
 }
 
+// ============================================================
+// TAB NAVIGATION
+// ============================================================
 const allTabs = ['edit-profile','pengaturan','ubah-email','ubah-password','hapus-akun','riwayat'];
 const navMap  = {'edit-profile':'nav-edit-profile','pengaturan':'nav-pengaturan','ubah-email':'nav-pengaturan','ubah-password':'nav-pengaturan','hapus-akun':'nav-pengaturan','riwayat':'nav-riwayat'};
 const subMap  = {'ubah-email':'sub-ubah-email','ubah-password':'sub-ubah-password'};
@@ -767,137 +737,121 @@ function togglePengaturanSub() {
 
 if (window.location.hash === '#pengaturan') showTab('pengaturan');
 
+// ============================================================
+// SAVE PROFILE
+// ============================================================
 async function saveProfile() {
   const username = document.getElementById('input-username').value.trim();
-  const nama     = document.getElementById('input-nama').value.trim();
+  const nama = document.getElementById('input-nama').value.trim();
   if (!username || !nama) { showToast('Username dan nama tidak boleh kosong!'); return; }
+
   const uid = currentUserId || getUser()?.id;
   if (!uid) { showToast('Sesi tidak ditemukan, coba login ulang.'); return; }
+
   const { error } = await supabase.from('profiles').upsert(
-    { id: uid, username, full_name: nama }, { onConflict: 'id' }
+    { id: uid, username, full_name: nama },
+    { onConflict: 'id' }
   );
+
   if (error) { showToast('Gagal simpan: ' + error.message); return; }
+
   saveUser({ ...getUser(), username, name: nama });
   document.getElementById('sidebar-name').textContent = nama;
-  showToast('Profil berhasil disimpan!', 'success');
+  showToast('Profil berhasil disimpan!');
 }
 
 // ============================================================
 // VERIFY FLOW
 // ============================================================
-let verifyPurpose = '';
-
 function startUbahEmail()    { openVerify('ubah-email'); }
 function startUbahPassword() { openVerify('ubah-password'); }
-function startHapusAkunVerify() { openVerify('hapus-akun'); }
 
-function openVerify(purpose) {
-  verifyPurpose = purpose;
-  document.getElementById('verify-pilih').classList.add('open');
+function afterVerifyShowForm(purpose) {
+  if (purpose === 'ubah-email')         showTab('ubah-email');
+  else if (purpose === 'ubah-password') showTab('ubah-password');
+  else if (purpose === 'hapus-akun')    hapusAkunFinal();
 }
 
+// ============================================================
+// UBAH EMAIL
+// ============================================================
+async function submitUbahEmail() {
+  const val = document.getElementById('input-email-baru').value.trim();
+  if (!val || !val.includes('@')) { showToast('Email tidak valid!'); return; }
+
+  const { error } = await supabase.auth.updateUser({ email: val });
+  if (error) { showToast('Gagal ubah email: ' + error.message); return; }
+
+  const masked = val.slice(0,2) + '**********' + val.slice(val.indexOf('@'));
+  document.getElementById('display-email').textContent = masked;
+  document.getElementById('sec-email').textContent = masked;
+  saveUser({ ...getUser(), email: val });
+  showToast('Email berhasil diubah! Cek inbox untuk konfirmasi.');
+  showTab('pengaturan');
+}
+
+// ============================================================
+// UBAH PASSWORD
+// ============================================================
+async function submitUbahPassword() {
+  const pw  = document.getElementById('input-pw-new').value;
+  const pw2 = document.getElementById('input-pw-confirm').value;
+  if (!pw) { showToast('Kata sandi tidak boleh kosong!'); return; }
+  if (pw.length < 6) { showToast('Kata sandi minimal 6 karakter!'); return; }
+  if (pw !== pw2) { showToast('Konfirmasi kata sandi tidak sama!'); return; }
+
+  const { error } = await supabase.auth.updateUser({ password: pw });
+  if (error) { showToast('Gagal ubah password: ' + error.message); return; }
+
+  showToast('Kata sandi berhasil diubah!');
+  showTab('pengaturan');
+}
+
+function togglePw(id, btn) {
+  const inp = document.getElementById(id);
+  if (inp.type === 'password') {
+    inp.type = 'text';
+    btn.querySelector('.material-symbols-outlined').textContent = 'visibility';
+  } else {
+    inp.type = 'password';
+    btn.querySelector('.material-symbols-outlined').textContent = 'visibility_off';
+  }
+}
+
+function startHapusAkunVerify() { openVerify('hapus-akun'); }
+function hapusAkunFinal() {
+  localStorage.removeItem('an_user');
+  window.location.href = 'index.html';
+}
+
+let verifyPurpose = '';
+function openVerify(purpose) { verifyPurpose = purpose; document.getElementById('verify-pilih').classList.add('open'); }
 function closeVerify(id) {
   document.getElementById(id).classList.remove('open');
-  isVerifyingOtp = false;
   if (verifyPurpose === 'hapus-akun') showTab('hapus-akun');
 }
 
 async function showVerifyEmail() {
-  isVerifyingOtp = true;
   document.getElementById('verify-pilih').classList.remove('open');
   document.getElementById('verify-email-sent').classList.add('open');
-  clearOtpBoxes();
   startVerifyTimer();
   localStorage.setItem('verifyPurpose', verifyPurpose);
-  const userEmail = getUser()?.email;
-  if (!userEmail) { showToast('Email tidak ditemukan, coba login ulang.'); isVerifyingOtp = false; return; }
+
   const { error } = await supabase.auth.signInWithOtp({
-    email: userEmail,
-    options: { shouldCreateUser: false }
+    email: getUser()?.email,
+    options: {
+      shouldCreateUser: false,
+    }
   });
-  if (error) {
-    showToast('Gagal mengirim kode: ' + error.message, 'error-toast');
-    isVerifyingOtp = false;
-  } else {
-    showToast('Kode OTP telah dikirim ke email kamu!', 'success');
-  }
+
+  if (error) showToast('Gagal mengirim kode: ' + error.message);
 }
 
 function goBackVerify() {
   document.getElementById('verify-email-sent').classList.remove('open');
   document.getElementById('verify-pilih').classList.add('open');
-  isVerifyingOtp = false;
-  clearInterval(timerInterval);
 }
 
-// ============================================================
-// OTP BOXES — 8 kotak
-// ============================================================
-function clearOtpBoxes() {
-  for (let i = 0; i < 8; i++) {
-    const box = document.getElementById('otp-' + i);
-    if (!box) continue;
-    box.value = '';
-    box.classList.remove('filled', 'error');
-  }
-  setTimeout(() => document.getElementById('otp-0')?.focus(), 100);
-}
-
-function getOtpValue() {
-  let val = '';
-  for (let i = 0; i < 8; i++) val += document.getElementById('otp-' + i).value || '';
-  return val;
-}
-
-function setOtpError(isError) {
-  for (let i = 0; i < 8; i++) {
-    const box = document.getElementById('otp-' + i);
-    if (!box) continue;
-    if (isError) { box.classList.add('error'); box.classList.remove('filled'); }
-    else          { box.classList.remove('error'); }
-  }
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  for (let i = 0; i < 8; i++) {
-    const box = document.getElementById('otp-' + i);
-    if (!box) continue;
-
-    box.addEventListener('input', (e) => {
-      box.value = box.value.replace(/[^0-9]/g, '').slice(-1);
-      box.classList.toggle('filled', box.value !== '');
-      box.classList.remove('error');
-      if (box.value && i < 7) {
-        document.getElementById('otp-' + (i + 1)).focus();
-      }
-      if (i === 7 && box.value) submitOtp();
-    });
-
-    box.addEventListener('keydown', (e) => {
-      if (e.key === 'Backspace' && !box.value && i > 0) {
-        document.getElementById('otp-' + (i - 1)).focus();
-      }
-    });
-
-    box.addEventListener('paste', (e) => {
-      e.preventDefault();
-      const pasted = (e.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g,'');
-      for (let j = 0; j < 8 && j < pasted.length; j++) {
-        const target = document.getElementById('otp-' + j);
-        if (target) { target.value = pasted[j]; target.classList.add('filled'); }
-      }
-      const nextIdx = Math.min(pasted.length, 7);
-      document.getElementById('otp-' + nextIdx)?.focus();
-      if (pasted.length >= 8) submitOtp();
-    });
-
-    box.addEventListener('focus', () => box.select());
-  }
-});
-
-// ============================================================
-// TIMER
-// ============================================================
 let timerInterval = null;
 function startVerifyTimer() {
   clearInterval(timerInterval);
@@ -916,57 +870,35 @@ function startVerifyTimer() {
   }, 1000);
 }
 
-// ============================================================
-// SUBMIT OTP
-// ============================================================
-let savedSession = null; // tambah variabel ini di atas
-
 async function submitOtp() {
-  const otp = getOtpValue();
-  if (otp.length < 8) { showToast('Masukkan 8 digit kode!'); return; }
+  const otp = document.getElementById('input-otp').value.trim();
+  if (otp.length !== 6) { showToast('Masukkan 6 digit kode!'); return; }
 
-  const btn = document.getElementById('btn-verifikasi-token');
-  btn.textContent = 'Memverifikasi...';
-  btn.disabled = true;
-
-  const userEmail = getUser()?.email;
   const { data, error } = await supabase.auth.verifyOtp({
-    email: userEmail,
+    email: getUser()?.email,
     token: otp,
-    type: 'email'
+    type: 'email'  // ← ganti dari 'magiclink' ke 'email'
   });
 
-  btn.textContent = 'Verifikasi Token';
-  btn.disabled = false;
+  if (error) { showToast('❌ Kode salah atau kedaluwarsa!'); return; }
 
-  if (error) {
-    setOtpError(true);
-    showToast('❌ Token salah atau sudah kedaluwarsa!', 'error-toast');
-    return;
-  }
-
-  savedSession = data.session; // SIMPAN SESSION DI SINI
-  isVerifyingOtp = false;
-  const savedPurpose = localStorage.getItem('verifyPurpose') || verifyPurpose;
+  const savedPurpose = localStorage.getItem('verifyPurpose');
   localStorage.removeItem('verifyPurpose');
   document.getElementById('verify-email-sent').classList.remove('open');
   clearInterval(timerInterval);
-  showToast('✅ Verifikasi berhasil!', 'success');
+  showToast('✅ Verifikasi berhasil!');
   afterVerifyShowForm(savedPurpose);
 }
 
-async function hapusAkunFinal() {
-  const session = savedSession || (await supabase.auth.getSession()).data.session;
-  if (!session) { showToast('Sesi tidak ditemukan!', 'error-toast'); return; }
-  
-  const res = await fetch('https://paowtmytttinwndebftm.supabase.co/functions/v1/delete-user', {
-    method: 'POST',
-    headers: { Authorization: 'Bearer ' + session.access_token }
+async function resendOtp() {
+  localStorage.setItem('verifyPurpose', verifyPurpose);
+  const { error } = await supabase.auth.signInWithOtp({
+    email: getUser()?.email,
+    options: { shouldCreateUser: false }
   });
-  if (!res.ok) { showToast('Gagal hapus akun!', 'error-toast'); return; }
-  await supabase.auth.signOut();
-  localStorage.removeItem('an_user');
-  window.location.href = 'index.html';
+  if (error) { showToast('Gagal kirim ulang: ' + error.message); return; }
+  showToast('Kode baru telah dikirim!');
+  startVerifyTimer();
 }
 
 function openModal(id)  { document.getElementById(id).classList.add('open'); }
@@ -979,6 +911,9 @@ async function doLogout() {
   window.location.href = 'index.html';
 }
 
+// ============================================================
+// ALAT MUSIK IMAGE MAP
+// ============================================================
 const ALAT_IMGS = {
   kendang:  'assets/images/alat musik/kendang.png',
   slenthem: 'assets/images/alat musik/slenthem.png',
@@ -990,6 +925,9 @@ const ALAT_IMGS = {
   angklung: 'assets/images/alat musik/angklung.png',
 };
 
+// ============================================================
+// RIWAYAT KOMENTAR
+// ============================================================
 let cachedComments   = [];
 let editIndex        = -1;
 let editModalRating  = 0;
@@ -1004,12 +942,15 @@ async function getAllUserComments() {
     currentUserId = uid;
     saveUser({ ...getUser(), id: uid });
   }
+
   const { data, error } = await supabase
     .from('reviews')
     .select('id, alat_key, provinsi, rating, text, created_at')
     .eq('user_id', uid)
     .order('created_at', { ascending: false });
+
   if (error) { console.error('Error fetch reviews:', error); return []; }
+
   return (data || []).map(r => ({
     id:       r.id,
     _alatKey: r.alat_key,
@@ -1066,6 +1007,9 @@ async function buildRiwayat() {
   });
 }
 
+// ============================================================
+// EDIT & DELETE KOMENTAR
+// ============================================================
 document.querySelectorAll('#modal-edit-stars .modal-star').forEach(s => {
   s.addEventListener('click',     () => { editModalRating = parseInt(s.dataset.v); updateModalStars(editModalRating); });
   s.addEventListener('mouseover', () => updateModalStars(parseInt(s.dataset.v)));
@@ -1091,11 +1035,12 @@ async function saveEditKomentar() {
   if (newText.length < 3) { showToast('Komentar terlalu pendek!'); return; }
   const c = cachedComments[editIndex];
   const { error } = await supabase.from('reviews')
-    .update({ text: newText, rating: editModalRating }).eq('id', c.id);
+    .update({ text: newText, rating: editModalRating })
+    .eq('id', c.id);
   if (error) { showToast('Gagal update: ' + error.message); return; }
   closeModal('modal-edit');
   await buildRiwayat();
-  showToast('Komentar berhasil diperbarui!', 'success');
+  showToast('Komentar berhasil diperbarui!');
 }
 
 function openHapusKomenModal(i) { deleteIndexKomen = i; openModal('modal-hapus-komen'); }
@@ -1111,29 +1056,6 @@ async function confirmDeleteKomentar() {
   showToast('Komentar dihapus.');
 }
 </script>
-
-    // ===== Mobile hamburger =====
-    (function() {
-      var btn   = document.getElementById('mobile-menu-btn');
-      var overlay = document.getElementById('mobile-nav-overlay');
-      var closeBtn = document.getElementById('mobile-nav-close');
-      if (!btn || !overlay) return;
-      btn.addEventListener('click', function() { overlay.classList.add('open'); });
-      if (closeBtn) closeBtn.addEventListener('click', function() { overlay.classList.remove('open'); });
-      overlay.addEventListener('click', function(e) { if (e.target === overlay) overlay.classList.remove('open'); });
-
-      // Update mobile nav links based on auth
-      var u = null;
-      try { u = JSON.parse(localStorage.getItem('an_user') || 'null'); } catch(e) {}
-      if (u) {
-        var loginLink = overlay.querySelector('.nav-mobile-login');
-        var profileLink = overlay.querySelector('.nav-mobile-profile');
-        var logoutBtn = overlay.querySelector('.nav-mobile-logout');
-        if (loginLink)  loginLink.classList.add('hidden');
-        if (profileLink) profileLink.classList.remove('hidden');
-        if (logoutBtn)  logoutBtn.classList.remove('hidden');
-      }
-    })();
-
+  <script src="assets/responsive.js"></script>
 </body>
 </html>

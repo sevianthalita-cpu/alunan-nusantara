@@ -130,156 +130,158 @@
     .user-dropdown { display:none; }
     .user-dropdown.open { display:block; }
   
-    /* =============================================
-       RESPONSIVE & SCALE FIX — injected
-       ============================================= */
+    /* ══════════════════════════════════════════
+       RESPONSIVE — Alunan Nusantara
+       ══════════════════════════════════════════ */
 
-    /* — PC: sedikit scale down supaya ga terlalu besar — */
-    @media (min-width: 1024px) {
-      html { font-size: 93.75%; }
+    /* PC: scale down sedikit biar ga terlalu besar */
+    @media (min-width: 1024px) { html { font-size: 93.75%; } }
+    @media (min-width: 768px) and (max-width: 1023px) { html { font-size: 90%; } }
+
+    /* ── Hamburger button ── */
+    #mob-menu-btn {
+      display: none !important;
+      background: none; border: none; cursor: pointer;
+      color: #260701; padding: 4px;
+      align-items: center; justify-content: center;
+      flex-shrink: 0; line-height: 1;
     }
 
-    /* ——— MOBILE HAMBURGER MENU ——— */
-    .mobile-menu-btn {
+    /* ── Dropdown card mobile ── */
+    #mob-nav-card {
       display: none;
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: #260701;
-      padding: 4px;
-    }
-    .mobile-nav-links {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(255,248,244,0.97);
-      backdrop-filter: blur(8px);
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 0; right: 0;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(44,20,8,0.15);
+      padding: 8px 0;
       z-index: 9999;
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 2rem;
     }
-    .mobile-nav-links.open { display: flex; }
-    .mobile-nav-links a, .mobile-nav-links button {
-      font-size: 1.3rem;
-      font-weight: 600;
-      color: #260701;
-      text-decoration: none;
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-family: 'Poppins', sans-serif;
+    #mob-nav-card.open { display: flex; }
+    #mob-nav-card a, #mob-nav-card button.mn-logout {
+      display: block; width: 100%;
+      padding: 13px 24px;
+      font-size: 0.95rem; font-weight: 500;
+      color: #260701; text-decoration: none;
+      background: none; border: none; text-align: left;
+      cursor: pointer; font-family: 'Poppins', sans-serif;
+      box-sizing: border-box;
+      border-left: 3px solid transparent;
+      transition: background 0.15s;
     }
-    .mobile-nav-close {
-      position: absolute;
-      top: 1.5rem;
-      right: 1.5rem;
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: #260701;
+    #mob-nav-card a:hover, #mob-nav-card button.mn-logout:hover { background: #fff8f4; }
+    #mob-nav-card a.mob-active {
+      font-weight: 700;
+      border-left: 3px solid #260701;
     }
-    /* Nav desktop links — sembunyikan di mobile */
-    .nav-desktop-links { display: flex; align-items: center; gap: 2rem; }
 
+    /* ── Hero index mobile fix ── */
     @media (max-width: 767px) {
       /* Navbar */
-      .nav-desktop-links { display: none !important; }
-      .mobile-menu-btn { display: flex !important; }
-      .navbar-pill { padding: 0 16px !important; gap: 0 !important; }
+      .desk-nav { display: none !important; }
+      #mob-menu-btn { display: flex !important; }
+      .navbar-pill { position: relative !important; overflow: visible !important; }
 
-      /* Container padding */
+      /* Spacing */
       .max-w-7xl { padding-left: 1rem !important; padding-right: 1rem !important; }
-      section.max-w-7xl, section { padding-left: 1rem; padding-right: 1rem; }
+      .px-8 { padding-left: 1rem !important; padding-right: 1rem !important; }
+      .px-6 { padding-left: 0.75rem !important; padding-right: 0.75rem !important; }
+      .py-20 { padding-top: 3rem !important; padding-bottom: 3rem !important; }
+      .py-16 { padding-top: 2.5rem !important; padding-bottom: 2.5rem !important; }
+      body { overflow-x: hidden !important; }
 
-      /* Hero section */
-      .hero-title-alunan  { font-size: 2.6rem !important; }
-      .hero-title-nusantara { font-size: 1.7rem !important; }
-      .center-slide-img { width: 180px !important; }
-
-      /* Sembunyikan floating instrument cards di hero (makan tempat di mobile) */
+      /* ── Hero beranda: flex column supaya ga nabrak ── */
+      .hero-rsp-wrap {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        justify-content: flex-start !important;
+        min-height: 400px !important;
+        padding: 28px 20px 90px !important;
+      }
+      .hero-rsp-left {
+        position: relative !important;
+        left: auto !important; top: auto !important;
+        width: 100% !important;
+        z-index: 20 !important;
+      }
+      .hero-rsp-center {
+        position: relative !important;
+        left: auto !important; top: auto !important;
+        transform: none !important;
+        z-index: 20 !important;
+        width: 100% !important;
+        display: flex !important;
+        justify-content: center !important;
+        margin-top: 12px !important;
+        pointer-events: none;
+      }
+      .center-slide-img { width: 150px !important; }
+      .hero-rsp-nav {
+        position: absolute !important;
+        bottom: 20px !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+      }
+      .hero-title-alunan   { font-size: 2.2rem !important; }
+      .hero-title-nusantara { font-size: 1.5rem !important; }
       .instrument-card { display: none !important; }
-
-      /* Hero container height */
-      .relative.w-full.rounded-\[40px\] { min-height: 340px !important; }
-
-      /* Hero left content */
-      .absolute.z-20.flex.flex-col { left: 20px !important; top: 40px !important; width: 200px !important; }
-
-      /* Hero nav buttons */
-      div[style*="bottom:100px"] { bottom: 24px !important; }
-
-      /* Grid jadi 1 kolom */
-      .grid-cols-2 { grid-template-columns: 1fr !important; }
-      .md\:grid-cols-2, .md\:grid-cols-3 { grid-template-columns: 1fr !important; }
-
-      /* Feature cards padding */
-      .feature-card { padding: 1.5rem !important; }
-
-      /* CTA section */
-      .cta-btn { width: 100%; text-align: center; }
 
       /* Footer */
       footer .grid { grid-template-columns: 1fr !important; gap: 2rem !important; }
-      footer .text-right { text-align: left !important; align-items: flex-start !important; }
+      footer .text-right { text-align: left !important; }
+      footer .flex.flex-col.items-end { align-items: flex-start !important; }
 
-      /* Carousel card */
-      .bg-white.rounded-\[40px\] { max-width: 100% !important; }
+      /* Province grid */
+      #province-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 10px !important; }
 
-      /* Province hero */
-      h1[style*="font-size:4rem"] { font-size: 2.2rem !important; }
-      div[style*="padding-top: 100px"] { padding-top: 60px !important; padding-bottom: 24px !important; }
-
-      /* Login/Register split layout */
-      .flex-col.md\:flex-row { flex-direction: column !important; }
-      .md\:w-1\/2 { width: 100% !important; }
-      section.md\:w-1\/2.flex.items-center { display: none !important; } /* hide ilustrasi di mobile */
-
-      /* Profile page */
-      .max-w-5xl { padding-left: 1rem; padding-right: 1rem; }
-
-      /* General px-8 override */
-      .px-8 { padding-left: 1rem !important; padding-right: 1rem !important; }
-      .px-6 { padding-left: 0.75rem !important; padding-right: 0.75rem !important; }
-
-      /* py adjustments */
-      .py-20 { padding-top: 3rem !important; padding-bottom: 3rem !important; }
-      .py-16 { padding-top: 2.5rem !important; padding-bottom: 2.5rem !important; }
+      /* Login / Register */
+      .auth-split-left  { display: none !important; }
+      .auth-split-right { width: 100% !important; min-height: 100vh; }
     }
 
-    @media (min-width: 768px) and (max-width: 1023px) {
-      /* Tablet */
-      html { font-size: 90%; }
-      .hero-title-alunan  { font-size: 3.2rem !important; }
-      .hero-title-nusantara { font-size: 2rem !important; }
-      .center-slide-img { width: 220px !important; }
-      .px-8 { padding-left: 1.5rem !important; padding-right: 1.5rem !important; }
+    /* ── Edit profile sidebar ── */
+    @media (max-width: 767px) {
+      .card { flex-direction: column !important; }
+      .sidebar {
+        width: 100% !important;
+        border-right: none !important;
+        border-bottom: 1.5px solid #f2dfcf !important;
+        padding: 20px 16px !important;
+      }
+      .main { padding: 20px 16px !important; }
+      .page-wrap { padding: 16px 12px 32px !important; }
+      .form-row { flex-direction: column !important; gap: 6px !important; }
+      .form-label-col { width: 100% !important; }
+      .input-field, .textarea-field { width: 100% !important; box-sizing: border-box; }
+      .profile-edit-layout { flex-direction: column !important; }
+      .profile-photo-col { width: 100% !important; align-items: center !important; }
     }
+
 </style>
+  <link rel="stylesheet" href="assets/responsive.css"/>
 </head>
 
 <body class="font-sans text-brand-dark antialiased overflow-x-hidden bg-[#fff8f4]">
-  <!-- Mobile nav overlay -->
-  <div class="mobile-nav-links" id="mobile-nav-overlay">
-    <button class="mobile-nav-close" id="mobile-nav-close" aria-label="Tutup">
-      <span class="material-symbols-outlined" style="font-size:1.8rem;">close</span>
-    </button>
-    <a href="index.html">Beranda</a>
-    <a href="provinsi.html">Jelajahi</a>
-    <a href="hubungi.html">Hubungi Kami</a>
-    <a href="login.html" class="nav-mobile-login">Masuk</a>
-    <a href="profileuser.html" class="nav-mobile-profile hidden">Profil</a>
-    <button onclick="typeof logout==='function'&&logout()" class="nav-mobile-logout hidden" style="font-size:1.3rem;font-weight:600;color:#260701;">Keluar</button>
-  </div>
-
 
   <!-- ===== NAVBAR ===== -->
   <nav class="w-full sticky top-0 z-50 py-4 navbar-wrapper" id="main-nav">
     <div class="max-w-7xl mx-auto px-8">
       <div class="navbar-pill anim-pop-in" style="justify-content:space-between; width:100%; padding:0 24px 0 20px;">
         <img alt="Alunan Nusantara Logo" class="h-10" src="assets/images/logo/logoweb.png"/>
-        <div class="flex items-center gap-8">
+        <button id="mob-menu-btn" aria-label="Menu"><span class="material-symbols-outlined" style="font-size:1.7rem;line-height:1;">menu</span></button>
+        <div id="mob-nav-card">
+      <a href="index.html" class="mob-active">Beranda</a>
+      <a href="provinsi.html">Jelajahi</a>
+      <a href="hubungi.html">Hubungi kami</a>
+      <a href="login.html" class="mn-login">Masuk</a>
+      <a href="profileuser.html" class="mn-profile" style="display:none;">Profil</a>
+      <button onclick="typeof logout==='function'&&logout()" class="mn-logout" style="display:none;">Keluar</button>
+        </div>
+        <div class="flex items-center gap-8 desk-nav">
           <a href="index.html"    class="text-sm font-semibold hover:opacity-60 transition-opacity" style="color:#260701; border-bottom:2px solid #260701; padding-bottom:2px;">Beranda</a>
           <a href="provinsi.html" class="text-sm hover:opacity-60 transition-opacity" style="color:#260701;">Jelajahi</a>
           <a href="hubungi.html"  class="text-sm hover:opacity-60 transition-opacity" style="color:#260701;">Hubungi kami</a>
@@ -313,14 +315,14 @@
 
     <!-- ===== HERO ===== -->
     <section class="max-w-7xl mx-auto px-8 mt-2">
-      <div class="relative w-full rounded-[40px] overflow-hidden flex items-center shadow-lg"
+      <div class="relative w-full rounded-[40px] overflow-hidden flex items-center shadow-lg hero-rsp-wrap"
            style="background-image:url('assets/images/background/berandabg.png'); background-size:cover; background-position:center; min-height:560px;">
         <div class="absolute inset-0 bg-black/10"></div>
         <div class="hero-glass-container anim-fade-up delay-100"
              style="position:absolute; left:28px; top:22px; right:28px; bottom:22px; z-index:2;"></div>
 
         <!-- Left content -->
-        <div class="absolute z-20 flex flex-col gap-5 anim-fade-up delay-200" style="left:60px; top:70px; width:320px;">
+        <div class="hero-rsp-left absolute z-20 flex flex-col gap-5 anim-fade-up delay-200" style="left:60px; top:70px; width:320px;">
           <div>
             <div class="hero-title-alunan">Alunan</div>
             <div class="hero-title-nusantara">Nusantara</div>
@@ -331,12 +333,12 @@
         </div>
 
         <!-- Center image -->
-        <div style="position:absolute; left:50%; top:46%; transform:translate(-50%,-50%); z-index:30; pointer-events:none;">
+        <div class="hero-rsp-center" style="position:absolute; left:50%; top:46%; transform:translate(-50%,-50%); z-index:30; pointer-events:none;">
           <img id="hero-center-img" src="assets/images/alat musik/kendang.png" alt="Kendang" class="center-slide-img anim-pop-in delay-300"/>
         </div>
 
         <!-- Nav buttons -->
-        <div style="position:absolute; bottom:100px; left:50%; transform:translateX(-50%); z-index:40; display:flex; gap:12px;">
+        <div class="hero-rsp-nav" style="position:absolute; bottom:100px; left:50%; transform:translateX(-50%); z-index:40; display:flex; gap:12px;">
           <button id="hero-prev" class="hero-nav-btn">
             <span class="material-symbols-outlined text-[18px]">chevron_left</span>
           </button>
@@ -701,29 +703,36 @@
       window.location.href = 'index.html';
     }
   </script>
-
-    // ===== Mobile hamburger =====
-    (function() {
-      var btn   = document.getElementById('mobile-menu-btn');
-      var overlay = document.getElementById('mobile-nav-overlay');
-      var closeBtn = document.getElementById('mobile-nav-close');
-      if (!btn || !overlay) return;
-      btn.addEventListener('click', function() { overlay.classList.add('open'); });
-      if (closeBtn) closeBtn.addEventListener('click', function() { overlay.classList.remove('open'); });
-      overlay.addEventListener('click', function(e) { if (e.target === overlay) overlay.classList.remove('open'); });
-
-      // Update mobile nav links based on auth
-      var u = null;
-      try { u = JSON.parse(localStorage.getItem('an_user') || 'null'); } catch(e) {}
-      if (u) {
-        var loginLink = overlay.querySelector('.nav-mobile-login');
-        var profileLink = overlay.querySelector('.nav-mobile-profile');
-        var logoutBtn = overlay.querySelector('.nav-mobile-logout');
-        if (loginLink)  loginLink.classList.add('hidden');
-        if (profileLink) profileLink.classList.remove('hidden');
-        if (logoutBtn)  logoutBtn.classList.remove('hidden');
-      }
+  <script src="assets/responsive.js"></script>
+  <script>
+    /* ── Mobile dropdown nav ── */
+    (function(){
+      var btn  = document.getElementById('mob-menu-btn');
+      var card = document.getElementById('mob-nav-card');
+      if (!btn || !card) return;
+      btn.addEventListener('click', function(e){
+        e.stopPropagation();
+        card.classList.toggle('open');
+      });
+      document.addEventListener('click', function(e){
+        if (!card.contains(e.target) && e.target !== btn)
+          card.classList.remove('open');
+      });
+      try {
+        var u = JSON.parse(localStorage.getItem('an_user') || 'null');
+        var lo = card.querySelector('.mn-login');
+        var pr = card.querySelector('.mn-profile');
+        var ou = card.querySelector('.mn-logout');
+        if (u) {
+          if(lo) lo.style.display='none';
+          if(pr) pr.style.display='';
+          if(ou) ou.style.display='';
+        } else {
+          if(pr) pr.style.display='none';
+          if(ou) ou.style.display='none';
+        }
+      } catch(e){}
     })();
-
+  </script>
 </body>
 </html>
