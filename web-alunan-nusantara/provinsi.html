@@ -14,8 +14,6 @@
       } catch(e) {
         window.location.href = "login.html";
       }
-    } } = await supabase.auth.getSession();
-      window.location.href = session ? "profileuser.html" : "login.html";
     }
   </script>
   <meta charset="utf-8"/>
@@ -74,10 +72,13 @@
     .user-dropdown { display:none; }
     .user-dropdown.open { display:block; }
 
-    /* === POPUP OVERLAY === */
+    /* ========================================
+       POPUP — NEW DESIGN (inspired by jelajahijateng)
+       ======================================== */
     .popup-overlay {
       position: fixed; inset: 0;
-      background: rgba(44, 20, 8, 0.5);
+      background: rgba(44, 20, 8, 0.45);
+      backdrop-filter: blur(3px);
       z-index: 9999;
       display: flex; align-items: center; justify-content: center;
       opacity: 0; pointer-events: none;
@@ -87,9 +88,9 @@
     .popup-overlay.active { opacity: 1; pointer-events: all; }
 
     .popup-box {
-      background: white;
-      border-radius: 28px;
-      width: 360px;
+      background: #fff8f4;
+      border-radius: 32px;
+      width: 400px;
       max-width: 100%;
       overflow: hidden;
       transform: scale(0.82) translateY(32px);
@@ -97,128 +98,113 @@
       position: relative;
       max-height: 90vh;
       overflow-y: auto;
+      padding: 32px 28px 28px;
+      text-align: center;
     }
     .popup-overlay.active .popup-box { transform: scale(1) translateY(0); }
 
-    /* Header gradient */
-    .popup-header {
-      background: linear-gradient(135deg, #2c1408 0%, #6b3f1a 60%, #815525 100%);
-      padding: 32px 24px 24px;
-      text-align: center;
-      position: relative;
-    }
-
-    /* Floating island image */
-    .popup-island-img {
-      width: 110px; height: 88px;
-      object-fit: contain;
-      filter: brightness(0) invert(1) drop-shadow(0 6px 14px rgba(0,0,0,0.4));
-      margin: 0 auto 12px;
-      display: block;
-      animation: floatIsland 3s ease-in-out infinite;
-    }
-    @keyframes floatIsland {
-      0%, 100% { transform: translateY(0px) rotate(-1deg); }
-      50%       { transform: translateY(-7px) rotate(1deg); }
-    }
-
-    .popup-prov-name {
-      color: white;
-      font-size: 21px; font-weight: 700;
-      font-family: 'Poppins', sans-serif;
-      letter-spacing: 0.2px;
-    }
-    .popup-prov-tagline {
-      color: rgba(255,255,255,0.72);
-      font-size: 11px; margin-top: 5px;
-      font-family: 'Poppins', sans-serif;
-    }
-
-    /* Decorative dots on header */
-    .popup-header::before {
-      content: '';
-      position: absolute; bottom: -1px; left: 0; right: 0;
-      height: 20px;
-      background: white;
-      border-radius: 20px 20px 0 0;
-    }
-
+    /* Close button */
     .popup-close {
-      position: absolute; top: 14px; right: 16px;
-      background: rgba(255,255,255,0.18);
-      border: 1.5px solid rgba(255,255,255,0.3);
-      color: white; width: 32px; height: 32px;
-      border-radius: 50%; font-size: 15px;
+      position: absolute; top: 16px; right: 16px;
+      background: #f2dfcf;
+      border: none;
+      color: #2c1408;
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      font-size: 14px;
       cursor: pointer;
       display: flex; align-items: center; justify-content: center;
       transition: background 0.2s, transform 0.2s;
       font-family: 'Poppins', sans-serif;
+      font-weight: 600;
       line-height: 1;
     }
-    .popup-close:hover { background: rgba(255,255,255,0.32); transform: rotate(90deg); }
+    .popup-close:hover { background: #e8cdb5; transform: rotate(90deg) scale(1.08); }
 
-    /* Body */
-    .popup-body { padding: 4px 22px 24px; }
-
-    .popup-info-grid {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 10px; margin-bottom: 16px;
+    /* Image container */
+    .popup-img-wrap {
+      width: 220px; height: 180px;
+      background: #f2dfcf;
+      border-radius: 24px;
+      margin: 0 auto 22px;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
     }
-    .info-chip {
-      background: #fff8f4;
-      border: 1px solid #f2dfcf;
-      border-radius: 14px;
-      padding: 10px 12px; text-align: center;
+    .popup-img-wrap img {
+      width: 150px; height: 130px;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 10px rgba(44,20,8,0.22));
+      animation: floatImg 3.5s ease-in-out infinite;
     }
-    .chip-label {
-      font-size: 9px; color: #aaa;
-      text-transform: uppercase; letter-spacing: 0.7px;
-      font-weight: 600; font-family: 'Poppins', sans-serif;
-    }
-    .chip-val {
-      font-size: 13px; font-weight: 700;
-      color: #2c1408; margin-top: 3px;
-      font-family: 'Poppins', sans-serif;
+    @keyframes floatImg {
+      0%, 100% { transform: translateY(0px); }
+      50%       { transform: translateY(-8px); }
     }
 
-    .popup-desc {
-      font-size: 12px; color: #666;
-      line-height: 1.65;
-      background: #fff8f4;
-      border-radius: 14px;
-      padding: 12px 14px;
-      margin-bottom: 14px;
-      border-left: 3px solid #815525;
-      font-family: 'Poppins', sans-serif;
-    }
-
-    .popup-music-label {
+    /* Province badge */
+    .popup-badge {
+      display: inline-block;
+      background: #f2dfcf;
+      color: #815525;
       font-size: 10px; font-weight: 700;
-      color: #aaa; text-transform: uppercase;
-      letter-spacing: 0.6px; margin-bottom: 8px;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      padding: 6px 16px;
+      border-radius: 999px;
+      margin-bottom: 10px;
       font-family: 'Poppins', sans-serif;
     }
+
+    /* Province name */
+    .popup-prov-name {
+      font-family: 'Lily Script One', cursive;
+      font-size: 2rem;
+      color: #2c1408;
+      line-height: 1.15;
+      margin-bottom: 14px;
+    }
+
+    /* Description */
+    .popup-desc {
+      font-size: 13px;
+      color: #6b4226;
+      line-height: 1.7;
+      margin-bottom: 20px;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    /* Music tags */
     .popup-music-tags {
-      display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 18px;
+      display: flex; flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 22px;
     }
     .music-tag {
-      background: #f2dfcf; color: #2c1408;
-      font-size: 10px; font-weight: 600;
-      padding: 5px 11px; border-radius: 20px;
+      background: white;
+      border: 1.5px solid #f2dfcf;
+      color: #2c1408;
+      font-size: 11px; font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 999px;
       font-family: 'Poppins', sans-serif;
     }
 
+    /* CTA button */
     .popup-btn {
-      display: block; width: 100%; padding: 13px;
-      border-radius: 16px; border: none;
-      font-size: 13px; font-weight: 700;
+      display: block; width: 100%;
+      padding: 14px;
+      border-radius: 999px;
+      border: none;
+      font-size: 14px; font-weight: 700;
       cursor: pointer;
       transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
       font-family: 'Poppins', sans-serif;
       letter-spacing: 0.3px;
     }
     .popup-btn.available {
-      background: #2c1408; color: white;
+      background: #2c1408;
+      color: white;
     }
     .popup-btn.available:hover {
       transform: translateY(-2px);
@@ -226,7 +212,8 @@
       background: #3e1d0c;
     }
     .popup-btn.unavailable {
-      background: #f2dfcf; color: #b0998a;
+      background: #f2dfcf;
+      color: #b0998a;
       cursor: default;
     }
 
@@ -256,8 +243,6 @@
           <a href="provinsi.html" class="text-sm font-semibold" style="color:#260701;border-bottom:2px solid #260701;padding-bottom:2px;">Jelajahi</a>
           <a href="hubungi.html"  class="text-sm hover:opacity-60 transition-opacity" style="color:#260701;">Hubungi kami</a>
           <a href="login.html" class="nav-login text-sm hover:opacity-60 transition-opacity" style="color:#260701;">Masuk</a>
-
-          <!-- Avatar -->
           <div class="nav-user hidden relative" id="nav-user-btn" style="cursor:pointer;">
             <div class="w-9 h-9 rounded-full bg-[#f2dfcf] flex items-center justify-center overflow-hidden border-2 border-[#815525]">
               <span class="nav-avatar-icon material-symbols-outlined text-[#815525]" style="font-size:1.3rem;">person</span>
@@ -344,31 +329,30 @@
     </div>
   </footer>
 
-  <!-- ===== POPUP ===== -->
+  <!-- ===== POPUP (NEW DESIGN) ===== -->
   <div class="popup-overlay" id="popupOverlay">
     <div class="popup-box" id="popupBox">
-      <div class="popup-header">
-        <button class="popup-close" id="popupClose" aria-label="Tutup">✕</button>
-        <img src="" alt="" class="popup-island-img" id="popupImg"/>
-        <div class="popup-prov-name" id="popupName"></div>
-        <div class="popup-prov-tagline" id="popupTagline"></div>
+      <button class="popup-close" id="popupClose" aria-label="Tutup">✕</button>
+
+      <!-- Image -->
+      <div class="popup-img-wrap">
+        <img src="" alt="" id="popupImg"/>
       </div>
-      <div class="popup-body">
-        <div class="popup-info-grid">
-          <div class="info-chip">
-            <div class="chip-label">Ibukota</div>
-            <div class="chip-val" id="popupCapital"></div>
-          </div>
-          <div class="info-chip">
-            <div class="chip-label">Alat Musik</div>
-            <div class="chip-val" id="popupCount"></div>
-          </div>
-        </div>
-        <div class="popup-desc" id="popupDesc"></div>
-        <div class="popup-music-label">Alat Musik Tradisional</div>
-        <div class="popup-music-tags" id="popupTags"></div>
-        <button class="popup-btn" id="popupBtn"></button>
-      </div>
+
+      <!-- Badge -->
+      <div class="popup-badge" id="popupBadge"></div>
+
+      <!-- Name -->
+      <div class="popup-prov-name" id="popupName"></div>
+
+      <!-- Description -->
+      <p class="popup-desc" id="popupDesc"></p>
+
+      <!-- Music tags -->
+      <div class="popup-music-tags" id="popupTags"></div>
+
+      <!-- CTA -->
+      <button class="popup-btn" id="popupBtn"></button>
     </div>
   </div>
 
@@ -579,10 +563,8 @@
 
       document.getElementById('popupImg').src = p.img;
       document.getElementById('popupImg').alt = p.name;
-      document.getElementById('popupName').textContent = p.name;
-      document.getElementById('popupTagline').textContent = p.tagline;
-      document.getElementById('popupCapital').textContent = p.capital;
-      document.getElementById('popupCount').textContent = p.count;
+      document.getElementById('popupBadge').textContent = p.name;
+      document.getElementById('popupName').textContent = p.tagline;
       document.getElementById('popupDesc').textContent = p.desc;
 
       const tagsEl = document.getElementById('popupTags');
