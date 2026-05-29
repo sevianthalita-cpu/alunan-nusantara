@@ -463,18 +463,20 @@
 
     <div class="verify-card-title">Tanggapi di Email</div>
     <div class="verify-card-sub">
-      Mohon Masukan kode 6 digit yang dikirim melalui email ke<br/>
+      Mohon Masukan kode 8 digit yang dikirim melalui email ke<br/>
       <span class="verify-email-highlight" id="verify-email-display"></span>
     </div>
 
-    <!-- 6 kotak OTP terpisah -->
+    <!-- 8 kotak OTP terpisah -->
     <div class="otp-container" id="otp-container">
       <input class="otp-box" type="text" inputmode="numeric" maxlength="1" id="otp-0" autocomplete="off"/>
-      <input class="otp-box" type="text" inputmode="numeric" maxlength="1" id="otp-1" autocomplete="off"/>
-      <input class="otp-box" type="text" inputmode="numeric" maxlength="1" id="otp-2" autocomplete="off"/>
-      <input class="otp-box" type="text" inputmode="numeric" maxlength="1" id="otp-3" autocomplete="off"/>
-      <input class="otp-box" type="text" inputmode="numeric" maxlength="1" id="otp-4" autocomplete="off"/>
-      <input class="otp-box" type="text" inputmode="numeric" maxlength="1" id="otp-5" autocomplete="off"/>
+<input class="otp-box" type="text" inputmode="numeric" maxlength="1" id="otp-1" autocomplete="off"/>
+<input class="otp-box" type="text" inputmode="numeric" maxlength="1" id="otp-2" autocomplete="off"/>
+<input class="otp-box" type="text" inputmode="numeric" maxlength="1" id="otp-3" autocomplete="off"/>
+<input class="otp-box" type="text" inputmode="numeric" maxlength="1" id="otp-4" autocomplete="off"/>
+<input class="otp-box" type="text" inputmode="numeric" maxlength="1" id="otp-5" autocomplete="off"/>
+<input class="otp-box" type="text" inputmode="numeric" maxlength="1" id="otp-6" autocomplete="off"/>
+<input class="otp-box" type="text" inputmode="numeric" maxlength="1" id="otp-7" autocomplete="off"/>
     </div>
 
     <button class="btn-primary" style="width:100%;padding:12px;" onclick="submitOtp()" id="btn-verifikasi-token">
@@ -495,34 +497,20 @@
 <script>
 // ============================================================
 // FLAG PENTING: Cegah onAuthStateChange dari auto-redirect
-// saat verify OTP sedang berjalan
 // ============================================================
 let isVerifyingOtp = false;
 
-// ============================================================
-// HELPER
-// ============================================================
 function getUser() { return JSON.parse(localStorage.getItem('an_user') || 'null'); }
 function saveUser(updated) { localStorage.setItem('an_user', JSON.stringify(updated)); }
 
-// ============================================================
-// AUTH STATE CHANGE — HANYA update session, TIDAK auto-redirect
-// saat verifikasi OTP sedang aktif
-// ============================================================
 supabase.auth.onAuthStateChange(async (event, session) => {
-  // Jika sedang dalam proses verifikasi OTP, ABAIKAN event ini
-  // supaya user tidak langsung masuk tanpa input token
   if (isVerifyingOtp) return;
-
   if (event === 'SIGNED_IN' && session) {
     currentUserId = session.user.id;
     saveUser({ ...getUser(), id: session.user.id, email: session.user.email });
   }
 });
 
-// ============================================================
-// AUTH CHECK
-// ============================================================
 let currentUserId = null;
 
 supabase.auth.getSession().then(({ data: { session } }) => {
@@ -543,9 +531,6 @@ supabase.auth.getSession().then(({ data: { session } }) => {
   loadUserData();
 });
 
-// ============================================================
-// TOAST
-// ============================================================
 function showToast(msg, type='') {
   const t = document.getElementById('ep-toast');
   t.textContent = msg;
@@ -554,9 +539,6 @@ function showToast(msg, type='') {
   t._timer = setTimeout(() => t.className = '', 2800);
 }
 
-// ============================================================
-// LOAD USER DATA
-// ============================================================
 function loadUserData() {
   const user = getUser();
   if (!user) return;
@@ -585,9 +567,6 @@ function loadUserData() {
   }
 }
 
-// ============================================================
-// UPLOAD FOTO
-// ============================================================
 async function uploadPhoto(input) {
   const file = input.files[0];
   if (!file) return;
@@ -620,9 +599,6 @@ async function uploadPhoto(input) {
   showToast('Foto profil berhasil disimpan!', 'success');
 }
 
-// ============================================================
-// TAB NAVIGATION
-// ============================================================
 const allTabs = ['edit-profile','pengaturan','ubah-email','ubah-password','hapus-akun','riwayat'];
 const navMap  = {'edit-profile':'nav-edit-profile','pengaturan':'nav-pengaturan','ubah-email':'nav-pengaturan','ubah-password':'nav-pengaturan','hapus-akun':'nav-pengaturan','riwayat':'nav-riwayat'};
 const subMap  = {'ubah-email':'sub-ubah-email','ubah-password':'sub-ubah-password'};
@@ -651,9 +627,6 @@ function togglePengaturanSub() {
 
 if (window.location.hash === '#pengaturan') showTab('pengaturan');
 
-// ============================================================
-// SAVE PROFILE
-// ============================================================
 async function saveProfile() {
   const username = document.getElementById('input-username').value.trim();
   const nama     = document.getElementById('input-nama').value.trim();
@@ -689,27 +662,19 @@ function closeVerify(id) {
   if (verifyPurpose === 'hapus-akun') showTab('hapus-akun');
 }
 
-// Kirim OTP ke email user — set flag isVerifyingOtp=true SEBELUM request
 async function showVerifyEmail() {
-  // SET FLAG — cegah onAuthStateChange dari auto-proceed
   isVerifyingOtp = true;
-
   document.getElementById('verify-pilih').classList.remove('open');
   document.getElementById('verify-email-sent').classList.add('open');
-
-  // Reset kotak OTP
   clearOtpBoxes();
   startVerifyTimer();
   localStorage.setItem('verifyPurpose', verifyPurpose);
-
   const userEmail = getUser()?.email;
   if (!userEmail) { showToast('Email tidak ditemukan, coba login ulang.'); isVerifyingOtp = false; return; }
-
   const { error } = await supabase.auth.signInWithOtp({
     email: userEmail,
     options: { shouldCreateUser: false }
   });
-
   if (error) {
     showToast('Gagal mengirim kode: ' + error.message, 'error-toast');
     isVerifyingOtp = false;
@@ -726,75 +691,66 @@ function goBackVerify() {
 }
 
 // ============================================================
-// OTP BOXES — 6 kotak terpisah
+// OTP BOXES — 8 kotak
 // ============================================================
 function clearOtpBoxes() {
-  for (let i = 0; i < 6; i++) {
+  for (let i = 0; i < 8; i++) {
     const box = document.getElementById('otp-' + i);
+    if (!box) continue;
     box.value = '';
     box.classList.remove('filled', 'error');
   }
-  // Fokus ke kotak pertama
   setTimeout(() => document.getElementById('otp-0')?.focus(), 100);
 }
 
 function getOtpValue() {
   let val = '';
-  for (let i = 0; i < 6; i++) val += document.getElementById('otp-' + i).value || '';
+  for (let i = 0; i < 8; i++) val += document.getElementById('otp-' + i).value || '';
   return val;
 }
 
 function setOtpError(isError) {
-  for (let i = 0; i < 6; i++) {
+  for (let i = 0; i < 8; i++) {
     const box = document.getElementById('otp-' + i);
+    if (!box) continue;
     if (isError) { box.classList.add('error'); box.classList.remove('filled'); }
     else          { box.classList.remove('error'); }
   }
 }
 
-// Setup auto-focus & auto-advance untuk 6 kotak OTP
 document.addEventListener('DOMContentLoaded', () => {
-  for (let i = 0; i < 6; i++) {
+  for (let i = 0; i < 8; i++) {
     const box = document.getElementById('otp-' + i);
     if (!box) continue;
 
     box.addEventListener('input', (e) => {
-      // Hanya terima angka
       box.value = box.value.replace(/[^0-9]/g, '').slice(-1);
       box.classList.toggle('filled', box.value !== '');
       box.classList.remove('error');
-
-      // Auto-advance ke kotak berikutnya
-      if (box.value && i < 5) {
+      if (box.value && i < 7) {
         document.getElementById('otp-' + (i + 1)).focus();
       }
-      // Auto-submit saat kotak ke-6 terisi
-      if (i === 5 && box.value) submitOtp();
+      if (i === 7 && box.value) submitOtp();
     });
 
     box.addEventListener('keydown', (e) => {
-      // Backspace: hapus dan mundur
       if (e.key === 'Backspace' && !box.value && i > 0) {
         document.getElementById('otp-' + (i - 1)).focus();
       }
-      // Paste: distribute ke kotak-kotak
-      if (e.key === 'v' && (e.ctrlKey || e.metaKey)) return; // handled by paste event
     });
 
     box.addEventListener('paste', (e) => {
       e.preventDefault();
       const pasted = (e.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g,'');
-      for (let j = 0; j < 6 && j < pasted.length; j++) {
+      for (let j = 0; j < 8 && j < pasted.length; j++) {
         const target = document.getElementById('otp-' + j);
         if (target) { target.value = pasted[j]; target.classList.add('filled'); }
       }
-      // Fokus ke kotak setelah karakter terakhir yang di-paste
-      const nextIdx = Math.min(pasted.length, 5);
+      const nextIdx = Math.min(pasted.length, 7);
       document.getElementById('otp-' + nextIdx)?.focus();
-      if (pasted.length >= 6) submitOtp();
+      if (pasted.length >= 8) submitOtp();
     });
 
-    // Select all on focus
     box.addEventListener('focus', () => box.select());
   }
 });
@@ -821,18 +777,17 @@ function startVerifyTimer() {
 }
 
 // ============================================================
-// SUBMIT OTP — verifikasi token dari input user
+// SUBMIT OTP
 // ============================================================
 async function submitOtp() {
   const otp = getOtpValue();
-  if (otp.length < 6) { showToast('Masukkan 6 digit kode!'); return; }
+  if (otp.length < 8) { showToast('Masukkan 8 digit kode!'); return; }
 
   const btn = document.getElementById('btn-verifikasi-token');
   btn.textContent = 'Memverifikasi...';
   btn.disabled = true;
 
   const userEmail = getUser()?.email;
-
   const { data, error } = await supabase.auth.verifyOtp({
     email: userEmail,
     token: otp,
@@ -843,21 +798,17 @@ async function submitOtp() {
   btn.disabled = false;
 
   if (error) {
-    // Token salah atau expired
     setOtpError(true);
     showToast('❌ Token salah atau sudah kedaluwarsa!', 'error-toast');
     return;
   }
 
-  // Token benar!
-  isVerifyingOtp = false; // Reset flag setelah berhasil
+  isVerifyingOtp = false;
   const savedPurpose = localStorage.getItem('verifyPurpose') || verifyPurpose;
   localStorage.removeItem('verifyPurpose');
   document.getElementById('verify-email-sent').classList.remove('open');
   clearInterval(timerInterval);
   showToast('✅ Verifikasi berhasil!', 'success');
-
-  // Lanjut ke halaman tujuan
   afterVerifyShowForm(savedPurpose);
 }
 
@@ -884,9 +835,6 @@ async function resendOtp() {
   startVerifyTimer();
 }
 
-// ============================================================
-// UBAH EMAIL
-// ============================================================
 async function submitUbahEmail() {
   const val = document.getElementById('input-email-baru').value.trim();
   if (!val || !val.includes('@')) { showToast('Email tidak valid!'); return; }
@@ -900,9 +848,6 @@ async function submitUbahEmail() {
   showTab('pengaturan');
 }
 
-// ============================================================
-// UBAH PASSWORD
-// ============================================================
 async function submitUbahPassword() {
   const pw  = document.getElementById('input-pw-new').value;
   const pw2 = document.getElementById('input-pw-confirm').value;
@@ -926,17 +871,11 @@ function togglePw(id, btn) {
   }
 }
 
-// ============================================================
-// HAPUS AKUN
-// ============================================================
 function hapusAkunFinal() {
   localStorage.removeItem('an_user');
   window.location.href = 'index.html';
 }
 
-// ============================================================
-// MODAL
-// ============================================================
 function openModal(id)  { document.getElementById(id).classList.add('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 function confirmKeluar() { openModal('modal-keluar'); }
@@ -947,9 +886,6 @@ async function doLogout() {
   window.location.href = 'index.html';
 }
 
-// ============================================================
-// ALAT MUSIK IMAGE MAP
-// ============================================================
 const ALAT_IMGS = {
   kendang:  'assets/images/alat musik/kendang.png',
   slenthem: 'assets/images/alat musik/slenthem.png',
@@ -961,9 +897,6 @@ const ALAT_IMGS = {
   angklung: 'assets/images/alat musik/angklung.png',
 };
 
-// ============================================================
-// RIWAYAT KOMENTAR
-// ============================================================
 let cachedComments   = [];
 let editIndex        = -1;
 let editModalRating  = 0;
@@ -1040,9 +973,6 @@ async function buildRiwayat() {
   });
 }
 
-// ============================================================
-// EDIT & DELETE KOMENTAR
-// ============================================================
 document.querySelectorAll('#modal-edit-stars .modal-star').forEach(s => {
   s.addEventListener('click',     () => { editModalRating = parseInt(s.dataset.v); updateModalStars(editModalRating); });
   s.addEventListener('mouseover', () => updateModalStars(parseInt(s.dataset.v)));
