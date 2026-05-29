@@ -874,25 +874,15 @@ function togglePw(id, btn) {
 // BARU
 async function hapusAkunFinal() {
   const uid = currentUserId || getUser()?.id;
-  
-  // Hapus data reviews
   await supabase.from('reviews').delete().eq('user_id', uid);
-  
-  // Hapus data profile
   await supabase.from('profiles').delete().eq('id', uid);
-  
-  // Hapus akun dari auth
   const { error } = await supabase.rpc('delete_user');
-  
-  if (error) {
-    showToast('Gagal hapus akun: ' + error.message, 'error-toast');
-    return;
-  }
-  
+  if (error) { showToast('Gagal hapus akun: ' + error.message, 'error-toast'); return; }
   await supabase.auth.signOut();
   localStorage.removeItem('an_user');
   window.location.href = 'index.html';
 }
+
 
 function openModal(id)  { document.getElementById(id).classList.add('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
