@@ -873,22 +873,15 @@ function togglePw(id, btn) {
 
 // BARU
 async function hapusAkunFinal() {
-  const uid = currentUserId || getUser()?.id;
-  await supabase.from('reviews').delete().eq('user_id', uid);
-  await supabase.from('profiles').delete().eq('id', uid);
-  
-  // Gunakan admin delete via supabase auth admin
-  const { error } = await supabase.auth.admin.deleteUser(uid);
-  
-  if (error) {
-    console.log('error:', error);
-    showToast('Gagal hapus akun: ' + error.message, 'error-toast');
-    return;
-  }
-  
-  await supabase.auth.signOut();
-  localStorage.removeItem('an_user');
-  window.location.href = 'index.html';
+  const { data: { session } } = await supabase.auth.getSession()
+  const res = await fetch('https://paowtmytttinwndebftm.supabase.co/functions/v1/delete-user', {
+    method: 'POST',
+    headers: { Authorization: 'Bearer ' + session.access_token }
+  })
+  if (!res.ok) { showToast('Gagal hapus akun!', 'error-toast'); return; }
+  await supabase.auth.signOut()
+  localStorage.removeItem('an_user')
+  window.location.href = 'index.html'
 }
 
 function openModal(id)  { document.getElementById(id).classList.add('open'); }
