@@ -210,140 +210,7 @@
       cursor: pointer; transition: background .15s; text-align: left;
     }
     .user-dropdown a:hover, .user-dropdown button:hover { background: #fff1e6; }
-  
-    /* ══════════════════════════════════════════
-       RESPONSIVE — Alunan Nusantara
-       ══════════════════════════════════════════ */
-
-    /* PC: scale down sedikit biar ga terlalu besar */
-    @media (min-width: 1024px) { html { font-size: 93.75%; } }
-    @media (min-width: 768px) and (max-width: 1023px) { html { font-size: 90%; } }
-
-    /* ── Hamburger button ── */
-    #mob-menu-btn {
-      display: none !important;
-      background: none; border: none; cursor: pointer;
-      color: #260701; padding: 4px;
-      align-items: center; justify-content: center;
-      flex-shrink: 0; line-height: 1;
-    }
-
-    /* ── Dropdown card mobile ── */
-    #mob-nav-card {
-      display: none;
-      position: absolute;
-      top: calc(100% + 8px);
-      left: 0; right: 0;
-      background: white;
-      border-radius: 20px;
-      box-shadow: 0 8px 32px rgba(44,20,8,0.15);
-      padding: 8px 0;
-      z-index: 9999;
-      flex-direction: column;
-    }
-    #mob-nav-card.open { display: flex; }
-    #mob-nav-card a, #mob-nav-card button.mn-logout {
-      display: block; width: 100%;
-      padding: 13px 24px;
-      font-size: 0.95rem; font-weight: 500;
-      color: #260701; text-decoration: none;
-      background: none; border: none; text-align: left;
-      cursor: pointer; font-family: 'Poppins', sans-serif;
-      box-sizing: border-box;
-      border-left: 3px solid transparent;
-      transition: background 0.15s;
-    }
-    #mob-nav-card a:hover, #mob-nav-card button.mn-logout:hover { background: #fff8f4; }
-    #mob-nav-card a.mob-active {
-      font-weight: 700;
-      border-left: 3px solid #260701;
-    }
-
-    /* ── Hero index mobile fix ── */
-    @media (max-width: 767px) {
-      /* Navbar */
-      .desk-nav { display: none !important; }
-      #mob-menu-btn { display: flex !important; }
-      .navbar-pill { position: relative !important; overflow: visible !important; }
-
-      /* Spacing */
-      .max-w-7xl { padding-left: 1rem !important; padding-right: 1rem !important; }
-      .px-8 { padding-left: 1rem !important; padding-right: 1rem !important; }
-      .px-6 { padding-left: 0.75rem !important; padding-right: 0.75rem !important; }
-      .py-20 { padding-top: 3rem !important; padding-bottom: 3rem !important; }
-      .py-16 { padding-top: 2.5rem !important; padding-bottom: 2.5rem !important; }
-      body { overflow-x: hidden !important; }
-
-      /* ── Hero beranda: flex column supaya ga nabrak ── */
-      .hero-rsp-wrap {
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: flex-start !important;
-        justify-content: flex-start !important;
-        min-height: 400px !important;
-        padding: 28px 20px 90px !important;
-      }
-      .hero-rsp-left {
-        position: relative !important;
-        left: auto !important; top: auto !important;
-        width: 100% !important;
-        z-index: 20 !important;
-      }
-      .hero-rsp-center {
-        position: relative !important;
-        left: auto !important; top: auto !important;
-        transform: none !important;
-        z-index: 20 !important;
-        width: 100% !important;
-        display: flex !important;
-        justify-content: center !important;
-        margin-top: 12px !important;
-        pointer-events: none;
-      }
-      .center-slide-img { width: 150px !important; }
-      .hero-rsp-nav {
-        position: absolute !important;
-        bottom: 20px !important;
-        left: 50% !important;
-        transform: translateX(-50%) !important;
-      }
-      .hero-title-alunan   { font-size: 2.2rem !important; }
-      .hero-title-nusantara { font-size: 1.5rem !important; }
-      .instrument-card { display: none !important; }
-
-      /* Footer */
-      footer .grid { grid-template-columns: 1fr !important; gap: 2rem !important; }
-      footer .text-right { text-align: left !important; }
-      footer .flex.flex-col.items-end { align-items: flex-start !important; }
-
-      /* Province grid */
-      #province-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 10px !important; }
-
-      /* Login / Register */
-      .auth-split-left  { display: none !important; }
-      .auth-split-right { width: 100% !important; min-height: 100vh; }
-    }
-
-    /* ── Edit profile sidebar ── */
-    @media (max-width: 767px) {
-      .card { flex-direction: column !important; }
-      .sidebar {
-        width: 100% !important;
-        border-right: none !important;
-        border-bottom: 1.5px solid #f2dfcf !important;
-        padding: 20px 16px !important;
-      }
-      .main { padding: 20px 16px !important; }
-      .page-wrap { padding: 16px 12px 32px !important; }
-      .form-row { flex-direction: column !important; gap: 6px !important; }
-      .form-label-col { width: 100% !important; }
-      .input-field, .textarea-field { width: 100% !important; box-sizing: border-box; }
-      .profile-edit-layout { flex-direction: column !important; }
-      .profile-photo-col { width: 100% !important; align-items: center !important; }
-    }
-
-</style>
-  <link rel="stylesheet" href="assets/responsive.css"/>
+  </style>
 </head>
 
 <body class="font-sans antialiased bg-[#fff8f4] text-[#2c1408] overflow-x-hidden">
@@ -353,16 +220,7 @@
     <div class="max-w-7xl mx-auto px-8">
       <div class="navbar-pill anim-pop-in" style="justify-content: space-between; width: 100%; padding: 0 24px 0 20px;">
         <img alt="Alunan Nusantara Logo" class="h-10" src="assets/images/logo/logoweb.png"/>
-        <button id="mob-menu-btn" aria-label="Menu"><span class="material-symbols-outlined" style="font-size:1.7rem;line-height:1;">menu</span></button>
-        <div id="mob-nav-card">
-      <a href="index.html">Beranda</a>
-      <a href="provinsi.html" class="mob-active">Jelajahi</a>
-      <a href="hubungi.html">Hubungi kami</a>
-      <a href="login.html" class="mn-login">Masuk</a>
-      <a href="profileuser.html" class="mn-profile" style="display:none;">Profil</a>
-      <button onclick="typeof logout==='function'&&logout()" class="mn-logout" style="display:none;">Keluar</button>
-        </div>
-        <div class="flex items-center gap-8 desk-nav">
+        <div class="flex items-center gap-8">
           <a href="index.html"    class="text-sm hover:opacity-60 transition-opacity" style="color:#260701;">Beranda</a>
           <!-- ✅ FIX UTAMA: link ke provinsi.html, bukan jelajahi.html -->
           <a href="provinsi.html" class="text-sm font-semibold" style="color:#260701; border-bottom: 2px solid #260701; padding-bottom: 2px;">Jelajahi</a>
@@ -480,13 +338,13 @@
 
         <!-- 4. Gambang -->
         <div class="instrument-card bg-white rounded-[24px] p-6 pt-3 text-center custom-shadow"
-             data-name="Gambang"
+             data-name="gambang"
              data-label="Gambang"
              data-desc="Gambang adalah instrumen gamelan dengan bilah kayu yang dipukul menggunakan pemukul khusus. Suaranya yang jernih dan ringan memberi warna unik pada musik gamelan."
-             data-img="assets/images/alat musik/Gambang.png"
+             data-img="assets/images/alat musik/gambang.png"
              data-asal="Jawa Tengah">
           <div class="card-img-bg">
-            <img src="assets/images/alat musik/Gambang.png" alt="Gambang" onerror="this.style.opacity='0.3'"/>
+            <img src="assets/images/alat musik/gambang.png" alt="Gambang" onerror="this.style.opacity='0.3'"/>
           </div>
           <h3 class="font-semibold text-lg text-[#2c1408] mb-1">Gambang</h3>
           <span class="text-xs text-[#815525]">klik aku!</span>
@@ -726,37 +584,6 @@
       localStorage.removeItem('an_user');
       window.location.href = 'index.html';
     }
-  </script>
-  <script src="assets/responsive.js"></script>
-  <script>
-    /* ── Mobile dropdown nav ── */
-    (function(){
-      var btn  = document.getElementById('mob-menu-btn');
-      var card = document.getElementById('mob-nav-card');
-      if (!btn || !card) return;
-      btn.addEventListener('click', function(e){
-        e.stopPropagation();
-        card.classList.toggle('open');
-      });
-      document.addEventListener('click', function(e){
-        if (!card.contains(e.target) && e.target !== btn)
-          card.classList.remove('open');
-      });
-      try {
-        var u = JSON.parse(localStorage.getItem('an_user') || 'null');
-        var lo = card.querySelector('.mn-login');
-        var pr = card.querySelector('.mn-profile');
-        var ou = card.querySelector('.mn-logout');
-        if (u) {
-          if(lo) lo.style.display='none';
-          if(pr) pr.style.display='';
-          if(ou) ou.style.display='';
-        } else {
-          if(pr) pr.style.display='none';
-          if(ou) ou.style.display='none';
-        }
-      } catch(e){}
-    })();
   </script>
 </body>
 </html>
