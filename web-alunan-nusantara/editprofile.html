@@ -662,6 +662,12 @@ function closeVerify(id) {
   if (verifyPurpose === 'hapus-akun') showTab('hapus-akun');
 }
 
+function afterVerifyShowForm(purpose) {
+  if (purpose === 'ubah-email') showTab('ubah-email');
+  else if (purpose === 'ubah-password') showTab('ubah-password');
+  else if (purpose === 'hapus-akun') showTab('hapus-akun');
+}
+
 async function showVerifyEmail() {
   isVerifyingOtp = true;
   document.getElementById('verify-pilih').classList.remove('open');
