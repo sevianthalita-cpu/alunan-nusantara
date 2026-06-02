@@ -291,121 +291,11 @@
         <p class="text-sm text-[#504440] mt-3">Klik kartu untuk melihat detail instrumen</p>
       </div>
 
-      <!-- ✅ 8 kartu unik (duplikat Gambang & Angklung dihapus) -->
-      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-
-        <!-- 1. Kendang -->
-        <div class="instrument-card bg-white rounded-[24px] p-6 pt-3 text-center custom-shadow"
-             data-name="kendang"
-             data-label="Kendang"
-             data-desc="Kendang adalah instrumen perkusi gamelan Jawa yang berfungsi sebagai pengatur tempo dan dinamika. Dimainkan dengan tangan, kendang menjadi 'jantung' dari ansambel gamelan."
-             data-img="assets/images/alat musik/kendang.png"
-             data-asal="Jawa Tengah">
-          <div class="card-img-bg">
-            <img src="assets/images/alat musik/kendang.png" alt="Kendang"/>
-          </div>
-          <h3 class="font-semibold text-lg text-[#2c1408] mb-1">Kendang</h3>
-          <span class="text-xs text-[#815525]">klik aku!</span>
+      <!-- Kartu diisi dinamis dari Supabase -->
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" id="instrument-grid">
+        <div id="loading-state" class="col-span-4 text-center py-16 text-[#815525]">
+          <p class="text-sm">Memuat alat musik...</p>
         </div>
-
-        <!-- 2. Slenthem -->
-        <div class="instrument-card bg-white rounded-[24px] p-6 pt-3 text-center custom-shadow"
-             data-name="slenthem"
-             data-label="Slenthem"
-             data-desc="Slenthem adalah instrumen gamelan berbentuk bilah logam yang digantung di atas tabung resonator bambu atau logam. Menghasilkan nada rendah yang khas dan merdu."
-             data-img="assets/images/alat musik/slenthem.png"
-             data-asal="Jawa Tengah">
-          <div class="card-img-bg">
-            <img src="assets/images/alat musik/slenthem.png" alt="Slenthem" onerror="this.style.opacity='0.3'"/>
-          </div>
-          <h3 class="font-semibold text-lg text-[#2c1408] mb-1">Slenthem</h3>
-          <span class="text-xs text-[#815525]">klik aku!</span>
-        </div>
-
-        <!-- 3. Bonang -->
-        <div class="instrument-card bg-white rounded-[24px] p-6 pt-3 text-center custom-shadow"
-             data-name="bonang"
-             data-label="Bonang"
-             data-desc="Bonang adalah instrumen gamelan berupa deretan gong kecil yang diletakkan mendatar. Bonang memainkan peran melodik penting dalam ansambel gamelan Jawa."
-             data-img="assets/images/alat musik/bonang.png"
-             data-asal="Jawa Tengah">
-          <div class="card-img-bg">
-            <img src="assets/images/alat musik/bonang.png" alt="Bonang" onerror="this.style.opacity='0.3'"/>
-          </div>
-          <h3 class="font-semibold text-lg text-[#2c1408] mb-1">Bonang</h3>
-          <span class="text-xs text-[#815525]">klik aku!</span>
-        </div>
-
-        <!-- 4. Gambang -->
-        <div class="instrument-card bg-white rounded-[24px] p-6 pt-3 text-center custom-shadow"
-             data-name="gambang"
-             data-label="Gambang"
-             data-desc="Gambang adalah instrumen gamelan dengan bilah kayu yang dipukul menggunakan pemukul khusus. Suaranya yang jernih dan ringan memberi warna unik pada musik gamelan."
-             data-img="assets/images/alat musik/Gambang.png"
-             data-asal="Jawa Tengah">
-          <div class="card-img-bg">
-            <img src="assets/images/alat musik/Gambang.png" alt="Gambang" onerror="this.style.opacity='0.3'"/>
-          </div>
-          <h3 class="font-semibold text-lg text-[#2c1408] mb-1">Gambang</h3>
-          <span class="text-xs text-[#815525]">klik aku!</span>
-        </div>
-
-        <!-- 5. Siter -->
-        <div class="instrument-card bg-white rounded-[24px] p-6 pt-3 text-center custom-shadow"
-             data-name="siter"
-             data-label="Siter"
-             data-desc="Siter adalah alat musik petik dalam gamelan Jawa yang menyerupai kecapi. Dawai-dawainya dipetik untuk menghasilkan melodi halus yang mengiringi tembang Jawa."
-             data-img="assets/images/alat musik/siter.png"
-             data-asal="Jawa Tengah">
-          <div class="card-img-bg">
-            <img src="assets/images/alat musik/siter.png" alt="Siter" onerror="this.style.opacity='0.3'"/>
-          </div>
-          <h3 class="font-semibold text-lg text-[#2c1408] mb-1">Siter</h3>
-          <span class="text-xs text-[#815525]">klik aku!</span>
-        </div>
-
-        <!-- 6. Suling -->
-        <div class="instrument-card bg-white rounded-[24px] p-6 pt-3 text-center custom-shadow"
-             data-name="suling"
-             data-label="Suling"
-             data-desc="Suling adalah seruling bambu tradisional Jawa yang dimainkan dengan cara ditiup. Nadanya yang lembut dan syahdu sering mengiringi pertunjukan wayang kulit."
-             data-img="assets/images/alat musik/suling.png"
-             data-asal="Jawa Tengah">
-          <div class="card-img-bg">
-            <img src="assets/images/alat musik/suling.png" alt="Suling" onerror="this.style.opacity='0.3'"/>
-          </div>
-          <h3 class="font-semibold text-lg text-[#2c1408] mb-1">Suling</h3>
-          <span class="text-xs text-[#815525]">klik aku!</span>
-        </div>
-
-        <!-- 7. Rebab -->
-        <div class="instrument-card bg-white rounded-[24px] p-6 pt-3 text-center custom-shadow"
-             data-name="rebab"
-             data-label="Rebab"
-             data-desc="Rebab adalah alat musik gesek berdawai dua yang dimainkan dengan busur. Suaranya yang melengking dan emosional menjadikannya pengisi melodi utama dalam gamelan."
-             data-img="assets/images/alat musik/rebab.png"
-             data-asal="Jawa Tengah">
-          <div class="card-img-bg">
-            <img src="assets/images/alat musik/rebab.png" alt="Rebab" onerror="this.style.opacity='0.3'"/>
-          </div>
-          <h3 class="font-semibold text-lg text-[#2c1408] mb-1">Rebab</h3>
-          <span class="text-xs text-[#815525]">klik aku!</span>
-        </div>
-
-        <!-- 8. Angklung -->
-        <div class="instrument-card bg-white rounded-[24px] p-6 pt-3 text-center custom-shadow"
-             data-name="angklung"
-             data-label="Angklung"
-             data-desc="Angklung adalah instrumen musik bambu yang menghasilkan bunyi saat digoyangkan. Telah diakui UNESCO sebagai Warisan Budaya Tak Benda dari Indonesia."
-             data-img="assets/images/alat musik/angklung.png"
-             data-asal="Jawa Tengah">
-          <div class="card-img-bg">
-            <img src="assets/images/alat musik/angklung.png" alt="Angklung"/>
-          </div>
-          <h3 class="font-semibold text-lg text-[#2c1408] mb-1">Angklung</h3>
-          <span class="text-xs text-[#815525]">klik aku!</span>
-        </div>
-
       </div>
     </section>
   </main>
@@ -531,14 +421,53 @@
     overlay.addEventListener('click', e => { if (e.target === overlay) closePopup(); });
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closePopup(); });
 
-    // Klik card → active + buka popup
-    document.querySelectorAll('.instrument-card').forEach(card => {
-      card.addEventListener('click', function() {
-        document.querySelectorAll('.instrument-card').forEach(c => c.classList.remove('active'));
-        this.classList.add('active');
-        openPopup(this);
-      });
-    });
+    // ===== FETCH DARI SUPABASE =====
+    async function loadAlatMusik() {
+      const grid = document.getElementById('instrument-grid');
+      try {
+        const { data, error } = await supabase
+          .from('alat_musik')
+          .select('*')
+          .eq('provinsi_key', 'jateng');
+
+        if (error) throw error;
+
+        if (!data || data.length === 0) {
+          grid.innerHTML = '<div class="col-span-4 text-center py-16 text-[#815525]"><p>Belum ada alat musik untuk provinsi ini.</p></div>';
+          return;
+        }
+
+        grid.innerHTML = data.map(alat => `
+          <div class="instrument-card bg-white rounded-[24px] p-6 pt-3 text-center custom-shadow"
+               data-name="${alat.key || ''}"
+               data-label="${alat.nama || ''}"
+               data-desc="${alat.deskripsi || ''}"
+               data-img="${alat.gambar_url || ''}"
+               data-asal="${alat.asal || 'Jawa Tengah'}">
+            <div class="card-img-bg">
+              <img src="${alat.gambar_url || ''}" alt="${alat.nama || ''}" onerror="this.style.opacity='0.3'"/>
+            </div>
+            <h3 class="font-semibold text-lg text-[#2c1408] mb-1">${alat.nama || ''}</h3>
+            <span class="text-xs text-[#815525]">klik aku!</span>
+          </div>
+        `).join('');
+
+        // Pasang event listener ke kartu yang baru dibuat
+        grid.querySelectorAll('.instrument-card').forEach(card => {
+          card.addEventListener('click', function() {
+            grid.querySelectorAll('.instrument-card').forEach(c => c.classList.remove('active'));
+            this.classList.add('active');
+            openPopup(this);
+          });
+        });
+
+      } catch (err) {
+        console.error('Error fetch alat musik:', err);
+        grid.innerHTML = '<div class="col-span-4 text-center py-16 text-red-400"><p>Gagal memuat data. Coba refresh halaman.</p></div>';
+      }
+    }
+
+    loadAlatMusik();
 
     // Scroll reveal
     const obs = new IntersectionObserver(entries => {
